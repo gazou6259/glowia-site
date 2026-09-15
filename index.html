@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowIA — Votre planning se remplit, même pendant que vous dormez</title>
+<meta name="description" content="GlowIA répond à vos clientes sur WhatsApp et Instagram, qualifie leur demande et remplit votre planning automatiquement. Spécial instituts de beauté et salons de coiffure.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --laque:#6E1D31;
+    --laque-clair:#8C2E45;
+    --laque-fonce:#4A1220;
+    --ivoire:#F7EFE2;
+    --porcelaine:#FDF9F1;
+    --laiton:#C79A56;
+    --laiton-clair:#DCB878;
+    --laiton-profond:#A97C33;
+    --nacre:#E7C9C2;
+    --encre:#2B1A1F;
+    --encre-doux:#5a4148;
+    --vert:#3D7A4A;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;overflow-x:hidden;}
+  body{
+    background:var(--ivoire);
+    color:var(--encre);
+    font-family:'Work Sans',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .serif{font-family:'Fraunces',Georgia,serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  img,svg{display:block;max-width:100%;}
+  a{color:var(--laque);}
+  a:hover{color:var(--laque-clair);}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px;position:relative;}
+  @media (max-width:640px){.wrap{padding:0 22px;}}
+  :focus-visible{outline:2px solid var(--laque);outline-offset:3px;}
+  ::selection{background:var(--laiton);color:var(--ivoire);}
+
+  /* ---------- Révélations au scroll ---------- */
+  .rv{opacity:0;transition:opacity .7s var(--ease),transform .7s var(--ease);}
+  .rv-up{transform:translateY(14px);}
+  .rv-left{transform:translateX(-16px);}
+  .rv-right{transform:translateX(16px);}
+  .rv-scale{transform:scale(.96);}
+  .rv.is-in{opacity:1;transform:none;}
+
+  @keyframes drift-a{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(-14px,12px,0);}}
+  @keyframes drift-b{0%,100%{transform:translate3d(0,0,0);}50%{transform:translate3d(12px,-10px,0);}}
+  @keyframes halo{0%,100%{opacity:.25;}50%{opacity:.42;}}
+  @keyframes dots{0%,60%,100%{opacity:.3;transform:translateY(0);}30%{opacity:1;transform:translateY(-2px);}}
+  @keyframes livepulse{0%,100%{box-shadow:0 0 0 3px rgba(61,122,74,.18);}50%{box-shadow:0 0 0 6px rgba(61,122,74,.05);}}
+  @keyframes gi-bubble{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+  @keyframes gi-draw{from{stroke-dashoffset:60;}to{stroke-dashoffset:0;}}
+  @keyframes gi-tail{0%{opacity:0;transform:scale(.25);}60%{opacity:1;transform:scale(1.08);}100%{opacity:1;transform:scale(1);}}
+  @keyframes gi-rise{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes gi-swell{45%{stroke-width:8.5;}}
+  @keyframes gi-nod{40%{transform:translateY(1.6px);}}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition-duration:.001ms !important;}
+    .rv{opacity:1 !important;transform:none !important;}
+  }
+
+  /* ---------- Logo : bulle qui sourit ---------- */
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;}
+  .brand-mark{width:34px;height:35px;flex-shrink:0;}
+  .gi-body,.gi-tail{transform-box:fill-box;}
+  .brand .word{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:22px;color:var(--laque);letter-spacing:-0.02em;}
+  .brand .ia{color:var(--laiton-profond);font-style:italic;padding-left:.04em;}
+  /* animation d'ouverture, une seule fois */
+  .logo-intro .gi-body{transform-origin:32px 26px;opacity:0;animation:gi-bubble .36s cubic-bezier(.2,.9,.2,1) .1s both;}
+  .logo-intro .gi-smile{stroke-dasharray:60;animation:gi-draw .6s .28s cubic-bezier(.25,.9,.25,1) both;}
+  .logo-intro .gi-tail{transform-origin:20px 46px;opacity:0;animation:gi-tail .22s .66s cubic-bezier(.2,1.4,.4,1) both;}
+  .logo-intro .word span:first-child{display:inline-block;animation:gi-rise .42s .82s ease-out backwards;}
+  .logo-intro .word .ia{display:inline-block;animation:gi-rise .42s .94s ease-out backwards;}
+  /* micro-interaction au survol (desktop) */
+  .brand:hover .gi-smile{animation:gi-swell .8s ease-in-out;}
+  .brand:hover .gi-tail{animation:gi-nod .8s ease-in-out;}
+
+  /* ---------- Header ---------- */
+  header{position:sticky;top:0;z-index:100;background:rgba(247,239,226,0);border-bottom:1px solid rgba(110,29,49,0);transition:background .24s ease,border-color .24s ease,backdrop-filter .24s ease;}
+  header.is-stuck{background:rgba(247,239,226,.88);border-bottom-color:rgba(110,29,49,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:24px;}
+  .nav-links{display:flex;align-items:center;gap:28px;font-size:15px;}
+  .nav-links a{text-decoration:none;color:var(--encre-doux);position:relative;padding:2px 0;transition:color .15s ease;}
+  .nav-links a::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1.5px;background:var(--laque);transition:width .22s var(--ease);}
+  .nav-links a:hover{color:var(--laque);}
+  .nav-links a:hover::after{width:100%;}
+  #progress{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--laiton);transform:scaleX(0);transform-origin:0 50%;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font-family:'Work Sans',sans-serif;font-weight:600;font-size:15px;padding:14px 28px;border-radius:11px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s var(--ease),box-shadow .15s ease,background .15s ease,border-color .15s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--laque);color:var(--ivoire);box-shadow:0 6px 16px rgba(110,29,49,.22);}
+  .btn-primary:hover{background:var(--laque-clair);color:var(--ivoire);box-shadow:0 12px 26px rgba(110,29,49,.3);}
+  .btn-ghost{background:rgba(255,255,255,.5);color:var(--laque);border-color:rgba(110,29,49,.22);backdrop-filter:blur(8px);}
+  .btn-ghost:hover{border-color:var(--laque);background:rgba(255,255,255,.85);}
+  .nav .btn{padding:11px 22px;font-size:14.5px;}
+  .nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px;}
+  .nav-toggle span{display:block;width:22px;height:2px;background:var(--laque);margin:5px 0;border-radius:2px;}
+  .mobile-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--ivoire);border-bottom:1px solid rgba(110,29,49,.12);padding:8px 32px 20px;flex-direction:column;}
+  .mobile-menu a{padding:13px 0;text-decoration:none;color:var(--encre);font-size:15.5px;border-bottom:1px solid rgba(110,29,49,.08);}
+  .mobile-menu.open{display:flex;}
+  .nav-actions{display:flex;align-items:center;gap:22px;}
+  .nav-login{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;color:var(--laque);text-decoration:none;padding-right:22px;border-right:1px solid rgba(110,29,49,.16);transition:color .15s ease,opacity .15s ease;}
+  .nav-login:hover{color:var(--laque-clair);opacity:.85;}
+  .mobile-login{display:flex !important;align-items:center;gap:8px;color:var(--laque) !important;font-weight:600;}
+  @media (max-width:1000px){.nav-links{display:none;} .nav-actions{display:none;} .nav-toggle{display:block;}}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:56px 0 100px;position:relative;overflow:hidden;}
+  .blob{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center;position:relative;z-index:1;}
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:56px;}}
+  .h-in{opacity:0;transform:translateY(10px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+  .h-in.is-in{opacity:1;transform:none;}
+  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:var(--laque);font-weight:600;padding:8px 16px 8px 13px;border-radius:100px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(14px);box-shadow:0 14px 34px -20px rgba(110,29,49,.3);}
+  .dot-live{width:7px;height:7px;border-radius:50%;background:var(--vert);animation:livepulse 2.4s ease-in-out infinite;}
+  .hero h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(36px,4.8vw,54px);line-height:1.07;letter-spacing:-0.015em;color:var(--laque);max-width:17ch;margin-top:20px;text-wrap:pretty;}
+  .hero h1 em{font-style:italic;color:var(--laiton);}
+  .hero p.lead{margin-top:24px;font-size:18.5px;color:var(--encre-doux);max-width:44ch;text-wrap:pretty;}
+  .hero-ctas{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;}
+  .hero-note{margin-top:22px;font-size:13.5px;color:var(--encre-doux);display:flex;align-items:center;gap:8px;}
+
+  .phone-wrap{position:relative;opacity:0;transform:translateY(16px) scale(.97);transition:opacity .8s var(--ease) .24s,transform .8s var(--ease) .24s;}
+  .phone-wrap.is-in{opacity:1;transform:none;}
+  .phone-wrap::before{content:'';position:absolute;inset:-40px;background:radial-gradient(circle at 60% 40%,rgba(199,154,86,.28),transparent 65%);z-index:-1;}
+  .phone{background:linear-gradient(155deg,var(--laque),var(--laque-fonce));border-radius:34px;padding:14px;box-shadow:0 40px 80px -20px rgba(110,29,49,.45);max-width:340px;margin:0 auto;}
+  .phone-screen{background:#EFE6D6;border-radius:24px;overflow:hidden;}
+  .phone-bar{background:var(--laque);color:var(--ivoire);padding:15px 16px;display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:500;}
+  .phone-bar .avatar{width:26px;height:26px;border-radius:50%;background:var(--laiton);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--laque);font-weight:700;}
+  .phone-bar .status{font-size:11px;opacity:.7;display:block;font-weight:400;}
+  .phone-body{padding:18px 14px 22px;display:flex;flex-direction:column;gap:10px;min-height:352px;}
+  .seq{opacity:0;transform:translateY(10px);}
+  .seq.is-in{opacity:1;transform:none;transition:opacity .45s var(--ease),transform .45s var(--ease);}
+  .seq.is-out{opacity:0;transition:opacity .2s ease;}
+  .bubble{max-width:82%;padding:11px 14px;border-radius:16px;font-size:14px;line-height:1.42;}
+  .bubble.in{background:var(--porcelaine);color:var(--encre);align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+  .bubble.out{background:var(--laque);color:var(--ivoire);align-self:flex-end;border-bottom-right-radius:4px;}
+  .bubble .time{display:block;font-size:11px;opacity:.6;margin-top:5px;}
+  .typing{align-self:flex-end;display:flex;gap:5px;align-items:center;padding:12px 14px;border-radius:16px;border-bottom-right-radius:4px;background:var(--laque);}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--nacre);animation:dots 1.2s ease-in-out infinite;}
+  .typing i:nth-child(2){animation-delay:.2s;}
+  .typing i:nth-child(3){animation-delay:.4s;}
+
+  /* ---------- Sections ---------- */
+  section{padding:88px 0;position:relative;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--laiton-profond);margin-bottom:14px;}
+  h2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(28px,3.2vw,36px);line-height:1.15;color:var(--laque);letter-spacing:-0.01em;}
+  .section-head{text-align:center;max-width:640px;margin:0 auto;}
+  .card{background:rgba(253,249,241,.7);border:1px solid rgba(110,29,49,.12);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+  .lift{transition:transform .24s var(--ease),box-shadow .24s ease,border-color .24s ease,opacity .7s var(--ease);}
+  .lift.is-in:hover{transform:translateY(-3px);box-shadow:0 18px 40px -18px rgba(110,29,49,.32);border-color:rgba(199,154,86,.7);}
+
+  .grid-3{margin-top:52px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  @media (max-width:900px){.grid-3{grid-template-columns:1fr;}}
+  .pain-card,.step{padding:32px 28px;}
+  .pain-tag{display:inline-block;font-size:12.5px;font-weight:700;color:var(--laque-fonce);background:rgba(199,154,86,.28);padding:4px 12px;border-radius:100px;margin-bottom:18px;}
+  .pain-card h3,.step h3{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:20px;color:var(--laque);margin-bottom:10px;}
+  .pain-card p,.step p{font-size:15px;color:var(--encre-doux);}
+  .pain-fix{margin-top:16px;padding-top:16px;border-top:1px solid rgba(110,29,49,.14);font-size:14.5px;color:var(--laque);font-weight:500;display:flex;gap:8px;align-items:flex-start;}
+  .pain-fix svg{flex-shrink:0;margin-top:3px;}
+  .step-num{width:38px;height:38px;border-radius:50%;background:var(--laque);color:var(--ivoire);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-size:16px;margin-bottom:18px;}
+  .step h3{font-size:21px;}
+  .step p{font-size:15.5px;}
+
+  /* fonctionnalités */
+  .feature-row{display:grid;grid-template-columns:.85fr 1.15fr;gap:44px;align-items:center;padding:44px 0;border-top:1px solid rgba(110,29,49,.1);}
+  .feature-row:first-of-type{border-top:none;}
+  @media (max-width:860px){.feature-row{grid-template-columns:1fr;gap:24px;}}
+  .feature-row.reverse .f-visual{order:-1;}
+  @media (max-width:860px){.feature-row.reverse .f-visual{order:0;}}
+  .f-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .icon-wrap{width:46px;height:46px;border-radius:13px;background:rgba(253,249,241,.85);border:1px solid rgba(110,29,49,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .icon-wrap svg{width:22px;height:22px;}
+  .f-title{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:23px;color:var(--laque);}
+  .f-text{color:var(--encre-doux);font-size:15.5px;max-width:42ch;}
+  .f-visual{border-radius:20px;padding:30px;min-height:150px;display:flex;align-items:center;justify-content:center;background:rgba(253,249,241,.6);border:1px solid rgba(110,29,49,.12);backdrop-filter:blur(14px);}
+  .chip{background:var(--porcelaine);border-radius:13px;padding:15px 20px;font-size:14px;box-shadow:0 10px 24px rgba(110,29,49,.1);display:flex;align-items:center;gap:12px;}
+  .chip strong{color:var(--laque);}
+  .chip .icon-wrap{width:36px;height:36px;border-radius:10px;background:rgba(199,154,86,.18);border:none;}
+  .chip .icon-wrap svg{width:18px;height:18px;}
+
+  .photo-band{margin-top:56px;height:380px;position:relative;overflow:hidden;border-radius:28px;background:var(--laque-fonce);}
+  .photo-band-img{position:absolute;inset:0;background-size:cover;background-position:center 30%;transform:scale(1.06);transition:transform 1.2s var(--ease);}
+  .photo-band.is-in .photo-band-img{transform:scale(1);}
+  .photo-band-overlay{position:absolute;inset:0;background:linear-gradient(100deg,rgba(74,18,32,.86) 0%,rgba(74,18,32,.6) 45%,rgba(74,18,32,.3) 75%);}
+  .photo-band-content{height:100%;display:flex;align-items:center;position:relative;z-index:1;padding:0 48px;}
+  @media (max-width:640px){.photo-band{height:300px;}.photo-band-content{padding:0 28px;}}
+  .pull{font-family:'Fraunces',Georgia,serif;font-size:clamp(22px,2.4vw,28px);line-height:1.32;color:var(--ivoire);max-width:18ch;}
+  .pull em{color:var(--laiton-clair);font-style:italic;}
+
+  /* chiffres */
+  .stats{background:linear-gradient(150deg,var(--laque),var(--laque-fonce));border-radius:28px;padding:64px 48px;color:var(--ivoire);position:relative;overflow:hidden;}
+  .stats::after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(199,154,86,.32),transparent 70%);top:-140px;right:-100px;animation:halo 6s ease-in-out infinite;}
+  @media (max-width:640px){.stats{padding:44px 28px;}}
+  .stats .eyebrow{color:var(--laiton-clair);}
+  .stats h2{color:var(--ivoire);max-width:28ch;}
+  .stats-grid{position:relative;z-index:1;margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+  @media (max-width:820px){.stats-grid{grid-template-columns:1fr;gap:28px;}}
+  .stat-num{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(32px,3.6vw,44px);color:var(--laiton-clair);}
+  .stat-label{font-size:15px;color:var(--nacre);margin-top:6px;}
+
+  /* tarifs */
+  .plans{margin:52px auto 0;max-width:820px;display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media (max-width:820px){.plans{grid-template-columns:1fr;}}
+  .plan{border-radius:22px;padding:38px 34px;display:flex;flex-direction:column;position:relative;transition:transform .26s var(--ease),box-shadow .26s ease,opacity .7s var(--ease);}
+  .plan.is-in:hover{transform:translateY(-4px) scale(1.012);}
+  .plan.premium{background:linear-gradient(165deg,var(--laque),var(--laque-fonce));color:var(--ivoire);box-shadow:0 30px 60px -24px rgba(110,29,49,.45);}
+  .plan-badge{position:absolute;top:-13px;right:34px;background:var(--laiton);color:var(--laque-fonce);font-size:12.5px;font-weight:700;padding:5px 14px;border-radius:20px;}
+  .plan-name{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:23px;color:var(--laque);}
+  .plan.premium .plan-name{color:var(--ivoire);}
+  .plan-tag{font-size:13.5px;color:var(--encre-doux);margin-top:5px;}
+  .plan.premium .plan-tag,.plan.premium .plan-setup{color:var(--nacre);}
+  .plan-price{margin-top:24px;display:flex;align-items:baseline;gap:6px;}
+  .plan-price .amount{font-family:'Fraunces',Georgia,serif;font-size:42px;font-weight:500;}
+  .plan-price .period{font-size:14px;color:var(--encre-doux);}
+  .plan.premium .plan-price .period{color:var(--nacre);}
+  .plan-setup{font-size:13.5px;color:var(--encre-doux);margin-top:5px;}
+  .plan-list{margin-top:28px;display:flex;flex-direction:column;gap:13px;flex:1;font-size:15px;}
+  .plan-list div{display:flex;gap:10px;}
+  .plan-list div::before{content:'—';color:var(--laiton-profond);flex-shrink:0;}
+  .plan.premium .plan-list div::before{color:var(--laiton-clair);}
+  .plan .btn{margin-top:30px;}
+  .plan.premium .btn-primary{background:var(--ivoire);color:var(--laque);box-shadow:none;}
+  .plan.premium .btn-primary:hover{background:var(--nacre);color:var(--laque);}
+
+  /* FAQ */
+  .faq-list{max-width:760px;margin:48px auto 0;display:flex;flex-direction:column;gap:14px;}
+  .faq-item{border-radius:16px;overflow:hidden;transition:border-color .18s ease;}
+  .faq-item:hover{border-color:rgba(199,154,86,.6);}
+  .faq-q{width:100%;text-align:left;background:none;border:none;padding:22px 26px;cursor:pointer;font-family:'Fraunces',Georgia,serif;font-size:17px;font-weight:500;color:var(--laque);display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .faq-q i{font-style:normal;font-family:'Work Sans',sans-serif;font-size:22px;line-height:1;color:var(--laiton);flex-shrink:0;transition:transform .24s var(--ease);}
+  .faq-item.open .faq-q i{transform:rotate(45deg);}
+  .faq-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s var(--ease);}
+  .faq-item.open .faq-panel{grid-template-rows:1fr;}
+  .faq-panel>div{overflow:hidden;}
+  .faq-panel p{padding:0 26px 22px;font-size:15px;color:var(--encre-doux);opacity:0;transition:opacity .2s ease .06s;}
+  .faq-item.open .faq-panel p{opacity:1;}
+
+  /* CTA */
+  .cta-final{background:linear-gradient(150deg,var(--laque),var(--laque-fonce));color:var(--ivoire);border-radius:28px;padding:68px 52px;position:relative;overflow:hidden;}
+  .cta-final::after{content:'';position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(199,154,86,.35),transparent 70%);top:-140px;right:-100px;animation:halo 6s ease-in-out infinite;}
+  @media (max-width:640px){.cta-final{padding:44px 28px;}}
+  .cta-final h2{color:var(--ivoire);max-width:18ch;position:relative;}
+  .cta-final p{color:var(--nacre);margin-top:14px;max-width:44ch;font-size:16.5px;position:relative;}
+  .demo-form{margin-top:30px;position:relative;max-width:520px;}
+  .demo-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  @media (max-width:560px){.demo-form-grid{grid-template-columns:1fr;}}
+  .demo-form input,.demo-form textarea{width:100%;border:1px solid rgba(247,239,226,.3);border-radius:11px;padding:13px 15px;font-family:'Work Sans',sans-serif;font-size:14.5px;background:rgba(255,255,255,.08);color:var(--ivoire);outline:none;transition:border-color .16s ease,box-shadow .16s ease;}
+  .demo-form input:focus,.demo-form textarea:focus{border-color:var(--laiton);box-shadow:0 0 0 3px rgba(199,154,86,.25);}
+  .demo-form input::placeholder,.demo-form textarea::placeholder{color:rgba(247,239,226,.55);}
+  .demo-form textarea{margin-bottom:16px;resize:vertical;}
+  .demo-form .btn-primary{background:var(--ivoire);color:var(--laque);box-shadow:none;}
+  .demo-form .btn-primary:hover{background:var(--nacre);color:var(--laque);}
+  .demo-form .btn-primary:disabled{opacity:.7;cursor:default;transform:none;}
+  .demo-form-msg{margin-top:14px;font-size:14px;color:var(--laiton-clair);min-height:1.2em;opacity:0;transform:translateY(6px);transition:opacity .3s ease,transform .3s var(--ease);}
+  .demo-form-msg.show{opacity:1;transform:none;}
+
+  footer{padding:52px 0 60px;border-top:1px solid rgba(110,29,49,.12);}
+  .footer-grid{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;}
+  .footer-grid .brand .word{font-size:18px;}
+  .footer-grid .brand-mark{width:28px;height:28px;}
+  footer .meta{font-size:13.5px;color:var(--encre-doux);}
+  footer .meta a{text-decoration:underline;text-decoration-color:rgba(110,29,49,.3);}  /* ===== Demo chat widget ===== */
+  .dc-launcher{
+    position:fixed;bottom:24px;right:24px;z-index:300;
+    width:60px;height:60px;border-radius:50%;background:var(--laque);
+    display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;
+    box-shadow:0 10px 30px rgba(110,29,49,.35);transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .dc-launcher:hover{transform:scale(1.06);box-shadow:0 14px 36px rgba(110,29,49,.42);}
+  .dc-launcher svg{width:26px;height:26px;}
+  .dc-launcher .dc-close-icon{display:none;}
+  .dc-launcher.open .dc-chat-icon{display:none;}
+  .dc-launcher.open .dc-close-icon{display:block;}
+  .dc-launcher::before{
+    content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--laiton);
+    opacity:0;animation:dc-pulse 2.2s ease-out 1.2s 3;
+  }
+  @keyframes dc-pulse{0%{opacity:.7;transform:scale(.9);}100%{opacity:0;transform:scale(1.35);}}
+  @media (prefers-reduced-motion:reduce){.dc-launcher::before{animation:none;}}
+
+  .dc-tooltip{
+    position:fixed;bottom:96px;right:24px;z-index:299;background:#fff;color:var(--encre);
+    padding:11px 16px;border-radius:12px 12px 4px 12px;font-size:13.5px;font-weight:600;
+    box-shadow:0 10px 28px rgba(110,29,49,.18);opacity:0;transform:translateY(6px);
+    transition:opacity .3s ease,transform .3s ease;pointer-events:none;white-space:nowrap;
+  }
+  .dc-tooltip.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+  @media (max-width:480px){.dc-tooltip{right:16px;font-size:12.5px;white-space:normal;max-width:220px;}}
+
+  .dc-panel{
+    position:fixed;bottom:96px;right:24px;z-index:301;width:376px;max-width:calc(100vw - 32px);
+    height:560px;max-height:calc(100vh - 140px);background:var(--ivoire);border-radius:20px;
+    box-shadow:0 30px 70px -10px rgba(43,26,31,.35);display:flex;flex-direction:column;overflow:hidden;
+    opacity:0;transform:translateY(16px) scale(.97);pointer-events:none;
+    transition:opacity .22s var(--ease),transform .22s var(--ease);
+  }
+  .dc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  @media (max-width:480px){
+    .dc-panel{
+      right:12px;left:12px;bottom:12px;top:12px;width:auto;height:auto;max-height:none;
+      border-radius:18px;
+    }
+  }
+
+  .dc-header{
+    background:linear-gradient(150deg,var(--laque),var(--laque-fonce));color:var(--ivoire);
+    padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;
+  }
+  .dc-avatar{
+    width:38px;height:38px;border-radius:50%;background:var(--laiton);color:var(--laque-fonce);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;
+  }
+  .dc-header-text{flex:1;min-width:0;}
+  .dc-header-text .name{font-family:'Fraunces',Georgia,serif;font-size:15.5px;font-weight:500;}
+  .dc-header-text .status{font-size:11.5px;color:var(--nacre);display:flex;align-items:center;gap:5px;margin-top:1px;}
+  .dc-header-text .status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0;}
+  .dc-header-close{background:rgba(255,255,255,.12);border:none;color:var(--ivoire);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .dc-header-close:hover{background:rgba(255,255,255,.22);}
+
+  .dc-badge{background:rgba(255,255,255,.14);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:100px;margin-top:2px;display:inline-block;}
+
+  .dc-messages{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:10px;background:#EFE6D6;}
+  .dc-bubble{max-width:82%;padding:10px 13px;border-radius:15px;font-size:14px;line-height:1.42;animation:dc-in .25s var(--ease) both;}
+  @keyframes dc-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .dc-bubble.ai{background:#fff;color:var(--encre);align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .dc-bubble.user{background:var(--laque);color:var(--ivoire);align-self:flex-end;border-bottom-right-radius:4px;}
+  .dc-bubble.system{align-self:center;background:rgba(110,29,49,.08);color:var(--laque);font-size:12.5px;text-align:center;border-radius:10px;max-width:92%;}
+
+  .dc-card{
+    align-self:stretch;background:#fff;border:1px solid rgba(199,154,86,.35);border-radius:14px;
+    overflow:hidden;box-shadow:0 8px 22px rgba(110,29,49,.1);animation:dc-in .3s var(--ease) both;
+  }
+  .dc-card-head{background:linear-gradient(150deg,var(--laque),var(--laque-fonce));color:var(--ivoire);padding:12px 14px;display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;}
+  .dc-card-head svg{flex-shrink:0;}
+  .dc-card-body{padding:12px 14px;}
+  .dc-card-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--encre-doux);}
+  .dc-card-row strong{color:var(--encre);font-weight:600;}
+  .dc-card-divider{border:none;border-top:1px dashed rgba(110,29,49,.15);margin:8px 0;}
+  .dc-card-auto{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--laiton-profond);margin-bottom:6px;}
+  .dc-card-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--encre-doux);padding:2px 0;}
+  .dc-card-item svg{flex-shrink:0;}
+
+  .dc-recap{
+    align-self:stretch;background:linear-gradient(150deg,var(--laque),var(--laque-fonce));color:var(--ivoire);
+    border-radius:14px;padding:14px 16px;animation:dc-in .3s var(--ease) both;
+  }
+  .dc-recap-title{font-family:'Fraunces',Georgia,serif;font-size:14.5px;margin-bottom:8px;}
+  .dc-recap-item{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--nacre);padding:3px 0;}
+  .dc-recap-item svg{flex-shrink:0;margin-top:1px;}
+  .dc-recap-cta{margin-top:10px;display:inline-block;background:var(--ivoire);color:var(--laque);font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:100px;text-decoration:none;}
+
+  .dc-typing{align-self:flex-start;background:#fff;border-radius:15px;border-bottom-left-radius:4px;padding:12px 15px;display:flex;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .dc-typing span{width:6px;height:6px;border-radius:50%;background:#c4a8ae;animation:dc-bounce 1.2s infinite;}
+  .dc-typing span:nth-child(2){animation-delay:.15s;}
+  .dc-typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes dc-bounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-4px);opacity:1;}}
+
+  .dc-inputbar{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#fff;border-top:1px solid rgba(110,29,49,.1);flex-shrink:0;}
+  .dc-inputbar input{
+    flex:1;border:1px solid #e3d7c6;border-radius:100px;padding:10px 16px;font-size:14px;
+    font-family:'Work Sans',sans-serif;outline:none;background:var(--ivoire);
+  }
+  .dc-inputbar input:focus{border-color:var(--laiton);}
+  .dc-send{
+    width:38px;height:38px;border-radius:50%;background:var(--laque);border:none;color:var(--ivoire);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s ease,opacity .15s ease;
+  }
+  .dc-send:hover{background:var(--laque-clair);}
+  .dc-send:disabled{opacity:.4;cursor:default;}
+  .dc-send svg{width:16px;height:16px;}
+
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div class="wrap nav">
+    <a href="#top" class="brand logo-intro" id="logo">
+      <svg class="brand-mark" viewBox="0 0 64 66" role="img" aria-label="GlowIA">
+        <rect class="gi-body" x="4" y="6" width="56" height="40" rx="14" fill="#6E1D31"></rect>
+        <path class="gi-tail" d="M14 44 L14 62 L32 45 Z" fill="#6E1D31"></path>
+        <path class="gi-smile" d="M19 20 A13 13 0 0 0 45 20" fill="none" stroke="#C79A56" stroke-width="7" stroke-linecap="round"></path>
+      </svg>
+      <span class="word"><span>Glow</span><span class="ia">IA</span></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="/portail.html" class="nav-login">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20c1.3-3.7 4.2-6 7.5-6s6.2 2.3 7.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Se connecter
+      </a>
+      <a href="#" onclick="openDemoChat();return false;" class="btn btn-primary">Essayer la démo</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#faq">FAQ</a>
+      <a href="/portail.html" class="mobile-login">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20c1.3-3.7 4.2-6 7.5-6s6.2 2.3 7.5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Espace salon — Se connecter
+      </a>
+      <a href="#" onclick="openDemoChat();return false;">Essayer la démo</a>
+    </div>
+  </div>
+  <div id="progress"></div>
+</header>
+
+<section class="hero" id="top">
+  <div class="blob" style="width:480px;height:480px;background:var(--laiton);opacity:.3;top:-170px;right:-130px;animation:drift-a 18s ease-in-out infinite;"></div>
+  <div class="blob" style="width:360px;height:360px;background:var(--nacre);opacity:.45;bottom:-150px;left:-110px;animation:drift-b 24s ease-in-out infinite;"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker h-in" data-hero="1"><span class="dot-live"></span> Spécial instituts de beauté &amp; salons de coiffure</div>
+      <h1 class="h-in" data-hero="2">Votre planning se remplit. <em>Même pendant que vous dormez.</em></h1>
+      <p class="lead h-in" data-hero="3">GlowIA répond à vos clientes sur WhatsApp et Instagram, qualifie leur demande et prend le rendez-vous toute seule. Vous gardez la main dès que vous le souhaitez.</p>
+      <div class="hero-ctas h-in" data-hero="4">
+        <a href="#" onclick="openDemoChat();return false;" class="btn btn-primary">Essayer la démo</a>
+        <a href="#comment" class="btn btn-ghost">Voir comment ça marche</a>
+      </div>
+      <p class="h-in" data-hero="4b" style="margin-top:14px;font-size:13.5px;color:var(--encre-doux);">
+        Vous préférez échanger avec nous ? <a href="#contact" style="color:var(--laque);font-weight:600;text-decoration:underline;">Parler à un humain</a>
+      </p>
+      <div class="hero-note h-in" data-hero="5">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#6E1D31" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#6E1D31" stroke-width="1.6"/></svg>
+        Installation en 5 minutes, aucune compétence technique requise
+      </div>
+    </div>
+    <div class="phone-wrap" id="phoneWrap">
+      <div class="phone" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="phone-bar"><span class="avatar">OG</span><span>Onglerie Gazou<span class="status">en ligne</span></span></div>
+          <div class="phone-body">
+            <div class="seq bubble in" data-at="500">Bonjour, vous avez de la place vendredi pour une pose complète ?<span class="time">21:47</span></div>
+            <div class="seq typing" data-at="1100" data-off="2000"><i></i><i></i><i></i></div>
+            <div class="seq bubble out" data-at="2000">Bonjour ! Oui, vendredi j'ai 16h ou 17h30 de libre pour une pose complète gel (45&nbsp;€, 1h30). Lequel vous conviendrait ?<span class="time">21:47</span></div>
+            <div class="seq bubble in" data-at="2950">17h30 c'est parfait<span class="time">21:48</span></div>
+            <div class="seq typing" data-at="3450" data-off="4200"><i></i><i></i><i></i></div>
+            <div class="seq bubble out" data-at="4200">C'est noté ✨ Rendez-vous vendredi 17h30. Vous recevrez un rappel la veille.<span class="time">21:48</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pains">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow rv rv-up">Ce qui vous fait perdre du temps et de l'argent</div>
+      <h2 class="rv rv-up" data-delay="60">Trois problèmes que vous connaissez déjà</h2>
+    </div>
+    <div class="grid-3">
+      <div class="pain-card card lift rv rv-up" data-delay="120">
+        <span class="pain-tag">Le message de 22h</span>
+        <h3>Une cliente qui écrit tard, ne rappelle pas</h3>
+        <p>Sans réponse rapide, elle regarde ailleurs — et vous ne le saurez même pas.</p>
+        <div class="pain-fix"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#6E1D31" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#6E1D31" stroke-width="1.6"/></svg> GlowIA répond en quelques secondes, jour et nuit</div>
+      </div>
+      <div class="pain-card card lift rv rv-up" data-delay="200">
+        <span class="pain-tag">Les soirées perdues</span>
+        <h3>Répondre aux mêmes questions, encore et encore</h3>
+        <p>Tarifs, disponibilités, adresse du salon — les mêmes échanges, tous les soirs, sur votre temps libre.</p>
+        <div class="pain-fix"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#6E1D31" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#6E1D31" stroke-width="1.6"/></svg> GlowIA s'en charge, vous récupérez vos soirées</div>
+      </div>
+      <div class="pain-card card lift rv rv-up" data-delay="280">
+        <span class="pain-tag">Les trous de planning</span>
+        <h3>Une annulation tardive, un fauteuil vide</h3>
+        <p>Personne pour relancer à temps ni remplir le créneau qui vient de se libérer.</p>
+        <div class="pain-fix"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#6E1D31" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#6E1D31" stroke-width="1.6"/></svg> Rappels automatiques avant chaque rendez-vous</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="comment">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow rv rv-up">Comment ça marche</div>
+      <h2 class="rv rv-up" data-delay="60">Trois étapes, aucune complexité</h2>
+    </div>
+    <div class="grid-3">
+      <div class="step card lift rv rv-up" data-delay="120">
+        <div class="step-num">1</div>
+        <h3>Connectez vos comptes</h3>
+        <p>WhatsApp Business et Instagram, en quelques clics. Aucune information technique à nous transmettre.</p>
+      </div>
+      <div class="step card lift rv rv-up" data-delay="200">
+        <div class="step-num">2</div>
+        <h3>L'IA apprend votre salon</h3>
+        <p>Vos horaires, vos prestations, vos tarifs. GlowIA parle de votre salon comme vous en parleriez vous-même.</p>
+      </div>
+      <div class="step card lift rv rv-up" data-delay="280">
+        <div class="step-num">3</div>
+        <h3>Votre planning se remplit</h3>
+        <p>Vos clientes sont accueillies jour et nuit. Vous gardez la main dès que vous le souhaitez.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fonctionnalites">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:48px;">
+      <div class="eyebrow rv rv-up">Le produit en action</div>
+      <h2 class="rv rv-up" data-delay="60">Ce que GlowIA fait pour vous, au quotidien</h2>
+    </div>
+
+    <div class="feature-row">
+      <div class="rv rv-left">
+        <div class="f-head"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M8 12h8M8 16h5M21 12c0 4.97-4.03 9-9 9-1.4 0-2.73-.32-3.91-.89L3 21l1.02-4.56A8.96 8.96 0 013 12c0-4.97 4.03-9 9-9s9 4.03 9 9z" stroke="#6E1D31" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="f-title">WhatsApp et Instagram, en même temps</div></div>
+        <p class="f-text">Une seule conversation par cliente, sur le canal qu'elle a choisi. Vous n'avez rien à surveiller de votre côté.</p>
+      </div>
+      <div class="f-visual rv rv-right">
+        <div class="chip rv rv-scale" data-delay="120"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M8 12h8M8 16h5M21 12c0 4.97-4.03 9-9 9-1.4 0-2.73-.32-3.91-.89L3 21l1.02-4.56A8.96 8.96 0 013 12c0-4.97 4.03-9 9-9s9 4.03 9 9z" stroke="#6E1D31" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><strong>+12 messages</strong> traités cette nuit sans intervention</div></div>
+      </div>
+    </div>
+
+    <div class="feature-row reverse">
+      <div class="rv rv-right">
+        <div class="f-head"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#6E1D31" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#6E1D31" stroke-width="1.7" stroke-linecap="round"/></svg></div><div class="f-title">Prise de rendez-vous en autonomie</div></div>
+        <p class="f-text">GlowIA connaît vos horaires et votre catalogue de prestations. Elle propose des créneaux réels, réserve, modifie ou annule — directement dans votre agenda.</p>
+      </div>
+      <div class="f-visual rv rv-left">
+        <div class="chip rv rv-scale" data-delay="120"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#6E1D31" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#6E1D31" stroke-width="1.7" stroke-linecap="round"/></svg></div><div>Pose complète gel — <strong>vendredi 17h30</strong></div></div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="rv rv-left">
+        <div class="f-head"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 00-3 0v.68C7.65 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" stroke="#6E1D31" stroke-width="1.7" stroke-linejoin="round"/></svg></div><div class="f-title">Rappels et demandes d'avis automatiques</div></div>
+        <p class="f-text">Un rappel envoyé la veille de chaque rendez-vous, et une demande d'avis Google après chaque visite — sans que vous ayez à y penser.</p>
+      </div>
+      <div class="f-visual rv rv-right">
+        <div class="chip rv rv-scale" data-delay="120"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.9 6.3 6.9.9-5 4.8 1.2 6.9L12 17.6l-6 3.3 1.2-6.9-5-4.8 6.9-.9L12 2z" stroke="#C79A56" stroke-width="1.5" stroke-linejoin="round"/></svg></div><div>Demande d'avis envoyée après la visite</div></div>
+      </div>
+    </div>
+
+    <div class="feature-row reverse">
+      <div class="rv rv-right">
+        <div class="f-head"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="#6E1D31" stroke-width="1.7" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#6E1D31" stroke-width="1.7" stroke-linecap="round"/></svg></div><div class="f-title">Vous gardez toujours la main</div></div>
+        <p class="f-text">Un message Telegram vous prévient à chaque nouvelle conversation. Reprenez la main en un tap, à tout moment — GlowIA s'efface immédiatement.</p>
+      </div>
+      <div class="f-visual rv rv-left">
+        <div class="chip rv rv-scale" data-delay="120"><div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none"><path d="M7 16l-4 4V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2H7z" stroke="#6E1D31" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9" cy="10" r="1" fill="#6E1D31"/><circle cx="13" cy="10" r="1" fill="#6E1D31"/><circle cx="17" cy="10" r="1" fill="#6E1D31"/></svg></div><div>Notification envoyée à la gérante</div></div>
+      </div>
+    </div>
+
+    <div class="photo-band rv rv-up" id="photoBand">
+      <div class="photo-band-img" style="background-image:url('https://images.pexels.com/photos/18706407/pexels-photo-18706407.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1600');"></div>
+      <div class="photo-band-overlay"></div>
+      <div class="photo-band-content"><p class="pull">Le savoir-faire reste le vôtre. <em>La disponibilité, c'est GlowIA.</em></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="preuve">
+  <div class="wrap">
+    <div class="stats rv rv-up">
+      <div class="eyebrow">Ce que GlowIA vous garantit</div>
+      <h2>Une disponibilité qu'aucune équipe ne peut tenir seule</h2>
+      <div class="stats-grid">
+        <div><div class="stat-num">&lt;&nbsp;<span data-count="5">0</span> sec</div><div class="stat-label">Temps de réponse moyen, jour et nuit</div></div>
+        <div><div class="stat-num"><span data-count="24">0</span>/7</div><div class="stat-label">Disponibilité, dimanches et soirées compris</div></div>
+        <div><div class="stat-num">0</div><div class="stat-label">Double réservation — l'agenda ne se trompe jamais</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tarifs">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow rv rv-up">Tarifs</div>
+      <h2 class="rv rv-up" data-delay="60">Deux formules, un seul objectif : ne plus rater une cliente</h2>
+    </div>
+    <div class="plans">
+      <div class="plan card rv rv-up" data-delay="120">
+        <div class="plan-name">Classic</div>
+        <div class="plan-tag">L'essentiel pour ne plus rien rater</div>
+        <div class="plan-price"><span class="amount">39,99&nbsp;€</span><span class="period">/ mois</span></div>
+        <div class="plan-setup">+ 99,99&nbsp;€ de mise en service (une fois)</div>
+        <div class="plan-list">
+          <div>Réponses automatiques WhatsApp et Instagram, 24h/24</div>
+          <div>Prise, modification et annulation de rendez-vous</div>
+          <div>Analyse des photos envoyées par les clientes</div>
+          <div>Transcription des messages vocaux</div>
+          <div>Rappel automatique avant chaque rendez-vous</div>
+          <div>Demande d'avis Google après chaque visite</div>
+          <div>Bascule humain / IA à tout moment</div>
+        </div>
+        <a href="https://buy.stripe.com/fZudR9b835jOfUjeC17Vm00" class="btn btn-primary" target="_blank" rel="noopener">Choisir Classic</a>
+      </div>
+      <div class="plan premium rv rv-up" data-delay="220">
+        <div class="plan-badge">Recommandé</div>
+        <div class="plan-name">Premium</div>
+        <div class="plan-tag">Pour transformer les messages en chiffre d'affaires</div>
+        <div class="plan-price"><span class="amount">69,99&nbsp;€</span><span class="period">/ mois</span></div>
+        <div class="plan-setup">+ 99,99&nbsp;€ de mise en service (une fois)</div>
+        <div class="plan-list">
+          <div>Tout ce qui est inclus dans Classic</div>
+          <div>Relance automatique des clientes qui n'ont jamais réservé</div>
+          <div>Relance automatique des clientes parties depuis un moment</div>
+          <div>Tableau de bord : rendez-vous pris, chiffre d'affaires généré, clientes récupérées</div>
+          <div>Support prioritaire</div>
+        </div>
+        <a href="https://buy.stripe.com/7sYeVddgbcMggYnalL7Vm01" class="btn btn-primary" target="_blank" rel="noopener">Choisir Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow rv rv-up">Questions fréquentes</div>
+      <h2 class="rv rv-up" data-delay="60">Ce que les gérantes nous demandent avant de se lancer</h2>
+    </div>
+    <div class="faq-list rv rv-up" data-delay="120">
+      <div class="faq-item card">
+        <button class="faq-q" type="button" aria-expanded="false">Est-ce que je perds le contact avec mes clientes ?<i>+</i></button>
+        <div class="faq-panel"><div><p>Non. Vous êtes prévenue par notification à chaque nouvelle conversation, et vous pouvez reprendre la main en un geste, à tout moment. GlowIA s'efface immédiatement dès que vous répondez vous-même.</p></div></div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" type="button" aria-expanded="false">Est-ce que ça remplace mon agenda actuel ?<i>+</i></button>
+        <div class="faq-panel"><div><p>Non, GlowIA se connecte à votre Google Calendar existant et l'utilise directement — vous continuez à le consulter comme aujourd'hui, il se remplit simplement tout seul.</p></div></div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" type="button" aria-expanded="false">Combien de temps pour être opérationnelle ?<i>+</i></button>
+        <div class="faq-panel"><div><p>La connexion de vos comptes WhatsApp et Instagram prend environ 5 minutes. Une fois vos horaires et vos prestations renseignés, GlowIA est active.</p></div></div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" type="button" aria-expanded="false">Mes données et celles de mes clientes sont-elles en sécurité ?<i>+</i></button>
+        <div class="faq-panel"><div><p>Vos données sont hébergées en Europe. Elles ne sont utilisées que pour faire fonctionner votre assistant — jamais revendues ni partagées à des fins publicitaires.</p></div></div>
+      </div>
+      <div class="faq-item card">
+        <button class="faq-q" type="button" aria-expanded="false">Puis-je changer de formule plus tard ?<i>+</i></button>
+        <div class="faq-panel"><div><p>Oui, vous pouvez passer de Classic à Premium (ou l'inverse) à tout moment — contactez-nous simplement pour en discuter.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="cta-final rv rv-up">
+      <h2>Prête à ne plus rater un message ?</h2>
+      <p>Laissez-nous vos coordonnées, on vous montre GlowIA en conditions réelles sur votre salon — sans engagement.</p>
+      <form id="demoForm" class="demo-form">
+        <div class="demo-form-grid">
+          <input type="text" name="nom" placeholder="Votre nom" required>
+          <input type="text" name="nom_salon" placeholder="Nom du salon" required>
+          <input type="email" name="email" placeholder="Votre email" required>
+          <input type="tel" name="telephone" placeholder="Votre téléphone">
+        </div>
+        <textarea name="message" placeholder="Un mot sur votre salon (facultatif)" rows="3"></textarea>
+        <button type="submit" class="btn btn-primary" id="demoFormBtn">Demander ma démo</button>
+        <p id="demoFormMsg" class="demo-form-msg"></p>
+      </form>
+      <p style="margin-top:22px;font-size:13.5px;color:var(--nacre);position:relative;">Vous préférez écrire directement ? <a href="mailto:contact@glow-ia.fr?subject=Demande%20de%20d%C3%A9mo%20GlowIA" style="color:var(--ivoire);text-decoration:underline;">contact@glow-ia.fr</a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-grid">
+    <a href="#top" class="brand">
+      <svg class="brand-mark" viewBox="0 0 64 66" role="img" aria-hidden="true">
+        <rect x="4" y="6" width="56" height="40" rx="14" fill="#6E1D31"></rect>
+        <path d="M14 44 L14 62 L32 45 Z" fill="#6E1D31"></path>
+        <path d="M19 20 A13 13 0 0 0 45 20" fill="none" stroke="#C79A56" stroke-width="7" stroke-linecap="round"></path>
+      </svg>
+      <span class="word"><span>Glow</span><span class="ia">IA</span></span>
+    </a>
+    <div class="meta">© 2026 UGuest — <a href="mailto:contact@glow-ia.fr">contact@glow-ia.fr</a> — <a href="/portail.html">Espace salon</a> — <a href="/mentions-legales.html">Mentions légales</a> — <a href="/cgv.html">CGV</a> — <a href="/cgu.html">CGU</a> — <a href="/politique-confidentialite.html">Confidentialité</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* logo : animation d'intro une seule fois par session */
+  if (sessionStorage.getItem('glowia_logo_played')) {
+    var logoEl = document.getElementById('logo');
+    if (logoEl) { logoEl.classList.remove('logo-intro'); }
+  } else {
+    sessionStorage.setItem('glowia_logo_played', '1');
+  }
+
+  /* menu mobile */
+  var toggle = document.getElementById('navToggle');
+  var menu = document.getElementById('mobileMenu');
+  toggle.addEventListener('click', function(){
+    var open = menu.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.mobile-menu a'), function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); });
+  });
+
+  /* hero : cascade au chargement */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-hero]'), function(el, i){
+    var d = reduced ? 0 : 80 + i * 70;
+    el.style.transitionDelay = d + 'ms';
+    setTimeout(function(){ el.classList.add('is-in'); }, 20);
+  });
+  setTimeout(function(){ document.getElementById('phoneWrap').classList.add('is-in'); }, 20);
+
+  /* conversation du hero : démarre quand le téléphone entre réellement dans l'écran (fonctionne pareil sur mobile et desktop) */
+  var phoneWrapEl = document.getElementById('phoneWrap');
+  var seqEls = Array.prototype.slice.call(document.querySelectorAll('.seq'));
+  var phoneStarted = false;
+  function startPhoneSequence(){
+    if (phoneStarted) return;
+    phoneStarted = true;
+    seqEls.forEach(function(el){
+      var at = reduced ? 0 : parseInt(el.getAttribute('data-at'), 10) || 0;
+      var off = el.getAttribute('data-off');
+      if (off && reduced) { el.style.display = 'none'; return; }
+      setTimeout(function(){ el.classList.add('is-in'); }, at);
+      if (off) {
+        setTimeout(function(){
+          el.classList.add('is-out');
+          setTimeout(function(){ el.style.display = 'none'; }, 220);
+        }, parseInt(off, 10));
+      }
+    });
+  }
+  if (reduced || !('IntersectionObserver' in window) || !phoneWrapEl) {
+    startPhoneSequence();
+  } else {
+    var phoneIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) { startPhoneSequence(); phoneIo.disconnect(); }
+      });
+    }, { threshold: 0.35 });
+    phoneIo.observe(phoneWrapEl);
+  }
+
+  /* révélations au scroll */
+  var rv = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+  if (reduced || !('IntersectionObserver' in window)) {
+    rv.forEach(function(el){ el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        var d = parseInt(e.target.getAttribute('data-delay'), 10) || 0;
+        e.target.style.transitionDelay = d + 'ms';
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
+    rv.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){
+      rv.forEach(function(el){
+        if (!el.classList.contains('is-in') && el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-in');
+      });
+    }, 1400);
+  }
+
+  /* chiffres : count-up */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-count]'), function(el){
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    if (reduced || !('IntersectionObserver' in window)) { el.textContent = String(target); return; }
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        cio.unobserve(e.target);
+        var dur = 1400, t0 = performance.now();
+        var step = function(now){
+          var p = Math.min(1, (now - t0) / dur);
+          el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 });
+    cio.observe(el);
+  });
+
+  /* en-tête + filet de progression */
+  var header = document.getElementById('header');
+  var progress = document.getElementById('progress');
+  var onScroll = function(){
+    var y = window.scrollY || window.pageYOffset || 0;
+    header.classList.toggle('is-stuck', y > 24);
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, y / h) : 0) + ')';
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* FAQ : une seule ouverte */
+  var items = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+  items.forEach(function(item){
+    var btn = item.querySelector('.faq-q');
+    btn.addEventListener('click', function(){
+      var willOpen = !item.classList.contains('open');
+      items.forEach(function(other){
+        other.classList.remove('open');
+        other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      });
+      if (willOpen) { item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+    });
+  });
+
+  /* formulaire de démo */
+  var demoForm = document.getElementById('demoForm');
+  var demoBtn = document.getElementById('demoFormBtn');
+  var demoMsg = document.getElementById('demoFormMsg');
+  var say = function(t){ demoMsg.textContent = t; demoMsg.classList.add('show'); };
+  demoForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    demoBtn.disabled = true;
+    demoBtn.textContent = 'Envoi en cours…';
+    demoMsg.classList.remove('show');
+    var data = Object.fromEntries(new FormData(demoForm).entries());
+    fetch('https://iagentleman.app.n8n.cloud/webhook/demande-demo-glowia', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    }).then(function(res){
+      demoBtn.disabled = false;
+      demoBtn.textContent = 'Demander ma démo';
+      if (res.ok) { demoForm.reset(); say('Merci ! On vous recontacte très vite.'); }
+      else say("Un souci est survenu — écrivez-nous à contact@glow-ia.fr.");
+    }).catch(function(){
+      demoBtn.disabled = false;
+      demoBtn.textContent = 'Demander ma démo';
+      say("Un souci est survenu — écrivez-nous à contact@glow-ia.fr.");
+    });
+  });
+})();
+  /* ===== Demo chat widget ===== */
+  document.addEventListener('DOMContentLoaded', function(){
+    var API = 'https://iagentleman.app.n8n.cloud/webhook/demo-chat-glowia';
+    var launcher = document.getElementById('dcLauncher');
+    var panel = document.getElementById('dcPanel');
+    var tooltip = document.getElementById('dcTooltip');
+    var closeBtn = document.getElementById('dcClose');
+    var messagesEl = document.getElementById('dcMessages');
+    var input = document.getElementById('dcInput');
+    var sendBtn = document.getElementById('dcSend');
+    var isOpen = false;
+    var isSending = false;
+    var history = [];
+    var limitReached = false;
+    var hasShownRecap = false;
+
+    function getSessionId(){
+      var id = sessionStorage.getItem('glowia_demo_session');
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('sess-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+        sessionStorage.setItem('glowia_demo_session', id);
+      }
+      return id;
+    }
+
+    function addBubble(text, role){
+      var b = document.createElement('div');
+      b.className = 'dc-bubble ' + role;
+      b.textContent = text;
+      messagesEl.appendChild(b);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return b;
+    }
+
+    function showTyping(){
+      var t = document.createElement('div');
+      t.className = 'dc-typing';
+      t.id = 'dcTypingIndicator';
+      t.innerHTML = '<span></span><span></span><span></span>';
+      messagesEl.appendChild(t);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    function hideTyping(){
+      var t = document.getElementById('dcTypingIndicator');
+      if (t) t.remove();
+    }
+
+    function openPanel(){
+      isOpen = true;
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+      launcher.classList.add('open');
+      launcher.setAttribute('aria-expanded', 'true');
+      tooltip.classList.remove('show');
+      if (messagesEl.children.length === 0) {
+        setTimeout(function(){
+          addBubble("Bonjour \uD83D\uDC4B Je suis l'assistante IA du salon (ceci est une démo). Essayez de me demander un rendez-vous, comme le ferait une vraie cliente !", 'ai');
+        }, 300);
+      }
+      setTimeout(function(){ input.focus(); }, 250);
+    }
+    function closePanel(){
+      isOpen = false;
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+      launcher.classList.remove('open');
+      launcher.setAttribute('aria-expanded', 'false');
+    }
+
+    launcher.addEventListener('click', function(){
+      if (isOpen) { closePanel(); } else { openPanel(); }
+    });
+    closeBtn.addEventListener('click', closePanel);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && isOpen) { closePanel(); }
+    });
+
+    setTimeout(function(){
+      if (!isOpen) { tooltip.classList.add('show'); }
+      setTimeout(function(){ tooltip.classList.remove('show'); }, 5000);
+    }, 3500);
+    tooltip.addEventListener('click', function(){ openPanel(); });
+
+    function addBookingCard(booking){
+      var card = document.createElement('div');
+      card.className = 'dc-card';
+      card.innerHTML =
+        '<div class="dc-card-head">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#F7EFE2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#F7EFE2" stroke-width="1.5"/></svg>' +
+          'Rendez-vous confirmé' +
+        '</div>' +
+        '<div class="dc-card-body">' +
+          '<div class="dc-card-row"><span>Prestation</span><strong>' + booking.prestation + '</strong></div>' +
+          '<div class="dc-card-row"><span>Jour</span><strong>' + booking.jour + '</strong></div>' +
+          '<div class="dc-card-row"><span>Heure</span><strong>' + booking.heure + '</strong></div>' +
+          '<hr class="dc-card-divider">' +
+          '<div class="dc-card-auto">Déclenché automatiquement</div>' +
+          '<div class="dc-card-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 00-3 0v.68C7.65 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="#C79A56"/></svg> Rappel programmé la veille du RDV</div>' +
+          '<div class="dc-card-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.9 6.3 6.9.9-5 4.8 1.2 6.9L12 17.6l-6 3.3 1.2-6.9-5-4.8 6.9-.9L12 2z" fill="#C79A56"/></svg> Demande davis Google après la visite</div>' +
+        '</div>';
+      messagesEl.appendChild(card);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addRecapCard(){
+      var card = document.createElement('div');
+      card.className = 'dc-recap';
+      card.innerHTML =
+        '<div class="dc-recap-title">Et il y a plus encore ✨</div>' +
+        '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Les clientes qui ne reviennent pas sont relancées automatiquement (formule Premium)</div>' +
+        '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Un tableau de bord suit vos RDV et vos revenus en temps réel</div>' +
+        '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Vous gardez la main à tout moment, sans jamais perdre le contact</div>' +
+        '<a href="#tarifs" class="dc-recap-cta" id="dcRecapCta">Voir les formules</a>';
+      messagesEl.appendChild(card);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      var cta = document.getElementById('dcRecapCta');
+      if (cta) { cta.addEventListener('click', function(){ closePanel(); }); }
+    }
+
+    function sendMessage(){
+      var text = input.value.trim();
+      if (!text || isSending || limitReached) return;
+      addBubble(text, 'user');
+      input.value = '';
+      isSending = true;
+      sendBtn.disabled = true;
+      showTyping();
+
+      fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: getSessionId(), message: text, history: history })
+      }).then(function(r){ return r.json(); }).then(function(data){
+        hideTyping();
+        isSending = false;
+        sendBtn.disabled = false;
+        var reply = data.reply || "Désolée, un souci est survenu. Réessayez.";
+        addBubble(reply, data.limit_reached ? 'system' : 'ai');
+        history.push({ role: 'user', content: text });
+        history.push({ role: 'assistant', content: reply });
+        if (data.booking) {
+          setTimeout(function(){
+            addBookingCard(data.booking);
+            if (!hasShownRecap) {
+              hasShownRecap = true;
+              setTimeout(function(){ addRecapCard(); }, 900);
+            }
+          }, 350);
+        }
+        if (data.limit_reached) {
+          limitReached = true;
+          input.disabled = true;
+          input.placeholder = 'Démo terminée';
+        }
+      }).catch(function(){
+        hideTyping();
+        isSending = false;
+        sendBtn.disabled = false;
+        addBubble("Un souci réseau est survenu, réessayez.", 'system');
+      });
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { sendMessage(); }
+    });
+
+    window.openDemoChat = openPanel;
+  });
+</script>
+
+<!-- Demo chat widget -->
+<div class="dc-tooltip" id="dcTooltip">💬 Testez GlowIA en direct !</div>
+<button class="dc-launcher" id="dcLauncher" aria-label="Ouvrir le chat de démonstration GlowIA" aria-expanded="false">
+  <svg class="dc-chat-icon" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="#F7EFE2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <svg class="dc-close-icon" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F7EFE2" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+
+<div class="dc-panel" id="dcPanel" role="dialog" aria-label="Chat de démonstration GlowIA" aria-hidden="true">
+  <div class="dc-header">
+    <div class="dc-avatar">OL</div>
+    <div class="dc-header-text">
+      <div class="name">Onglerie Lumière</div>
+      <div class="status">En ligne · Démo GlowIA</div>
+    </div>
+    <button class="dc-header-close" id="dcClose" aria-label="Fermer le chat">×</button>
+  </div>
+  <div class="dc-messages" id="dcMessages" aria-live="polite"></div>
+  <div class="dc-inputbar">
+    <input type="text" id="dcInput" placeholder="Écrivez votre message…" maxlength="500" autocomplete="off">
+    <button class="dc-send" id="dcSend" aria-label="Envoyer">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

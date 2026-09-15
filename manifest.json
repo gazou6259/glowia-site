@@ -1,0 +1,16 @@
+{
+  "name": "GlowIA — Espace salon",
+  "short_name": "GlowIA",
+  "description": "Votre tableau de bord GlowIA : statistiques, horaires, prestations.",
+  "start_url": "/portail.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F7EFE2",
+  "theme_color": "#6E1D31",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
