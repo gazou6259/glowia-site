@@ -165,6 +165,7 @@
   .kpi-sec .kpi-icon{width:26px;height:26px;border-radius:8px;background:var(--porcelaine);display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
   .kpi-sec .val{font-family:'Fraunces',Georgia,serif;font-size:22px;color:var(--laque);}
   .kpi-sec .lbl{font-size:12px;color:var(--encre-doux);margin-top:3px;line-height:1.3;}
+  .kpi-sec .sub{font-size:11px;color:var(--encre-doux);margin-top:4px;}
 
   /* ---------- carte Premium (relances) ---------- */
   .kpi-premium{margin-top:16px;background:linear-gradient(150deg,var(--laiton-profond),#8a6425);border-radius:16px;padding:18px 22px;display:flex;align-items:center;gap:16px;color:var(--ivoire);}
@@ -358,10 +359,10 @@
         <div class="sub" id="statRdvSub"></div>
       </div>
       <div class="kpi-hero anim" style="animation-delay:.2s;">
-        <div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 6.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3 5 3.5c2.8.5 5 1.6 5 3.5s-2.2 3.5-5 3.5-5-1.6-5-3.5" stroke="#F7EFE2" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-        <div class="val serif" id="statRevenue">—</div>
-        <div class="lbl">Chiffre d'affaires généré</div>
-        <div class="sub" id="statRevenueSub"></div>
+        <div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#F7EFE2" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="#F7EFE2" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <div class="val serif" id="statTemps">—</div>
+        <div class="lbl">Temps gagné estimé</div>
+        <div class="sub" id="statTempsSub"></div>
       </div>
     </div>
 
@@ -372,9 +373,10 @@
         <div class="lbl">Messages traités par l'IA</div>
       </div>
       <div class="kpi-sec anim" style="animation-delay:.30s;">
-        <div class="kpi-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#6E1D31" stroke-width="1.5"/><path d="M12 7v5l3.5 2" stroke="#6E1D31" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="val serif" id="statTemps">—</div>
-        <div class="lbl">Temps gagné estimé</div>
+        <div class="kpi-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 6.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3 5 3.5c2.8.5 5 1.6 5 3.5s-2.2 3.5-5 3.5-5-1.6-5-3.5" stroke="#6E1D31" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="val serif" id="statRevenue">—</div>
+        <div class="lbl">Chiffre d'affaires généré</div>
+        <div class="sub" id="statRevenueSub"></div>
       </div>
       <div class="kpi-sec anim" style="animation-delay:.34s;">
         <div class="kpi-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 17l5-5 4 4 8-9" stroke="#6E1D31" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -703,6 +705,7 @@
     else { countUp(document.getElementById('statAvis'), avis, ''); }
 
     document.getElementById('statRdvSub').textContent = clientsUniques > 0 ? clientsUniques + ' cliente' + (clientsUniques > 1 ? 's' : '') + ' contactée' + (clientsUniques > 1 ? 's' : '') + ' au total' : '';
+    document.getElementById('statTempsSub').textContent = msgCount > 0 ? 'Basé sur ' + msgCount + ' message' + (msgCount > 1 ? 's' : '') + ' traité' + (msgCount > 1 ? 's' : '') + ' par l\'IA' : '';
     document.getElementById('statRevenueSub').textContent = rdv > 0 ? 'Soit ' + Math.round(rev / rdv) + ' € en moyenne par RDV' : '';
 
     var formule = (data.formule || '').toLowerCase();

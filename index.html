@@ -849,16 +849,159 @@
     });
   });
 })();
-  /* ===== Demo chat widget ===== */
+  /* ===== Widget FAQ (bulle flottante, assistant expert) ===== */
+  document.addEventListener('DOMContentLoaded', function(){
+    var API = 'https://iagentleman.app.n8n.cloud/webhook/faq-chat-glowia';
+    var launcher = document.getElementById('faqLauncher');
+    var panel = document.getElementById('faqPanel');
+    var tooltip = document.getElementById('faqTooltip');
+    var closeBtn = document.getElementById('faqClose');
+    var messagesEl = document.getElementById('faqMessages');
+    var input = document.getElementById('faqInput');
+    var sendBtn = document.getElementById('faqSend');
+    var isOpen = false;
+    var isSending = false;
+    var history = [];
+    var limitReached = false;
+    var hasShownNudge = false;
+    var aiReplyCount = 0;
+
+    function getSessionId(){
+      var id = sessionStorage.getItem('glowia_faq_session');
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('sess-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+        sessionStorage.setItem('glowia_faq_session', id);
+      }
+      return id;
+    }
+
+    function addBubble(text, role){
+      var b = document.createElement('div');
+      b.className = 'dc-bubble ' + role;
+      b.textContent = text;
+      messagesEl.appendChild(b);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return b;
+    }
+
+    function showTyping(){
+      var t = document.createElement('div');
+      t.className = 'dc-typing';
+      t.id = 'faqTypingIndicator';
+      t.innerHTML = '<span></span><span></span><span></span>';
+      messagesEl.appendChild(t);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    function hideTyping(){
+      var t = document.getElementById('faqTypingIndicator');
+      if (t) t.remove();
+    }
+
+    function addNudgeCard(){
+      var card = document.createElement('div');
+      card.className = 'dc-recap';
+      card.innerHTML =
+        '<div class="dc-recap-title">Envie de voir GlowIA en action ? ✨</div>' +
+        '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Testez une vraie conversation cliente simulée avec le bouton "Essayer la démo"</div>' +
+        '<a href="#tarifs" class="dc-recap-cta" id="faqNudgeCta">Voir les formules</a>';
+      messagesEl.appendChild(card);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      var cta = document.getElementById('faqNudgeCta');
+      if (cta) { cta.addEventListener('click', function(){ closePanel(); }); }
+    }
+
+    function openPanel(){
+      isOpen = true;
+      panel.classList.add('open');
+      panel.setAttribute('aria-hidden', 'false');
+      launcher.classList.add('open');
+      launcher.setAttribute('aria-expanded', 'true');
+      tooltip.classList.remove('show');
+      if (window.closeDemoChat) { window.closeDemoChat(); }
+      if (messagesEl.children.length === 0) {
+        setTimeout(function(){
+          addBubble("Bonjour \uD83D\uDC4B Je suis l'assistant GlowIA. Posez-moi vos questions sur le produit, les tarifs, la mise en place... je réponds franchement, y compris sur ce qu'on ne fait pas encore.", 'ai');
+        }, 300);
+      }
+      setTimeout(function(){ input.focus(); }, 250);
+    }
+    function closePanel(){
+      isOpen = false;
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+      launcher.classList.remove('open');
+      launcher.setAttribute('aria-expanded', 'false');
+    }
+
+    launcher.addEventListener('click', function(){
+      if (isOpen) { closePanel(); } else { openPanel(); }
+    });
+    closeBtn.addEventListener('click', closePanel);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && isOpen) { closePanel(); }
+    });
+
+    setTimeout(function(){
+      if (!isOpen) { tooltip.classList.add('show'); }
+      setTimeout(function(){ tooltip.classList.remove('show'); }, 5000);
+    }, 3500);
+    tooltip.addEventListener('click', function(){ openPanel(); });
+
+    function sendMessage(){
+      var text = input.value.trim();
+      if (!text || isSending || limitReached) return;
+      addBubble(text, 'user');
+      input.value = '';
+      isSending = true;
+      sendBtn.disabled = true;
+      showTyping();
+
+      fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: getSessionId(), message: text, history: history })
+      }).then(function(r){ return r.json(); }).then(function(data){
+        hideTyping();
+        isSending = false;
+        sendBtn.disabled = false;
+        var reply = data.reply || "Désolé, un souci est survenu. Réessayez.";
+        addBubble(reply, data.limit_reached ? 'system' : 'ai');
+        history.push({ role: 'user', content: text });
+        history.push({ role: 'assistant', content: reply });
+        aiReplyCount++;
+        if (!data.limit_reached && aiReplyCount === 3 && !hasShownNudge) {
+          hasShownNudge = true;
+          setTimeout(function(){ addNudgeCard(); }, 500);
+        }
+        if (data.limit_reached) {
+          limitReached = true;
+          input.disabled = true;
+          input.placeholder = 'Session terminée';
+        }
+      }).catch(function(){
+        hideTyping();
+        isSending = false;
+        sendBtn.disabled = false;
+        addBubble("Un souci réseau est survenu, réessayez.", 'system');
+      });
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { sendMessage(); }
+    });
+
+    window.closeFaqChat = closePanel;
+  });
+
+  /* ===== Demo chat scriptée (ouverte uniquement via les boutons "Essayer la démo") ===== */
   document.addEventListener('DOMContentLoaded', function(){
     var API = 'https://iagentleman.app.n8n.cloud/webhook/demo-chat-glowia';
-    var launcher = document.getElementById('dcLauncher');
-    var panel = document.getElementById('dcPanel');
-    var tooltip = document.getElementById('dcTooltip');
-    var closeBtn = document.getElementById('dcClose');
-    var messagesEl = document.getElementById('dcMessages');
-    var input = document.getElementById('dcInput');
-    var sendBtn = document.getElementById('dcSend');
+    var panel = document.getElementById('demoPanel');
+    var closeBtn = document.getElementById('demoClose');
+    var messagesEl = document.getElementById('demoMessages');
+    var input = document.getElementById('demoInput');
+    var sendBtn = document.getElementById('demoSend');
     var isOpen = false;
     var isSending = false;
     var history = [];
@@ -886,13 +1029,13 @@
     function showTyping(){
       var t = document.createElement('div');
       t.className = 'dc-typing';
-      t.id = 'dcTypingIndicator';
+      t.id = 'demoTypingIndicator';
       t.innerHTML = '<span></span><span></span><span></span>';
       messagesEl.appendChild(t);
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
     function hideTyping(){
-      var t = document.getElementById('dcTypingIndicator');
+      var t = document.getElementById('demoTypingIndicator');
       if (t) t.remove();
     }
 
@@ -900,9 +1043,7 @@
       isOpen = true;
       panel.classList.add('open');
       panel.setAttribute('aria-hidden', 'false');
-      launcher.classList.add('open');
-      launcher.setAttribute('aria-expanded', 'true');
-      tooltip.classList.remove('show');
+      if (window.closeFaqChat) { window.closeFaqChat(); }
       if (messagesEl.children.length === 0) {
         setTimeout(function(){
           addBubble("Bonjour \uD83D\uDC4B Je suis l'assistante IA du salon (ceci est une démo). Essayez de me demander un rendez-vous, comme le ferait une vraie cliente !", 'ai');
@@ -914,23 +1055,12 @@
       isOpen = false;
       panel.classList.remove('open');
       panel.setAttribute('aria-hidden', 'true');
-      launcher.classList.remove('open');
-      launcher.setAttribute('aria-expanded', 'false');
     }
 
-    launcher.addEventListener('click', function(){
-      if (isOpen) { closePanel(); } else { openPanel(); }
-    });
     closeBtn.addEventListener('click', closePanel);
     document.addEventListener('keydown', function(e){
       if (e.key === 'Escape' && isOpen) { closePanel(); }
     });
-
-    setTimeout(function(){
-      if (!isOpen) { tooltip.classList.add('show'); }
-      setTimeout(function(){ tooltip.classList.remove('show'); }, 5000);
-    }, 3500);
-    tooltip.addEventListener('click', function(){ openPanel(); });
 
     function addBookingCard(booking){
       var card = document.createElement('div');
@@ -961,10 +1091,10 @@
         '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Les clientes qui ne reviennent pas sont relancées automatiquement (formule Premium)</div>' +
         '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Un tableau de bord suit vos RDV et vos revenus en temps réel</div>' +
         '<div class="dc-recap-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="margin-top:2px;"><path d="M9 12l2 2 4-4" stroke="#DCB878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#DCB878" stroke-width="1.3"/></svg> Vous gardez la main à tout moment, sans jamais perdre le contact</div>' +
-        '<a href="#tarifs" class="dc-recap-cta" id="dcRecapCta">Voir les formules</a>';
+        '<a href="#tarifs" class="dc-recap-cta" id="demoRecapCta">Voir les formules</a>';
       messagesEl.appendChild(card);
       messagesEl.scrollTop = messagesEl.scrollHeight;
-      var cta = document.getElementById('dcRecapCta');
+      var cta = document.getElementById('demoRecapCta');
       if (cta) { cta.addEventListener('click', function(){ closePanel(); }); }
     }
 
@@ -1017,29 +1147,49 @@
     });
 
     window.openDemoChat = openPanel;
+    window.closeDemoChat = closePanel;
   });
 </script>
 
-<!-- Demo chat widget -->
-<div class="dc-tooltip" id="dcTooltip">💬 Testez GlowIA en direct !</div>
-<button class="dc-launcher" id="dcLauncher" aria-label="Ouvrir le chat de démonstration GlowIA" aria-expanded="false">
+<!-- Widget FAQ (bulle flottante par défaut) -->
+<div class="dc-tooltip" id="faqTooltip">💬 Une question sur GlowIA ?</div>
+<button class="dc-launcher" id="faqLauncher" aria-label="Ouvrir l'assistant GlowIA" aria-expanded="false">
   <svg class="dc-chat-icon" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="#F7EFE2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
   <svg class="dc-close-icon" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#F7EFE2" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
 
-<div class="dc-panel" id="dcPanel" role="dialog" aria-label="Chat de démonstration GlowIA" aria-hidden="true">
+<div class="dc-panel" id="faqPanel" role="dialog" aria-label="Assistant GlowIA" aria-hidden="true">
+  <div class="dc-header">
+    <div class="dc-avatar">AI</div>
+    <div class="dc-header-text">
+      <div class="name">Assistant GlowIA</div>
+      <div class="status">En ligne · Questions &amp; réponses</div>
+    </div>
+    <button class="dc-header-close" id="faqClose" aria-label="Fermer le chat">×</button>
+  </div>
+  <div class="dc-messages" id="faqMessages" aria-live="polite"></div>
+  <div class="dc-inputbar">
+    <input type="text" id="faqInput" placeholder="Posez votre question…" maxlength="500" autocomplete="off">
+    <button class="dc-send" id="faqSend" aria-label="Envoyer">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Demo scriptée (ouverte uniquement via les boutons "Essayer la démo") -->
+<div class="dc-panel" id="demoPanel" role="dialog" aria-label="Chat de démonstration GlowIA" aria-hidden="true">
   <div class="dc-header">
     <div class="dc-avatar">OL</div>
     <div class="dc-header-text">
       <div class="name">Onglerie Lumière</div>
       <div class="status">En ligne · Démo GlowIA</div>
     </div>
-    <button class="dc-header-close" id="dcClose" aria-label="Fermer le chat">×</button>
+    <button class="dc-header-close" id="demoClose" aria-label="Fermer le chat">×</button>
   </div>
-  <div class="dc-messages" id="dcMessages" aria-live="polite"></div>
+  <div class="dc-messages" id="demoMessages" aria-live="polite"></div>
   <div class="dc-inputbar">
-    <input type="text" id="dcInput" placeholder="Écrivez votre message…" maxlength="500" autocomplete="off">
-    <button class="dc-send" id="dcSend" aria-label="Envoyer">
+    <input type="text" id="demoInput" placeholder="Écrivez votre message…" maxlength="500" autocomplete="off">
+    <button class="dc-send" id="demoSend" aria-label="Envoyer">
       <svg viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
