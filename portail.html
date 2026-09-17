@@ -80,6 +80,14 @@
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
   .field input{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:14.5px;font-family:'Work Sans',sans-serif;outline:none;transition:border-color .16s ease,box-shadow .16s ease;}
   .field input:focus{border-color:var(--laiton);box-shadow:0 0 0 3px rgba(199,154,86,.25);}
+  .field-pass-wrap{position:relative;}
+  .field-pass-wrap input{padding-right:44px;}
+  .field-pass-toggle{position:absolute;top:0;right:0;height:100%;width:42px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--encre-doux);}
+  .field-pass-toggle:hover{color:var(--laque);}
+  .field-pass-toggle svg{width:19px;height:19px;}
+  .field-pass-toggle .eye-off{display:none;}
+  .field-pass-toggle.shown .eye{display:none;}
+  .field-pass-toggle.shown .eye-off{display:block;}
   .btn{width:100%;background:var(--laque);color:var(--ivoire);border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;font-family:'Work Sans',sans-serif;cursor:pointer;margin-top:8px;transition:transform .15s var(--ease),background .15s ease;}
   .btn:hover{background:var(--laque-clair);transform:translateY(-1px);}
   .btn:active{transform:scale(.98);}
@@ -293,7 +301,16 @@
       <p class="sub">Connectez-vous pour voir vos statistiques et modifier vos informations.</p>
       <form id="loginForm">
         <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" name="email" required></div>
-        <div class="field"><label for="f-pass">Mot de passe</label><input id="f-pass" type="password" name="password" required></div>
+        <div class="field">
+          <label for="f-pass">Mot de passe</label>
+          <div class="field-pass-wrap">
+            <input id="f-pass" type="password" name="password" required autocomplete="current-password">
+            <button type="button" class="field-pass-toggle" id="fPassToggle" aria-label="Afficher le mot de passe" aria-pressed="false">
+              <svg class="eye" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <svg class="eye-off" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
         <button type="submit" class="btn" id="loginBtn">Se connecter</button>
         <p class="err" id="loginErr"></p>
       </form>
@@ -758,6 +775,20 @@
       err.textContent = 'Un souci réseau est survenu, réessayez.';
     });
   });
+
+  (function(){
+    var passInput = document.getElementById('f-pass');
+    var toggle = document.getElementById('fPassToggle');
+    if (passInput && toggle) {
+      toggle.addEventListener('click', function(){
+        var shown = passInput.type === 'text';
+        passInput.type = shown ? 'password' : 'text';
+        toggle.classList.toggle('shown', !shown);
+        toggle.setAttribute('aria-pressed', String(!shown));
+        toggle.setAttribute('aria-label', shown ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+      });
+    }
+  })();
 
   logoutBtn.addEventListener('click', function(){
     clearToken();

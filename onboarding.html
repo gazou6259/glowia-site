@@ -53,6 +53,24 @@
   .final-status{text-align:center;margin-top:12px;font-size:14px;min-height:1.2em;}
   .final-status.ok{color:#3d7a4a;font-weight:600;}
   .final-status.err{color:#a33;}
+
+  .field-pass-wrap{position:relative;}
+  .field-pass-wrap input{padding-right:44px;}
+  .field-pass-toggle{position:absolute;top:0;right:0;height:100%;width:42px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--encre-doux);}
+  .field-pass-toggle:hover{color:var(--laque);}
+  .field-pass-toggle svg{width:19px;height:19px;}
+  .field-pass-toggle .eye-off{display:none;}
+  .field-pass-toggle.shown .eye{display:none;}
+  .field-pass-toggle.shown .eye-off{display:block;}
+
+  .plan-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;background:var(--porcelaine);border:1px solid #e3d7c6;font-size:14px;font-weight:600;color:var(--encre-doux);}
+  .plan-badge.ok{background:rgba(61,122,74,.1);border-color:rgba(61,122,74,.3);color:#2f5f39;}
+  .plan-badge.err{background:rgba(170,51,51,.08);border-color:rgba(170,51,51,.3);color:#a33;}
+
+  .blocked-box{background:#fff;border-radius:16px;padding:32px 26px;text-align:center;border:1px solid rgba(170,51,51,.25);}
+  .blocked-box h2{font-family:'Fraunces',Georgia,serif;font-size:18px;color:#a33;margin-bottom:10px;}
+  .blocked-box p{font-size:14px;color:var(--encre-doux);}
+  .blocked-box a{color:var(--laque);font-weight:600;}
 </style>
 </head>
 <body>
@@ -70,6 +88,12 @@
   <h1>Onboarding d'un nouveau salon</h1>
   <p class="sub">Une seule page, une seule soumission : la connexion Meta et les informations du salon sont enregistrées ensemble.</p>
 
+  <div class="blocked-box" id="blockedBox" style="display:none;">
+    <h2>Paiement introuvable</h2>
+    <p id="blockedMsg">Cette page ne s'ouvre normalement qu'après un paiement sur glow-ia.fr. Si vous pensez qu'il s'agit d'une erreur, écrivez-nous à <a href="mailto:contact@glow-ia.fr">contact@glow-ia.fr</a>.</p>
+  </div>
+
+  <div id="onboardingContent" style="display:none;">
   <div class="step">
     <div class="step-head">
       <div class="step-num" id="stepNum1">1</div>
@@ -103,18 +127,31 @@
         <div class="field"><label>ID Google Calendar (email)</label><input type="text" name="google_calendar_id" required></div>
       </div>
       <div class="grid2">
-        <div class="field"><label>Email de connexion au portail</label><input type="email" name="email_login" required></div>
-        <div class="field"><label>Mot de passe portail</label><input type="text" name="portail_password" required></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label>ID client Stripe (cus_...)</label><input type="text" name="stripe_customer_id" required></div>
-        <div class="field"><label>Formule souscrite</label>
-          <select name="formule" required>
-            <option value="">Choisir…</option>
-            <option value="Classic">Classic</option>
-            <option value="Premium">Premium</option>
-          </select>
+        <div class="field">
+          <label>Email de connexion au portail</label>
+          <input type="email" name="email_login" id="emailLoginInput" required>
+          <div class="email-verify-box" id="emailVerifyBox" style="margin-top:8px;">
+            <button type="button" class="btn-meta" id="sendCodeBtn" style="padding:9px 16px;font-size:13px;">Vérifier cet email</button>
+            <p class="meta-status" id="emailVerifyStatus"></p>
+          </div>
+          <div class="grid2" id="emailCodeRow" style="display:none;margin-top:8px;">
+            <div class="field" style="margin-bottom:0;"><input type="text" id="emailCodeInput" placeholder="Code reçu par email" maxlength="6"></div>
+            <button type="button" class="btn-meta" id="confirmCodeBtn" style="padding:11px 16px;font-size:13px;">Confirmer</button>
+          </div>
         </div>
+        <div class="field"><label>Mot de passe portail</label>
+          <div class="field-pass-wrap">
+            <input type="text" name="portail_password" id="onbPass" required autocomplete="new-password">
+            <button type="button" class="field-pass-toggle" id="onbPassToggle" aria-label="Afficher le mot de passe" aria-pressed="false">
+              <svg class="eye" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <svg class="eye-off" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Formule souscrite</label>
+        <div class="plan-badge" id="planBadge">Vérification du paiement en cours…</div>
       </div>
     </div>
 
@@ -123,6 +160,7 @@
       <p class="final-status" id="finalStatus"></p>
     </div>
   </form>
+  </div>
 </div>
 
 <script>
@@ -131,6 +169,52 @@
   var WEBHOOK_URL = 'https://iagentleman.app.n8n.cloud/webhook/onboarding-complet-glowia';
 
   var metaCode = null;
+  var verified = null; // { formule, stripe_customer_id, stripe_subscription_id, session_id, email }
+
+  var blockedBox = document.getElementById('blockedBox');
+  var blockedMsg = document.getElementById('blockedMsg');
+  var content = document.getElementById('onboardingContent');
+  var planBadge = document.getElementById('planBadge');
+
+  function showBlocked(msg){
+    if (msg) blockedMsg.textContent = msg;
+    blockedBox.style.display = 'block';
+    content.style.display = 'none';
+  }
+
+  (function verifySession(){
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get('session_id');
+    if (!sessionId) { showBlocked(); return; }
+
+    content.style.display = 'block';
+    planBadge.className = 'plan-badge';
+    planBadge.textContent = 'Vérification du paiement en cours…';
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify_session', session_id: sessionId })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if (!res.success) {
+        content.style.display = 'none';
+        showBlocked(res.message || undefined);
+        return;
+      }
+      verified = { formule: res.formule, stripe_customer_id: res.stripe_customer_id, stripe_subscription_id: res.stripe_subscription_id, session_id: sessionId, email: res.email };
+      planBadge.className = 'plan-badge ok';
+      planBadge.textContent = '✓ Formule ' + res.formule + ' — paiement confirmé';
+      if (res.email) {
+        var emailLogin = document.querySelector('input[name="email_login"]');
+        var emailContact = document.querySelector('input[name="email_contact"]');
+        if (emailLogin && !emailLogin.value) emailLogin.value = res.email;
+        if (emailContact && !emailContact.value) emailContact.value = res.email;
+      }
+    }).catch(function(){
+      content.style.display = 'none';
+      showBlocked('Un souci réseau est survenu pendant la vérification du paiement. Rechargez la page ou contactez-nous.');
+    });
+  })();
 
   window.fbAsyncInit = function() {
     FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: true, version: 'v21.0' });
@@ -142,6 +226,72 @@
     js.src = "https://connect.facebook.net/fr_FR/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
+
+  var emailVerified = false;
+  var sendCodeBtn = document.getElementById('sendCodeBtn');
+  var confirmCodeBtn = document.getElementById('confirmCodeBtn');
+  var emailVerifyStatus = document.getElementById('emailVerifyStatus');
+  var emailCodeRow = document.getElementById('emailCodeRow');
+  var emailCodeInput = document.getElementById('emailCodeInput');
+  var emailLoginInput = document.getElementById('emailLoginInput');
+
+  sendCodeBtn.addEventListener('click', function(){
+    var email = emailLoginInput.value.trim();
+    if (!email) { emailVerifyStatus.className = 'meta-status err'; emailVerifyStatus.textContent = 'Renseignez votre email ci-dessus d\'abord.'; return; }
+    sendCodeBtn.disabled = true;
+    sendCodeBtn.textContent = 'Envoi…';
+    fetch(WEBHOOK_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'send_email_code', email: email })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      sendCodeBtn.disabled = false;
+      sendCodeBtn.textContent = 'Renvoyer le code';
+      if (res.success) {
+        emailVerifyStatus.className = 'meta-status ok';
+        emailVerifyStatus.textContent = '✓ Code envoyé, vérifiez votre boîte mail.';
+        emailCodeRow.style.display = 'grid';
+      } else {
+        emailVerifyStatus.className = 'meta-status err';
+        emailVerifyStatus.textContent = 'Erreur lors de l\'envoi, réessayez.';
+      }
+    }).catch(function(){
+      sendCodeBtn.disabled = false;
+      sendCodeBtn.textContent = 'Vérifier cet email';
+      emailVerifyStatus.className = 'meta-status err';
+      emailVerifyStatus.textContent = 'Souci réseau, réessayez.';
+    });
+  });
+
+  confirmCodeBtn.addEventListener('click', function(){
+    var email = emailLoginInput.value.trim();
+    var code = emailCodeInput.value.trim();
+    if (!code) return;
+    confirmCodeBtn.disabled = true;
+    confirmCodeBtn.textContent = '…';
+    fetch(WEBHOOK_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify_email_code', email: email, code: code })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      confirmCodeBtn.disabled = false;
+      confirmCodeBtn.textContent = 'Confirmer';
+      if (res.success) {
+        emailVerified = true;
+        emailVerifyStatus.className = 'meta-status ok';
+        emailVerifyStatus.textContent = '✓ Email vérifié.';
+        emailCodeRow.style.display = 'none';
+        sendCodeBtn.style.display = 'none';
+        emailLoginInput.readOnly = true;
+      } else {
+        emailVerifyStatus.className = 'meta-status err';
+        emailVerifyStatus.textContent = 'Code invalide ou expiré.';
+      }
+    }).catch(function(){
+      confirmCodeBtn.disabled = false;
+      confirmCodeBtn.textContent = 'Confirmer';
+      emailVerifyStatus.className = 'meta-status err';
+      emailVerifyStatus.textContent = 'Souci réseau, réessayez.';
+    });
+  });
 
   var metaBtn = document.getElementById('metaBtn');
   var metaStatus = document.getElementById('metaStatus');
@@ -177,9 +327,35 @@
     });
   });
 
+  (function(){
+    var passInput = document.getElementById('onbPass');
+    var toggle = document.getElementById('onbPassToggle');
+    if (passInput && toggle) {
+      toggle.addEventListener('click', function(){
+        var shown = passInput.type === 'text' && toggle.classList.contains('shown');
+        passInput.type = shown ? 'password' : 'text';
+        toggle.classList.toggle('shown', !shown);
+        toggle.setAttribute('aria-pressed', String(!shown));
+        toggle.setAttribute('aria-label', shown ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+      });
+    }
+  })();
+
   document.getElementById('onboardingForm').addEventListener('submit', function(e){
     e.preventDefault();
     if (!metaCode) return;
+    if (!emailVerified) {
+      var finalStatusE = document.getElementById('finalStatus');
+      finalStatusE.className = 'final-status err';
+      finalStatusE.textContent = "Vérifiez d'abord votre email de connexion (bouton ci-dessus).";
+      return;
+    }
+    if (!verified) {
+      var finalStatus0 = document.getElementById('finalStatus');
+      finalStatus0.className = 'final-status err';
+      finalStatus0.textContent = "Le paiement n'a pas encore été vérifié, patientez ou rechargez la page.";
+      return;
+    }
 
     var finalStatus = document.getElementById('finalStatus');
     submitBtn.disabled = true;
@@ -189,6 +365,10 @@
 
     var data = Object.fromEntries(new FormData(e.target).entries());
     data.code = metaCode;
+    data.formule = verified.formule;
+    data.stripe_customer_id = verified.stripe_customer_id;
+    data.stripe_subscription_id = verified.stripe_subscription_id;
+    data.stripe_session_id = verified.session_id;
 
     fetch(WEBHOOK_URL, {
       method: 'POST',
