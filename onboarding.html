@@ -105,23 +105,35 @@
     .presta-remove{grid-area:remove;justify-self:end;}
   }
 
-  .hours-day{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(110,29,49,.08);}
+  .hours-day{display:grid;grid-template-columns:100px 1fr auto;grid-template-areas:"name shifts closed";gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(110,29,49,.08);}
   .hours-day:last-child{border-bottom:none;}
-  .hours-day-name{font-size:14px;font-weight:600;color:var(--encre);padding-top:9px;}
-  .hours-shifts{display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .hours-day-name{grid-area:name;font-size:14px;font-weight:600;color:var(--encre);padding-top:9px;}
+  .hours-shifts{grid-area:shifts;display:flex;flex-direction:column;gap:8px;min-width:0;}
   .hours-shift{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .hours-shift input[type=time]{border:1px solid #e3d7c6;border-radius:8px;padding:8px 10px;font-size:13.5px;font-family:'Work Sans',sans-serif;outline:none;}
   .hours-shift span{font-size:13px;color:var(--encre-doux);}
   .hours-shift-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:16px;padding:2px 6px;}
   .hours-add-shift{background:none;border:none;color:var(--laque);font-size:12.5px;font-weight:600;cursor:pointer;text-align:left;padding:2px 0;}
-  .hours-closed-toggle{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--encre-doux);padding-top:9px;white-space:nowrap;}
+  .hours-closed-toggle{grid-area:closed;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--encre-doux);padding-top:9px;white-space:nowrap;}
   @media (max-width:600px){
-    .hours-day{grid-template-columns:1fr;gap:6px;}
-    .hours-day-name{padding-top:0;}
-    .hours-closed-toggle{padding-top:0;}
+    .hours-day{grid-template-columns:1fr auto;grid-template-areas:"name closed" "shifts shifts";gap:4px 10px;}
+    .hours-day-name{padding-top:4px;}
+    .hours-closed-toggle{padding-top:4px;}
   }
   .hours-preview{margin-top:14px;padding:12px 14px;background:var(--porcelaine);border-radius:10px;font-size:12.5px;color:var(--encre-doux);line-height:1.6;}
   .hours-preview strong{color:var(--laque);}
+
+  .module-panel{background:var(--porcelaine);border:1px solid rgba(110,29,49,.1);border-radius:14px;padding:18px 18px 20px;margin-bottom:18px;}
+  .module-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;}
+  .module-panel-title{display:flex;align-items:center;gap:8px;font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:15.5px;color:var(--laque);}
+  .module-panel .field-hint{background:#fff;}
+  .module-panel .hours-day, .module-panel .presta-row{background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;border-bottom:none;}
+  .module-panel .hours-day:last-child, .module-panel .presta-row:last-child{margin-bottom:0;}
+  .module-panel .presta-header{padding:0 14px 8px;}
+  .module-panel .hours-preview{background:#fff;}
+  .module-panel .btn-add{margin-top:4px;background:#fff;}
+
+  .hours-day-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 </style>
 </head>
 <body>
@@ -179,19 +191,27 @@
         <input type="text" name="lien_avis_google">
         <div class="field-hint" id="hint-avis">Le lien qui permet à une cliente de laisser un avis Google sur votre salon en un clic. Pour le trouver : cherchez votre salon sur Google, cliquez sur <b>« Rédiger un avis »</b>, puis copiez l'adresse qui s'affiche dans la barre du navigateur. Si vous ne l'avez pas sous la main, laissez vide, vous pourrez l'ajouter plus tard.</div>
       </div>
-      <div class="field">
-        <div class="field-label-row"><label>Horaires d'ouverture</label><button type="button" class="help-toggle" data-hint="hint-horaires">?</button></div>
+      <div class="module-panel">
+        <div class="module-panel-head">
+          <div class="module-panel-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#6E1D31" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/></svg>Horaires d'ouverture</div>
+          <button type="button" class="help-toggle" data-hint="hint-horaires">?</button>
+        </div>
+        <div class="field-hint" id="hint-horaires">Cochez « Fermé » pour les jours où le salon n'ouvre pas. Sinon, indiquez les heures — vous pouvez ajouter une pause déjeuner ou un créneau supplémentaire si besoin.</div>
         <div id="hoursEditor"></div>
         <div class="hours-preview" id="hoursPreview"></div>
-        <div class="field-hint" id="hint-horaires">Cochez « Fermé » pour les jours où le salon n'ouvre pas. Sinon, indiquez les heures — vous pouvez ajouter une pause déjeuner ou un créneau supplémentaire si besoin.</div>
       </div>
-      <div class="field">
-        <div class="field-label-row"><label>Prestations et tarifs (facultatif)</label><button type="button" class="help-toggle" data-hint="hint-prestations">?</button></div>
+
+      <div class="module-panel">
+        <div class="module-panel-head">
+          <div class="module-panel-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/></svg>Prestations et tarifs</div>
+          <button type="button" class="help-toggle" data-hint="hint-prestations">?</button>
+        </div>
+        <div class="field-hint" id="hint-prestations">C'est ce que l'IA proposera à vos clientes quand elles demanderont un rendez-vous. Vous pouvez en ajouter autant que vous voulez, ou laisser vide et les ajouter plus tard.</div>
         <div class="presta-header"><span>Prestation</span><span>Prix</span><span>Statut</span><span></span></div>
         <div id="prestaList"></div>
         <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
-        <div class="field-hint" id="hint-prestations">C'est ce que l'IA proposera à vos clientes quand elles demanderont un rendez-vous. Vous pouvez en ajouter autant que vous voulez, ou laisser vide et les ajouter plus tard.</div>
       </div>
+
       <div class="keep-note">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#A97C33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.3"/></svg>
         Rien n'est figé : vous pourrez modifier vos horaires, vos prestations et toutes vos informations à tout moment depuis votre tableau de bord, une fois votre salon créé.
