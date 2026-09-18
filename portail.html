@@ -142,6 +142,16 @@
 
   .dash-head h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:28px;color:var(--laque);letter-spacing:-0.01em;}
   .dash-head p{color:var(--encre-doux);margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--laiton-profond);}
+
+  .plan-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;}
+  .plan-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:var(--porcelaine);border:1px solid #e3d7c6;font-size:13px;font-weight:700;color:var(--laque);}
+  .plan-pill.premium{background:rgba(199,154,86,.14);border-color:rgba(199,154,86,.4);color:var(--laiton-profond);}
+  .btn-change-plan{background:none;border:1px solid rgba(110,29,49,.25);color:var(--laque);padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;transition:transform .15s var(--ease),border-color .15s ease;}
+  .btn-change-plan:hover{border-color:var(--laque);transform:translateY(-1px);}
+  .btn-change-plan:disabled{opacity:.5;cursor:default;transform:none;}
+  .plan-msg{font-size:12.5px;margin-top:8px;width:100%;min-height:1.2em;}
+  .plan-msg.ok{color:#3d7a4a;font-weight:600;}
+  .plan-msg.err{color:#a33;}
   .stat-grid{margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   @media (max-width:720px){.stat-grid{grid-template-columns:1fr;}}
   .stat-card,.panel{background:var(--porcelaine);border:1px solid rgba(110,29,49,.12);border-radius:16px;transition:transform .24s var(--ease),box-shadow .24s ease,border-color .24s ease;}
@@ -323,6 +333,11 @@
     <div class="dash-head anim" style="animation-delay:.05s;">
       <h1 id="dashSalonName">—</h1>
       <p>Votre espace GlowIA</p>
+      <div class="plan-row">
+        <span class="plan-pill" id="planPill">—</span>
+        <button type="button" class="btn-change-plan" id="changePlanBtn" style="display:none;">Passer en Premium</button>
+        <p class="plan-msg" id="planMsg"></p>
+      </div>
     </div>
 
     <div class="install-banner" id="installBanner" style="display:none;">
@@ -732,6 +747,27 @@
       if (reduced) { document.getElementById('statRelances').textContent = relances; }
       else { countUp(document.getElementById('statRelances'), relances, ''); }
     }
+
+    var planPill = document.getElementById('planPill');
+    var changePlanBtn = document.getElementById('changePlanBtn');
+    var planMsg = document.getElementById('planMsg');
+    planMsg.textContent = '';
+    if (formule === 'premium') {
+      planPill.textContent = 'Formule Premium';
+      planPill.className = 'plan-pill premium';
+      changePlanBtn.textContent = 'Repasser en Classic';
+      changePlanBtn.setAttribute('data-target', 'Classic');
+      changePlanBtn.style.display = 'inline-flex';
+    } else if (formule === 'classic') {
+      planPill.textContent = 'Formule Classic';
+      planPill.className = 'plan-pill';
+      changePlanBtn.textContent = 'Passer en Premium';
+      changePlanBtn.setAttribute('data-target', 'Premium');
+      changePlanBtn.style.display = 'inline-flex';
+    } else {
+      planPill.textContent = '—';
+      changePlanBtn.style.display = 'none';
+    }
     document.getElementById('infoEmail').textContent = data.email_contact || '—';
     document.getElementById('infoAvis').textContent = data.lien_avis_google || '—';
     document.getElementById('infoStatut').textContent = data.statut || '—';
@@ -795,6 +831,43 @@
     dashView.style.display = 'none';
     logoutBtn.style.display = 'none';
     loginView.style.display = 'grid';
+  });
+
+  document.getElementById('changePlanBtn').addEventListener('click', function(){
+    var btn = this;
+    var target = btn.getAttribute('data-target');
+    var planMsg = document.getElementById('planMsg');
+    var confirmMsg = target === 'Premium'
+      ? 'Passer en Premium à 69,99€/mois ? Le montant sera ajusté au prorata sur votre prochaine facture.'
+      : 'Repasser en Classic à 39,99€/mois ? Le montant sera ajusté au prorata sur votre prochaine facture.';
+    if (!window.confirm(confirmMsg)) return;
+
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    btn.textContent = 'Changement en cours…';
+    planMsg.className = 'plan-msg';
+    planMsg.textContent = '';
+
+    fetch(API, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'change_plan', token: getToken(), plan: target })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      btn.disabled = false;
+      btn.textContent = originalText;
+      if (res.success) {
+        planMsg.className = 'plan-msg ok';
+        planMsg.textContent = '✓ Formule mise à jour.';
+        loadDashboard();
+      } else {
+        planMsg.className = 'plan-msg err';
+        planMsg.textContent = res.error || 'Une erreur est survenue.';
+      }
+    }).catch(function(){
+      btn.disabled = false;
+      btn.textContent = originalText;
+      planMsg.className = 'plan-msg err';
+      planMsg.textContent = 'Souci réseau, réessayez.';
+    });
   });
 
   loadDashboard();

@@ -70,7 +70,16 @@
   .blocked-box{background:#fff;border-radius:16px;padding:32px 26px;text-align:center;border:1px solid rgba(170,51,51,.25);}
   .blocked-box h2{font-family:'Fraunces',Georgia,serif;font-size:18px;color:#a33;margin-bottom:10px;}
   .blocked-box p{font-size:14px;color:var(--encre-doux);}
-  .blocked-box a{color:var(--laque);font-weight:600;}
+  .blocked-box a{color:var(--laque);font-weight:600;}  .field-label-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .field-label-row label{margin-bottom:0;}
+  .help-toggle{width:16px;height:16px;border-radius:50%;border:1.3px solid var(--laiton-profond);color:var(--laiton-profond);background:none;font-size:11px;font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;}
+  .help-toggle:hover{background:var(--laiton-profond);color:#fff;}
+  .field-hint{display:none;background:var(--porcelaine);border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--encre-doux);margin:-2px 0 14px;}
+  .field-hint.open{display:block;}
+  .field-hint b{color:var(--laque);}
+  .field-hint ol{margin:8px 0 0 18px;}
+  .field-hint li{margin-bottom:4px;}
+  .field-hint a{color:var(--laiton-profond);font-weight:600;}
 </style>
 </head>
 <body>
@@ -109,23 +118,61 @@
   <form id="onboardingForm">
     <div class="step">
       <div class="step-head"><div class="step-num">2</div><h2>Informations du salon</h2></div>
-      <div class="field"><label>Identifiant salon (slug)</label><input type="text" name="salon_id" placeholder="minuscules, sans espaces, ex: gazou" required></div>
+      <div class="field">
+        <div class="field-label-row"><label>Identifiant salon (slug)</label><button type="button" class="help-toggle" data-hint="hint-slug">?</button></div>
+        <input type="text" name="salon_id" placeholder="minuscules, sans espaces, ex: gazou" required>
+        <div class="field-hint" id="hint-slug">C'est un identifiant technique unique pour votre salon, utilisé en interne. <b>Uniquement des minuscules, des chiffres ou des tirets, sans espace ni accent.</b> Par exemple : <code>belle-etoile</code> ou <code>salon-camille</code>. Vous ne le voyez nulle part ailleurs, ce n'est pas visible par vos clientes.</div>
+      </div>
       <div class="grid2">
         <div class="field"><label>Nom du salon</label><input type="text" name="nom_salon" required></div>
         <div class="field"><label>Nom de la gérante / du gérant</label><input type="text" name="gerante_nom" required></div>
       </div>
-      <div class="field"><label>Email de contact</label><input type="email" name="email_contact" required></div>
-      <div class="field"><label>Horaires d'ouverture</label><textarea name="horaires" required></textarea></div>
-      <div class="field"><label>Lien avis Google (facultatif)</label><input type="text" name="lien_avis_google"></div>
-      <div class="field"><label>Prestations et tarifs (facultatif)</label><textarea name="prestations_brutes" placeholder="Une par ligne, ex: Pose gel - 45€ - 1h30"></textarea></div>
+      <div class="field">
+        <div class="field-label-row"><label>Email de contact</label><button type="button" class="help-toggle" data-hint="hint-emailcontact">?</button></div>
+        <input type="email" name="email_contact" required>
+        <div class="field-hint" id="hint-emailcontact">L'email professionnel de votre salon, celui que vos clientes ou vos partenaires peuvent utiliser pour vous contacter. Il peut être différent de votre email de connexion au portail (plus bas).</div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Horaires d'ouverture</label><button type="button" class="help-toggle" data-hint="hint-horaires">?</button></div>
+        <textarea name="horaires" required></textarea>
+        <div class="field-hint" id="hint-horaires">Écrivez-les simplement, comme vous les diriez à une cliente au téléphone. Exemple : <i>« Du mardi au samedi, de 9h30 à 19h, fermé le dimanche et le lundi »</i>. L'IA s'en sert pour proposer des créneaux cohérents.</div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Lien avis Google (facultatif)</label><button type="button" class="help-toggle" data-hint="hint-avis">?</button></div>
+        <input type="text" name="lien_avis_google">
+        <div class="field-hint" id="hint-avis">Le lien qui permet à une cliente de laisser un avis Google sur votre salon en un clic. Pour le trouver : cherchez votre salon sur Google, cliquez sur <b>« Rédiger un avis »</b>, puis copiez l'adresse qui s'affiche dans la barre du navigateur. Si vous ne l'avez pas sous la main, laissez vide, vous pourrez l'ajouter plus tard.</div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Prestations et tarifs (facultatif)</label><button type="button" class="help-toggle" data-hint="hint-prestations">?</button></div>
+        <textarea name="prestations_brutes" placeholder="Une par ligne, ex: Pose gel - 45€ - 1h30"></textarea>
+        <div class="field-hint" id="hint-prestations">Une prestation par ligne, sous la forme <code>Nom - Prix - Durée</code>. Exemple : <code>Pose gel - 45€ - 1h30</code>. C'est ce que l'IA proposera à vos clientes quand elles demanderont un rendez-vous. Vous pourrez toujours les modifier plus tard depuis votre tableau de bord.</div>
+      </div>
     </div>
 
     <div class="step">
       <div class="step-head"><div class="step-num">3</div><h2>Accès et paiement</h2></div>
       <div class="grid2">
-        <div class="field"><label>Telegram chat ID de la gérante</label><input type="text" name="telegram_chat_id" required></div>
-        <div class="field"><label>ID Google Calendar (email)</label><input type="text" name="google_calendar_id" required></div>
+        <div class="field">
+          <div class="field-label-row"><label>Telegram chat ID de la gérante</label><button type="button" class="help-toggle" data-hint="hint-telegram">?</button></div>
+          <input type="text" name="telegram_chat_id" required>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><label>ID Google Calendar (email)</label><button type="button" class="help-toggle" data-hint="hint-calendar">?</button></div>
+          <input type="text" name="google_calendar_id" required>
+        </div>
       </div>
+      <div class="field-hint" id="hint-telegram" style="margin-top:-8px;">
+        C'est ce qui permet à GlowIA de vous prévenir sur Telegram quand une situation demande votre attention. Pour le récupérer, c'est très rapide :
+        <ol>
+          <li>Ouvrez l'application <b>Telegram</b> sur votre téléphone</li>
+          <li>Cherchez le bot <b>@userinfobot</b> (avec le petit robot 🤖) et ouvrez la conversation</li>
+          <li>Appuyez sur <b>« Démarrer »</b> ou envoyez-lui n'importe quel message</li>
+          <li>Il vous répond instantanément avec votre <b>ID</b> — une suite de chiffres, par exemple <code>6934923545</code></li>
+          <li>Copiez ce numéro et collez-le ici</li>
+        </ol>
+        Si vous n'avez pas Telegram, téléchargez-le gratuitement (App Store ou Google Play) — c'est le seul moyen de recevoir ces alertes.
+      </div>
+      <div class="field-hint" id="hint-calendar" style="margin-top:-8px;">Généralement, c'est simplement votre adresse <b>Gmail</b> (la même que celle de votre compte Google Agenda). GlowIA s'en sert pour consulter vos disponibilités réelles et y ajouter les rendez-vous pris automatiquement.</div>
       <div class="grid2">
         <div class="field">
           <label>Email de connexion au portail</label>
@@ -168,7 +215,7 @@
   var META_CONFIG_ID = '2922643884755372';
   var WEBHOOK_URL = 'https://iagentleman.app.n8n.cloud/webhook/onboarding-complet-glowia';
 
-  var metaCode = null;
+  var metaData = null;
   var verified = null; // { formule, stripe_customer_id, stripe_subscription_id, session_id, email }
 
   var blockedBox = document.getElementById('blockedBox');
@@ -293,6 +340,13 @@
     });
   });
 
+  document.querySelectorAll('.help-toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var hint = document.getElementById(btn.getAttribute('data-hint'));
+      if (hint) { hint.classList.toggle('open'); }
+    });
+  });
+
   var metaBtn = document.getElementById('metaBtn');
   var metaStatus = document.getElementById('metaStatus');
   var stepNum1 = document.getElementById('stepNum1');
@@ -305,17 +359,37 @@
     metaBtn.textContent = 'Connexion en cours…';
 
     FB.login(function(response) {
-      metaBtn.disabled = false;
-      metaBtn.textContent = 'Connecter WhatsApp & Instagram';
       if (response.authResponse && response.authResponse.code) {
-        metaCode = response.authResponse.code;
-        metaStatus.className = 'meta-status ok';
-        metaStatus.textContent = '✓ Comptes connectés. Complétez le formulaire ci-dessous puis validez.';
-        stepNum1.classList.add('done');
-        stepNum1.textContent = '✓';
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Créer le salon';
+        metaStatus.className = 'meta-status';
+        metaStatus.textContent = 'Finalisation de la connexion…';
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'exchange_meta_code', code: response.authResponse.code })
+        }).then(function(r){ return r.json(); }).then(function(data){
+          metaBtn.disabled = false;
+          metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+          if (data.whatsapp_phone_id) {
+            metaData = data;
+            metaStatus.className = 'meta-status ok';
+            metaStatus.textContent = '✓ Comptes connectés (' + (data.whatsapp_number || '') + '). Complétez le formulaire ci-dessous puis validez.';
+            stepNum1.classList.add('done');
+            stepNum1.textContent = '✓';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Créer le salon';
+          } else {
+            metaStatus.className = 'meta-status err';
+            metaStatus.textContent = 'Connexion Meta incomplète, réessayez.';
+          }
+        }).catch(function(){
+          metaBtn.disabled = false;
+          metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+          metaStatus.className = 'meta-status err';
+          metaStatus.textContent = 'Souci réseau pendant la connexion Meta, réessayez.';
+        });
       } else {
+        metaBtn.disabled = false;
+        metaBtn.textContent = 'Connecter WhatsApp & Instagram';
         metaStatus.className = 'meta-status err';
         metaStatus.textContent = 'Connexion annulée ou refusée.';
       }
@@ -343,7 +417,7 @@
 
   document.getElementById('onboardingForm').addEventListener('submit', function(e){
     e.preventDefault();
-    if (!metaCode) return;
+    if (!metaData) return;
     if (!emailVerified) {
       var finalStatusE = document.getElementById('finalStatus');
       finalStatusE.className = 'final-status err';
@@ -364,7 +438,11 @@
     finalStatus.textContent = '';
 
     var data = Object.fromEntries(new FormData(e.target).entries());
-    data.code = metaCode;
+    data.whatsapp_phone_id = metaData.whatsapp_phone_id;
+    data.whatsapp_number = metaData.whatsapp_number;
+    data.instagram_id = metaData.instagram_id;
+    data.instagram_username = metaData.instagram_username;
+    data.instagram_access_token = metaData.instagram_access_token;
     data.formule = verified.formule;
     data.stripe_customer_id = verified.stripe_customer_id;
     data.stripe_subscription_id = verified.stripe_subscription_id;
@@ -379,7 +457,9 @@
       submitBtn.textContent = 'Créer le salon';
       if (res.success) {
         finalStatus.className = 'final-status ok';
-        finalStatus.textContent = '✓ Salon créé et connecté avec succès !';
+        finalStatus.textContent = '✓ Salon créé et connecté avec succès ! Redirection vers le portail…';
+        submitBtn.textContent = 'Redirection…';
+        setTimeout(function(){ window.location.href = 'portail.html'; }, 2000);
       } else {
         finalStatus.className = 'final-status err';
         finalStatus.textContent = 'Erreur : ' + (res.message || 'réessayez.');
