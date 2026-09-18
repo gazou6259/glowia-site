@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding salon — GlowIA</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --laque:#6E1D31; --laque-clair:#8C2E45; --laque-fonce:#4A1220;
+    --ivoire:#F7EFE2; --porcelaine:#FDF9F1; --laiton:#C79A56; --laiton-profond:#A97C33;
+    --encre:#2B1A1F; --encre-doux:#5a4148;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{overflow-x:hidden;}
+  body{background:var(--ivoire);color:var(--encre);font-family:'Work Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  .wrap{max-width:640px;margin:0 auto;padding:40px 24px 80px;}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
+  .brand-mark{width:30px;height:31px;}
+  .brand .word{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;color:var(--laque);}
+  .brand .ia{color:var(--laiton-profond);font-style:italic;}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:26px;color:var(--laque);margin-bottom:6px;}
+  p.sub{font-size:14.5px;color:var(--encre-doux);margin-bottom:32px;}
+
+  .step{background:#fff;border-radius:16px;padding:28px 26px;margin-bottom:20px;border:1px solid rgba(110,29,49,.1);}
+  .step-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .step-num{width:26px;height:26px;border-radius:50%;background:var(--laque);color:var(--ivoire);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step-num.done{background:#3d7a4a;}
+  .step h2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:17px;color:var(--laque);}
+  .step p.desc{font-size:13.5px;color:var(--encre-doux);margin:6px 0 18px 38px;}
+
+  .connect-box{margin-left:38px;}
+  .btn-meta{background:var(--laque);color:var(--ivoire);border:none;border-radius:10px;padding:13px 22px;font-size:14.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:10px;}
+  .btn-meta:hover{background:var(--laque-clair);}
+  .btn-meta:disabled{opacity:.5;cursor:default;}
+  .meta-status{margin-top:12px;font-size:13.5px;min-height:1.2em;}
+  .meta-status.ok{color:#3d7a4a;font-weight:600;}
+  .meta-status.err{color:#a33;}
+
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
+  .field input, .field textarea, .field select{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:11px 13px;font-size:14px;font-family:'Work Sans',sans-serif;}
+  .field textarea{min-height:70px;resize:vertical;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:560px){.grid2{grid-template-columns:1fr;}}
+
+  .submit-bar{position:sticky;bottom:0;background:var(--ivoire);padding:16px 0;border-top:1px solid rgba(110,29,49,.12);margin-top:8px;}
+  .btn-submit{width:100%;background:var(--laque);color:var(--ivoire);border:none;border-radius:12px;padding:16px;font-size:15.5px;font-weight:700;cursor:pointer;}
+  .btn-submit:hover{background:var(--laque-clair);}
+  .btn-submit:disabled{opacity:.4;cursor:default;}
+  .final-status{text-align:center;margin-top:12px;font-size:14px;min-height:1.2em;}
+  .final-status.ok{color:#3d7a4a;font-weight:600;}
+  .final-status.err{color:#a33;}
+
+  .field-pass-wrap{position:relative;}
+  .field-pass-wrap input{padding-right:44px;}
+  .field-pass-toggle{position:absolute;top:0;right:0;height:100%;width:42px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--encre-doux);}
+  .field-pass-toggle:hover{color:var(--laque);}
+  .field-pass-toggle svg{width:19px;height:19px;}
+  .field-pass-toggle .eye-off{display:none;}
+  .field-pass-toggle.shown .eye{display:none;}
+  .field-pass-toggle.shown .eye-off{display:block;}
+
+  .plan-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;background:var(--porcelaine);border:1px solid #e3d7c6;font-size:14px;font-weight:600;color:var(--encre-doux);}
+  .plan-badge.ok{background:rgba(61,122,74,.1);border-color:rgba(61,122,74,.3);color:#2f5f39;}
+  .plan-badge.err{background:rgba(170,51,51,.08);border-color:rgba(170,51,51,.3);color:#a33;}
+
+  .blocked-box{background:#fff;border-radius:16px;padding:32px 26px;text-align:center;border:1px solid rgba(170,51,51,.25);}
+  .blocked-box h2{font-family:'Fraunces',Georgia,serif;font-size:18px;color:#a33;margin-bottom:10px;}
+  .blocked-box p{font-size:14px;color:var(--encre-doux);}
+  .blocked-box a{color:var(--laque);font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 64 66" role="img" aria-label="GlowIA">
+      <rect x="4" y="6" width="56" height="40" rx="14" fill="#6E1D31"></rect>
+      <path d="M14 44 L14 62 L32 45 Z" fill="#6E1D31"></path>
+      <path d="M19 20 A13 13 0 0 0 45 20" fill="none" stroke="#C79A56" stroke-width="7" stroke-linecap="round"></path>
+    </svg>
+    <span class="word">Glow<span class="ia">IA</span></span>
+  </div>
+
+  <h1>Onboarding d'un nouveau salon</h1>
+  <p class="sub">Une seule page, une seule soumission : la connexion Meta et les informations du salon sont enregistrées ensemble.</p>
+
+  <div class="blocked-box" id="blockedBox" style="display:none;">
+    <h2>Paiement introuvable</h2>
+    <p id="blockedMsg">Cette page ne s'ouvre normalement qu'après un paiement sur glow-ia.fr. Si vous pensez qu'il s'agit d'une erreur, écrivez-nous à <a href="mailto:contact@glow-ia.fr">contact@glow-ia.fr</a>.</p>
+  </div>
+
+  <div id="onboardingContent" style="display:none;">
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num" id="stepNum1">1</div>
+      <h2>Connecter WhatsApp &amp; Instagram</h2>
+    </div>
+    <p class="desc">Le salon connecte ses comptes professionnels via l'outil officiel de Meta.</p>
+    <div class="connect-box">
+      <button type="button" class="btn-meta" id="metaBtn">Connecter WhatsApp &amp; Instagram</button>
+      <p class="meta-status" id="metaStatus"></p>
+    </div>
+  </div>
+
+  <form id="onboardingForm">
+    <div class="step">
+      <div class="step-head"><div class="step-num">2</div><h2>Informations du salon</h2></div>
+      <div class="field"><label>Identifiant salon (slug)</label><input type="text" name="salon_id" placeholder="minuscules, sans espaces, ex: gazou" required></div>
+      <div class="grid2">
+        <div class="field"><label>Nom du salon</label><input type="text" name="nom_salon" required></div>
+        <div class="field"><label>Nom de la gérante / du gérant</label><input type="text" name="gerante_nom" required></div>
+      </div>
+      <div class="field"><label>Email de contact</label><input type="email" name="email_contact" required></div>
+      <div class="field"><label>Horaires d'ouverture</label><textarea name="horaires" required></textarea></div>
+      <div class="field"><label>Lien avis Google (facultatif)</label><input type="text" name="lien_avis_google"></div>
+      <div class="field"><label>Prestations et tarifs (facultatif)</label><textarea name="prestations_brutes" placeholder="Une par ligne, ex: Pose gel - 45€ - 1h30"></textarea></div>
+    </div>
+
+    <div class="step">
+      <div class="step-head"><div class="step-num">3</div><h2>Accès et paiement</h2></div>
+      <div class="grid2">
+        <div class="field"><label>Telegram chat ID de la gérante</label><input type="text" name="telegram_chat_id" required></div>
+        <div class="field"><label>ID Google Calendar (email)</label><input type="text" name="google_calendar_id" required></div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Email de connexion au portail</label>
+          <input type="email" name="email_login" id="emailLoginInput" required>
+          <div class="email-verify-box" id="emailVerifyBox" style="margin-top:8px;">
+            <button type="button" class="btn-meta" id="sendCodeBtn" style="padding:9px 16px;font-size:13px;">Vérifier cet email</button>
+            <p class="meta-status" id="emailVerifyStatus"></p>
+          </div>
+          <div class="grid2" id="emailCodeRow" style="display:none;margin-top:8px;">
+            <div class="field" style="margin-bottom:0;"><input type="text" id="emailCodeInput" placeholder="Code reçu par email" maxlength="6"></div>
+            <button type="button" class="btn-meta" id="confirmCodeBtn" style="padding:11px 16px;font-size:13px;">Confirmer</button>
+          </div>
+        </div>
+        <div class="field"><label>Mot de passe portail</label>
+          <div class="field-pass-wrap">
+            <input type="text" name="portail_password" id="onbPass" required autocomplete="new-password">
+            <button type="button" class="field-pass-toggle" id="onbPassToggle" aria-label="Afficher le mot de passe" aria-pressed="false">
+              <svg class="eye" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <svg class="eye-off" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Formule souscrite</label>
+        <div class="plan-badge" id="planBadge">Vérification du paiement en cours…</div>
+      </div>
+    </div>
+
+    <div class="submit-bar">
+      <button type="submit" class="btn-submit" id="submitBtn" disabled>Connectez d'abord WhatsApp &amp; Instagram (étape 1)</button>
+      <p class="final-status" id="finalStatus"></p>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script>
+  var META_APP_ID = '1144959613784009';
+  var META_CONFIG_ID = '2922643884755372';
+  var WEBHOOK_URL = 'https://iagentleman.app.n8n.cloud/webhook/onboarding-complet-glowia';
+
+  var metaData = null;
+  var verified = null; // { formule, stripe_customer_id, stripe_subscription_id, session_id, email }
+
+  var blockedBox = document.getElementById('blockedBox');
+  var blockedMsg = document.getElementById('blockedMsg');
+  var content = document.getElementById('onboardingContent');
+  var planBadge = document.getElementById('planBadge');
+
+  function showBlocked(msg){
+    if (msg) blockedMsg.textContent = msg;
+    blockedBox.style.display = 'block';
+    content.style.display = 'none';
+  }
+
+  (function verifySession(){
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get('session_id');
+    if (!sessionId) { showBlocked(); return; }
+
+    content.style.display = 'block';
+    planBadge.className = 'plan-badge';
+    planBadge.textContent = 'Vérification du paiement en cours…';
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify_session', session_id: sessionId })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if (!res.success) {
+        content.style.display = 'none';
+        showBlocked(res.message || undefined);
+        return;
+      }
+      verified = { formule: res.formule, stripe_customer_id: res.stripe_customer_id, stripe_subscription_id: res.stripe_subscription_id, session_id: sessionId, email: res.email };
+      planBadge.className = 'plan-badge ok';
+      planBadge.textContent = '✓ Formule ' + res.formule + ' — paiement confirmé';
+      if (res.email) {
+        var emailLogin = document.querySelector('input[name="email_login"]');
+        var emailContact = document.querySelector('input[name="email_contact"]');
+        if (emailLogin && !emailLogin.value) emailLogin.value = res.email;
+        if (emailContact && !emailContact.value) emailContact.value = res.email;
+      }
+    }).catch(function(){
+      content.style.display = 'none';
+      showBlocked('Un souci réseau est survenu pendant la vérification du paiement. Rechargez la page ou contactez-nous.');
+    });
+  })();
+
+  window.fbAsyncInit = function() {
+    FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: true, version: 'v21.0' });
+  };
+  (function(d, s, id){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/fr_FR/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  var emailVerified = false;
+  var sendCodeBtn = document.getElementById('sendCodeBtn');
+  var confirmCodeBtn = document.getElementById('confirmCodeBtn');
+  var emailVerifyStatus = document.getElementById('emailVerifyStatus');
+  var emailCodeRow = document.getElementById('emailCodeRow');
+  var emailCodeInput = document.getElementById('emailCodeInput');
+  var emailLoginInput = document.getElementById('emailLoginInput');
+
+  sendCodeBtn.addEventListener('click', function(){
+    var email = emailLoginInput.value.trim();
+    if (!email) { emailVerifyStatus.className = 'meta-status err'; emailVerifyStatus.textContent = 'Renseignez votre email ci-dessus d\'abord.'; return; }
+    sendCodeBtn.disabled = true;
+    sendCodeBtn.textContent = 'Envoi…';
+    fetch(WEBHOOK_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'send_email_code', email: email })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      sendCodeBtn.disabled = false;
+      sendCodeBtn.textContent = 'Renvoyer le code';
+      if (res.success) {
+        emailVerifyStatus.className = 'meta-status ok';
+        emailVerifyStatus.textContent = '✓ Code envoyé, vérifiez votre boîte mail.';
+        emailCodeRow.style.display = 'grid';
+      } else {
+        emailVerifyStatus.className = 'meta-status err';
+        emailVerifyStatus.textContent = 'Erreur lors de l\'envoi, réessayez.';
+      }
+    }).catch(function(){
+      sendCodeBtn.disabled = false;
+      sendCodeBtn.textContent = 'Vérifier cet email';
+      emailVerifyStatus.className = 'meta-status err';
+      emailVerifyStatus.textContent = 'Souci réseau, réessayez.';
+    });
+  });
+
+  confirmCodeBtn.addEventListener('click', function(){
+    var email = emailLoginInput.value.trim();
+    var code = emailCodeInput.value.trim();
+    if (!code) return;
+    confirmCodeBtn.disabled = true;
+    confirmCodeBtn.textContent = '…';
+    fetch(WEBHOOK_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'verify_email_code', email: email, code: code })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      confirmCodeBtn.disabled = false;
+      confirmCodeBtn.textContent = 'Confirmer';
+      if (res.success) {
+        emailVerified = true;
+        emailVerifyStatus.className = 'meta-status ok';
+        emailVerifyStatus.textContent = '✓ Email vérifié.';
+        emailCodeRow.style.display = 'none';
+        sendCodeBtn.style.display = 'none';
+        emailLoginInput.readOnly = true;
+      } else {
+        emailVerifyStatus.className = 'meta-status err';
+        emailVerifyStatus.textContent = 'Code invalide ou expiré.';
+      }
+    }).catch(function(){
+      confirmCodeBtn.disabled = false;
+      confirmCodeBtn.textContent = 'Confirmer';
+      emailVerifyStatus.className = 'meta-status err';
+      emailVerifyStatus.textContent = 'Souci réseau, réessayez.';
+    });
+  });
+
+  var metaBtn = document.getElementById('metaBtn');
+  var metaStatus = document.getElementById('metaStatus');
+  var stepNum1 = document.getElementById('stepNum1');
+  var submitBtn = document.getElementById('submitBtn');
+
+  metaBtn.addEventListener('click', function(){
+    metaStatus.className = 'meta-status';
+    metaStatus.textContent = '';
+    metaBtn.disabled = true;
+    metaBtn.textContent = 'Connexion en cours…';
+
+    FB.login(function(response) {
+      if (response.authResponse && response.authResponse.code) {
+        metaStatus.className = 'meta-status';
+        metaStatus.textContent = 'Finalisation de la connexion…';
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'exchange_meta_code', code: response.authResponse.code })
+        }).then(function(r){ return r.json(); }).then(function(data){
+          metaBtn.disabled = false;
+          metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+          if (data.whatsapp_phone_id) {
+            metaData = data;
+            metaStatus.className = 'meta-status ok';
+            metaStatus.textContent = '✓ Comptes connectés (' + (data.whatsapp_number || '') + '). Complétez le formulaire ci-dessous puis validez.';
+            stepNum1.classList.add('done');
+            stepNum1.textContent = '✓';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Créer le salon';
+          } else {
+            metaStatus.className = 'meta-status err';
+            metaStatus.textContent = 'Connexion Meta incomplète, réessayez.';
+          }
+        }).catch(function(){
+          metaBtn.disabled = false;
+          metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+          metaStatus.className = 'meta-status err';
+          metaStatus.textContent = 'Souci réseau pendant la connexion Meta, réessayez.';
+        });
+      } else {
+        metaBtn.disabled = false;
+        metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+        metaStatus.className = 'meta-status err';
+        metaStatus.textContent = 'Connexion annulée ou refusée.';
+      }
+    }, {
+      config_id: META_CONFIG_ID,
+      response_type: 'code',
+      override_default_response_type: true,
+      extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' }
+    });
+  });
+
+  (function(){
+    var passInput = document.getElementById('onbPass');
+    var toggle = document.getElementById('onbPassToggle');
+    if (passInput && toggle) {
+      toggle.addEventListener('click', function(){
+        var shown = passInput.type === 'text' && toggle.classList.contains('shown');
+        passInput.type = shown ? 'password' : 'text';
+        toggle.classList.toggle('shown', !shown);
+        toggle.setAttribute('aria-pressed', String(!shown));
+        toggle.setAttribute('aria-label', shown ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+      });
+    }
+  })();
+
+  document.getElementById('onboardingForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!metaData) return;
+    if (!emailVerified) {
+      var finalStatusE = document.getElementById('finalStatus');
+      finalStatusE.className = 'final-status err';
+      finalStatusE.textContent = "Vérifiez d'abord votre email de connexion (bouton ci-dessus).";
+      return;
+    }
+    if (!verified) {
+      var finalStatus0 = document.getElementById('finalStatus');
+      finalStatus0.className = 'final-status err';
+      finalStatus0.textContent = "Le paiement n'a pas encore été vérifié, patientez ou rechargez la page.";
+      return;
+    }
+
+    var finalStatus = document.getElementById('finalStatus');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Création en cours…';
+    finalStatus.className = 'final-status';
+    finalStatus.textContent = '';
+
+    var data = Object.fromEntries(new FormData(e.target).entries());
+    data.whatsapp_phone_id = metaData.whatsapp_phone_id;
+    data.whatsapp_number = metaData.whatsapp_number;
+    data.instagram_id = metaData.instagram_id;
+    data.instagram_username = metaData.instagram_username;
+    data.instagram_access_token = metaData.instagram_access_token;
+    data.formule = verified.formule;
+    data.stripe_customer_id = verified.stripe_customer_id;
+    data.stripe_subscription_id = verified.stripe_subscription_id;
+    data.stripe_session_id = verified.session_id;
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function(r){ return r.json(); }).then(function(res){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Créer le salon';
+      if (res.success) {
+        finalStatus.className = 'final-status ok';
+        finalStatus.textContent = '✓ Salon créé et connecté avec succès !';
+      } else {
+        finalStatus.className = 'final-status err';
+        finalStatus.textContent = 'Erreur : ' + (res.message || 'réessayez.');
+      }
+    }).catch(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Créer le salon';
+      finalStatus.className = 'final-status err';
+      finalStatus.textContent = 'Un souci réseau est survenu, réessayez.';
+    });
+  });
+</script>
+
+</body>
+</html>
