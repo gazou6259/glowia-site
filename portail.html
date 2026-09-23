@@ -85,6 +85,12 @@
   .btn-upload-photo{display:inline-block;background:rgba(255,255,255,.6);border:1px solid rgba(110,29,49,.22);color:var(--laque);padding:9px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .15s ease,background .15s ease;}
   .btn-upload-photo:hover{border-color:var(--laque);background:rgba(255,255,255,.9);}
   .profil-nom-affiche{padding:12px 14px;background:rgba(110,29,49,.05);border-radius:10px;font-size:14.5px;color:var(--encre);}
+  .adresse-autocomplete-wrap{position:relative;}
+  .adresse-suggestions{position:absolute;top:100%;left:0;right:0;z-index:20;background:var(--porcelaine);border:1px solid rgba(110,29,49,.16);border-radius:10px;margin-top:5px;box-shadow:0 14px 30px rgba(110,29,49,.16);max-height:220px;overflow-y:auto;display:none;}
+  .adresse-suggestions.open{display:block;}
+  .adresse-suggestion-item{padding:11px 14px;font-size:13.8px;cursor:pointer;border-bottom:1px solid rgba(110,29,49,.07);}
+  .adresse-suggestion-item:last-child{border-bottom:none;}
+  .adresse-suggestion-item:hover,.adresse-suggestion-item.active{background:rgba(110,29,49,.06);}
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
   .field input{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:14.5px;font-family:'Work Sans',sans-serif;outline:none;transition:border-color .16s ease,box-shadow .16s ease;}
   .field input:focus{border-color:var(--laiton);box-shadow:0 0 0 3px rgba(199,154,86,.25);}
@@ -352,7 +358,16 @@
       <p class="sub">Entrez le code reçu par email et votre nouveau mot de passe.</p>
       <form id="resetForm">
         <div class="field"><label for="f-reset-code">Code reçu par email</label><input id="f-reset-code" type="text" name="code" inputmode="numeric" maxlength="6" required></div>
-        <div class="field"><label for="f-reset-pass">Nouveau mot de passe</label><input id="f-reset-pass" type="password" name="new_password" required autocomplete="new-password" minlength="6"></div>
+        <div class="field">
+          <label for="f-reset-pass">Nouveau mot de passe</label>
+          <div class="field-pass-wrap">
+            <input id="f-reset-pass" type="password" name="new_password" required autocomplete="new-password" minlength="6">
+            <button type="button" class="field-pass-toggle" id="fResetPassToggle" aria-label="Afficher le mot de passe" aria-pressed="false">
+              <svg class="eye" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <svg class="eye-off" viewBox="0 0 24 24" fill="none"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
         <button type="submit" class="btn" id="resetBtn">Valider le nouveau mot de passe</button>
         <p class="err" id="resetErr"></p>
         <p class="sub" id="resetMsg" style="display:none;color:var(--vert);"></p>
@@ -492,7 +507,10 @@
 
       <div class="field">
         <span class="field-label">Adresse</span>
-        <input type="text" id="profilAdresse" placeholder="Ex : 12 rue des Fleurs, 75011 Paris">
+        <div class="adresse-autocomplete-wrap">
+          <input type="text" id="profilAdresse" placeholder="Commencez à taper l'adresse…" autocomplete="off">
+          <div class="adresse-suggestions" id="adresseSuggestions"></div>
+        </div>
       </div>
 
       <div class="field" style="margin-bottom:0;">
@@ -672,6 +690,58 @@
     }).catch(function(){ msg.textContent = 'Un souci réseau est survenu.'; });
   });
   renderHoursEditor();
+
+  (function(){
+    var input = document.getElementById('profilAdresse');
+    var box = document.getElementById('adresseSuggestions');
+    var debounceTimer = null;
+    var currentItems = [];
+    var activeIndex = -1;
+
+    function renderSuggestions(items){
+      currentItems = items; activeIndex = -1;
+      box.innerHTML = '';
+      items.forEach(function(item, i){
+        var row = document.createElement('div');
+        row.className = 'adresse-suggestion-item';
+        row.textContent = item.properties.label;
+        row.addEventListener('mousedown', function(e){ e.preventDefault(); selectItem(i); });
+        box.appendChild(row);
+      });
+      box.classList.toggle('open', items.length > 0);
+    }
+    function selectItem(i){
+      if (!currentItems[i]) return;
+      input.value = currentItems[i].properties.label;
+      box.classList.remove('open');
+    }
+    function closeBox(){ box.classList.remove('open'); }
+
+    input.addEventListener('input', function(){
+      var q = input.value.trim();
+      clearTimeout(debounceTimer);
+      if (q.length < 3) { closeBox(); return; }
+      debounceTimer = setTimeout(function(){
+        fetch('https://data.geopf.fr/geocodage/search?q=' + encodeURIComponent(q) + '&limit=5&autocomplete=1')
+          .then(function(r){ return r.json(); })
+          .then(function(res){ renderSuggestions(res.features || []); })
+          .catch(function(){ closeBox(); });
+      }, 300);
+    });
+    input.addEventListener('keydown', function(e){
+      if (!box.classList.contains('open')) return;
+      var rows = box.querySelectorAll('.adresse-suggestion-item');
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = Math.min(activeIndex + 1, rows.length - 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = Math.max(activeIndex - 1, 0); }
+      else if (e.key === 'Enter') { if (activeIndex >= 0) { e.preventDefault(); selectItem(activeIndex); } return; }
+      else if (e.key === 'Escape') { closeBox(); return; }
+      else { return; }
+      rows.forEach(function(r, i){ r.classList.toggle('active', i === activeIndex); });
+    });
+    document.addEventListener('click', function(e){
+      if (e.target !== input) closeBox();
+    });
+  })();
 
   var profilPhotoData = '';
   document.getElementById('profilPhotoInput').addEventListener('change', function(e){
@@ -930,9 +1000,9 @@
     });
   });
 
-  (function(){
-    var passInput = document.getElementById('f-pass');
-    var toggle = document.getElementById('fPassToggle');
+  function wirePassToggle(inputId, toggleId){
+    var passInput = document.getElementById(inputId);
+    var toggle = document.getElementById(toggleId);
     if (passInput && toggle) {
       toggle.addEventListener('click', function(){
         var shown = passInput.type === 'text';
@@ -942,7 +1012,9 @@
         toggle.setAttribute('aria-label', shown ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
       });
     }
-  })();
+  }
+  wirePassToggle('f-pass', 'fPassToggle');
+  wirePassToggle('f-reset-pass', 'fResetPassToggle');
 
   var loginCard = document.querySelector('#loginView .login-card');
   var forgotCard = document.getElementById('forgotCard');
