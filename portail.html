@@ -77,6 +77,14 @@
   .login-card h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:26px;color:var(--laque);margin-bottom:6px;}
   .login-card p.sub{font-size:14px;color:var(--encre-doux);margin-bottom:30px;}
   .field{margin-bottom:14px;}
+  .field-label{display:block;font-size:12.5px;font-weight:600;color:var(--encre-doux);margin-bottom:6px;}
+  .profil-photo-row{display:flex;align-items:center;gap:18px;margin-bottom:22px;}
+  .profil-avatar{width:76px;height:76px;border-radius:50%;background:linear-gradient(155deg,var(--laque),var(--laque-fonce));display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 6px 16px rgba(110,29,49,.22);}
+  .profil-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+  .profil-avatar span{color:var(--ivoire);font-family:'Fraunces',Georgia,serif;font-size:27px;font-weight:600;}
+  .btn-upload-photo{display:inline-block;background:rgba(255,255,255,.6);border:1px solid rgba(110,29,49,.22);color:var(--laque);padding:9px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:border-color .15s ease,background .15s ease;}
+  .btn-upload-photo:hover{border-color:var(--laque);background:rgba(255,255,255,.9);}
+  .profil-nom-affiche{padding:12px 14px;background:rgba(110,29,49,.05);border-radius:10px;font-size:14.5px;color:var(--encre);}
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
   .field input{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:14.5px;font-family:'Work Sans',sans-serif;outline:none;transition:border-color .16s ease,box-shadow .16s ease;}
   .field input:focus{border-color:var(--laiton);box-shadow:0 0 0 3px rgba(199,154,86,.25);}
@@ -323,6 +331,32 @@
         </div>
         <button type="submit" class="btn" id="loginBtn">Se connecter</button>
         <p class="err" id="loginErr"></p>
+        <button type="button" id="forgotLink" style="background:none;border:none;color:var(--laque);font-size:13.5px;text-decoration:underline;cursor:pointer;margin-top:14px;padding:0;">Mot de passe oublié ?</button>
+      </form>
+    </div>
+
+    <div class="login-card" id="forgotCard" style="display:none;">
+      <h1>Mot de passe oublié</h1>
+      <p class="sub">Indiquez votre email, nous vous envoyons un code de réinitialisation.</p>
+      <form id="forgotForm">
+        <div class="field"><label for="f-forgot-email">Email</label><input id="f-forgot-email" type="email" name="email" required></div>
+        <button type="submit" class="btn" id="forgotBtn">Recevoir le code</button>
+        <p class="err" id="forgotErr"></p>
+        <p class="sub" id="forgotMsg" style="display:none;color:var(--vert);"></p>
+        <button type="button" id="backToLoginFromForgot" style="background:none;border:none;color:var(--laque);font-size:13.5px;text-decoration:underline;cursor:pointer;margin-top:14px;padding:0;">Retour à la connexion</button>
+      </form>
+    </div>
+
+    <div class="login-card" id="resetCard" style="display:none;">
+      <h1>Réinitialiser le mot de passe</h1>
+      <p class="sub">Entrez le code reçu par email et votre nouveau mot de passe.</p>
+      <form id="resetForm">
+        <div class="field"><label for="f-reset-code">Code reçu par email</label><input id="f-reset-code" type="text" name="code" inputmode="numeric" maxlength="6" required></div>
+        <div class="field"><label for="f-reset-pass">Nouveau mot de passe</label><input id="f-reset-pass" type="password" name="new_password" required autocomplete="new-password" minlength="6"></div>
+        <button type="submit" class="btn" id="resetBtn">Valider le nouveau mot de passe</button>
+        <p class="err" id="resetErr"></p>
+        <p class="sub" id="resetMsg" style="display:none;color:var(--vert);"></p>
+        <button type="button" id="backToLoginFromReset" style="background:none;border:none;color:var(--laque);font-size:13.5px;text-decoration:underline;cursor:pointer;margin-top:14px;padding:0;">Retour à la connexion</button>
       </form>
     </div>
   </div>
@@ -433,6 +467,41 @@
         <div class="chart-legend"><span class="dot"></span> Chiffre d'affaires</div>
       </div>
       <div id="chartWrap"></div>
+    </div>
+
+    <div class="panel anim" style="animation-delay:.46s;">
+      <h2>Profil du salon</h2>
+      <p style="margin:0 0 20px;font-size:13.5px;color:var(--encre-doux);">Ces informations sont communiquées automatiquement par l'IA à vos clientes.</p>
+
+      <div class="profil-photo-row">
+        <div class="profil-avatar" id="profilAvatarWrap">
+          <img id="profilAvatarImg" src="" alt="" style="display:none;">
+          <span id="profilAvatarInitial">?</span>
+        </div>
+        <div>
+          <label class="btn-upload-photo" for="profilPhotoInput">Changer la photo</label>
+          <input type="file" id="profilPhotoInput" accept="image/*" style="display:none;">
+          <p style="margin:7px 0 0;font-size:12px;color:var(--encre-doux);">JPG ou PNG, idéalement carrée.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Nom du salon</span>
+        <div class="profil-nom-affiche" id="profilNomAffiche">—</div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Adresse</span>
+        <input type="text" id="profilAdresse" placeholder="Ex : 12 rue des Fleurs, 75011 Paris">
+      </div>
+
+      <div class="field" style="margin-bottom:0;">
+        <span class="field-label">Téléphone du salon</span>
+        <input type="tel" id="profilTelephone" placeholder="Ex : 01 23 45 67 89">
+      </div>
+
+      <button type="button" class="btn" id="saveProfilBtn" style="width:auto;padding:11px 24px;margin-top:18px;">Enregistrer le profil</button>
+      <p class="save-msg" id="saveProfilMsg"></p>
     </div>
 
     <div class="panel anim" style="animation-delay:.5s;">
@@ -582,6 +651,16 @@
     });
     updateHoursPreview();
   }
+  document.getElementById('saveProfilBtn').addEventListener('click', function(){
+    var msg = document.getElementById('saveProfilMsg');
+    msg.textContent = 'Enregistrement…'; msg.classList.add('show');
+    fetch(API, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'update_profil', token: getToken(), adresse: document.getElementById('profilAdresse').value.trim(), telephone_salon: document.getElementById('profilTelephone').value.trim(), photo_base64: profilPhotoData })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      msg.textContent = res.success ? 'Enregistré ✓' : (res.error || 'Erreur');
+    }).catch(function(){ msg.textContent = 'Un souci réseau est survenu.'; });
+  });
   document.getElementById('saveHoursBtn').addEventListener('click', function(){
     var msg = document.getElementById('saveMsg');
     msg.textContent = 'Enregistrement…'; msg.classList.add('show');
@@ -593,6 +672,32 @@
     }).catch(function(){ msg.textContent = 'Un souci réseau est survenu.'; });
   });
   renderHoursEditor();
+
+  var profilPhotoData = '';
+  document.getElementById('profilPhotoInput').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('Merci de choisir un fichier image (JPG ou PNG).'); return; }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var MAX = 300;
+        var w = img.width, h = img.height;
+        if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+        else { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        profilPhotoData = canvas.toDataURL('image/jpeg', 0.72);
+        document.getElementById('profilAvatarImg').src = profilPhotoData;
+        document.getElementById('profilAvatarImg').style.display = 'block';
+        document.getElementById('profilAvatarInitial').style.display = 'none';
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
   var prestaData = [];
   function renderPrestations(){
@@ -768,6 +873,19 @@
       planPill.textContent = '—';
       changePlanBtn.style.display = 'none';
     }
+    document.getElementById('profilNomAffiche').textContent = data.nom_salon || '—';
+    document.getElementById('profilAdresse').value = data.adresse || '';
+    document.getElementById('profilTelephone').value = data.telephone_salon || '';
+    profilPhotoData = data.photo_base64 || '';
+    if (profilPhotoData) {
+      document.getElementById('profilAvatarImg').src = profilPhotoData;
+      document.getElementById('profilAvatarImg').style.display = 'block';
+      document.getElementById('profilAvatarInitial').style.display = 'none';
+    } else {
+      document.getElementById('profilAvatarInitial').textContent = (data.nom_salon || '?').trim().charAt(0).toUpperCase();
+      document.getElementById('profilAvatarImg').style.display = 'none';
+      document.getElementById('profilAvatarInitial').style.display = 'block';
+    }
     document.getElementById('infoEmail').textContent = data.email_contact || '—';
     document.getElementById('infoAvis').textContent = data.lien_avis_google || '—';
     document.getElementById('infoStatut').textContent = data.statut || '—';
@@ -825,6 +943,78 @@
       });
     }
   })();
+
+  var loginCard = document.querySelector('#loginView .login-card');
+  var forgotCard = document.getElementById('forgotCard');
+  var resetCard = document.getElementById('resetCard');
+  var resetEmail = '';
+  function showAuthCard(which){
+    loginCard.style.display = which === 'login' ? 'block' : 'none';
+    forgotCard.style.display = which === 'forgot' ? 'block' : 'none';
+    resetCard.style.display = which === 'reset' ? 'block' : 'none';
+  }
+  document.getElementById('forgotLink').addEventListener('click', function(){
+    document.getElementById('forgotErr').textContent = '';
+    document.getElementById('forgotMsg').style.display = 'none';
+    showAuthCard('forgot');
+  });
+  document.getElementById('backToLoginFromForgot').addEventListener('click', function(){ showAuthCard('login'); });
+  document.getElementById('backToLoginFromReset').addEventListener('click', function(){ showAuthCard('login'); });
+
+  document.getElementById('forgotForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = document.getElementById('forgotBtn');
+    var err = document.getElementById('forgotErr');
+    var msg = document.getElementById('forgotMsg');
+    err.textContent = ''; msg.style.display = 'none';
+    var email = document.getElementById('f-forgot-email').value.trim();
+    btn.disabled = true; btn.textContent = 'Envoi…';
+    fetch(API, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'forgot_password', email: email })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      btn.disabled = false; btn.textContent = 'Recevoir le code';
+      if (res.success) {
+        resetEmail = email;
+        msg.textContent = res.message || 'Si un compte existe avec cet email, un code a été envoyé.';
+        msg.style.display = 'block';
+        setTimeout(function(){ showAuthCard('reset'); }, 1200);
+      } else {
+        err.textContent = res.error || 'Une erreur est survenue.';
+      }
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Recevoir le code';
+      err.textContent = 'Un souci réseau est survenu, réessayez.';
+    });
+  });
+
+  document.getElementById('resetForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = document.getElementById('resetBtn');
+    var err = document.getElementById('resetErr');
+    var msg = document.getElementById('resetMsg');
+    err.textContent = ''; msg.style.display = 'none';
+    var code = document.getElementById('f-reset-code').value.trim();
+    var newPassword = document.getElementById('f-reset-pass').value;
+    btn.disabled = true; btn.textContent = 'Validation…';
+    fetch(API, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'reset_password', email: resetEmail, code: code, new_password: newPassword })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      btn.disabled = false; btn.textContent = 'Valider le nouveau mot de passe';
+      if (res.success) {
+        msg.textContent = res.message || 'Mot de passe mis à jour.';
+        msg.style.display = 'block';
+        document.getElementById('f-email').value = resetEmail;
+        setTimeout(function(){ showAuthCard('login'); }, 1500);
+      } else {
+        err.textContent = res.error || 'Code invalide ou expiré.';
+      }
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Valider le nouveau mot de passe';
+      err.textContent = 'Un souci réseau est survenu, réessayez.';
+    });
+  });
 
   logoutBtn.addEventListener('click', function(){
     clearToken();

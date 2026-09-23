@@ -5,7 +5,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GlowIA — Votre planning se remplit, même pendant que vous dormez</title>
 <meta name="description" content="GlowIA répond à vos clientes sur WhatsApp et Instagram, qualifie leur demande et remplit votre planning automatiquement. Spécial instituts de beauté et salons de coiffure.">
+<link rel="canonical" href="https://glow-ia.fr/">
+
+<!-- Open Graph / réseaux sociaux -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GlowIA">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://glow-ia.fr/">
+<meta property="og:title" content="GlowIA — Votre planning se remplit, même pendant que vous dormez">
+<meta property="og:description" content="GlowIA répond à vos clientes sur WhatsApp et Instagram, qualifie leur demande et remplit votre planning automatiquement. Spécial instituts de beauté et salons de coiffure.">
+<meta property="og:image" content="https://glow-ia.fr/icons/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GlowIA — Votre planning se remplit, même pendant que vous dormez">
+<meta name="twitter:description" content="GlowIA répond à vos clientes sur WhatsApp et Instagram, qualifie leur demande et remplit votre planning automatiquement.">
+<meta name="twitter:image" content="https://glow-ia.fr/icons/icon-512.png">
+
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<!-- Données structurées : aident Google à comprendre et enrichir le résultat de recherche -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "GlowIA",
+  "url": "https://glow-ia.fr/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "Assistant IA qui répond aux clientes sur WhatsApp et Instagram, qualifie leur demande et prend rendez-vous automatiquement pour les instituts de beauté et salons de coiffure.",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Classic",
+      "price": "39.99",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "39.99",
+        "priceCurrency": "EUR",
+        "billingIncrement": 1,
+        "unitText": "MONTH"
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Premium",
+      "price": "69.99",
+      "priceCurrency": "EUR",
+      "priceSpecification": {
+        "@type": "UnitPriceSpecification",
+        "price": "69.99",
+        "priceCurrency": "EUR",
+        "billingIncrement": 1,
+        "unitText": "MONTH"
+      }
+    }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "name": "UGuest",
+    "url": "https://glow-ia.fr/"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -70,6 +135,17 @@
     .rv{opacity:1 !important;transform:none !important;}
   }
 
+  /* Sur mobile, les révélations au scroll sont plus amples et plus vives : c'est le geste
+     principal de navigation sur téléphone, contrairement au survol qui n'existe pas au doigt. */
+  @media (max-width:640px){
+    .rv{transition:opacity .6s cubic-bezier(.34,1.56,.64,1),transform .6s cubic-bezier(.34,1.56,.64,1);}
+    .rv-up{transform:translateY(28px);}
+    .rv-left{transform:translateX(-26px);}
+    .rv-right{transform:translateX(26px);}
+    .rv-scale{transform:scale(.9);}
+    .card:active,.plan:active{transform:scale(.98);transition:transform .12s var(--ease);}
+  }
+
   /* ---------- Logo : bulle qui sourit ---------- */
   .brand{display:flex;align-items:center;gap:11px;text-decoration:none;}
   .brand-mark{width:34px;height:35px;flex-shrink:0;}
@@ -107,14 +183,26 @@
   .nav .btn{padding:11px 22px;font-size:14.5px;}
   .nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px;}
   .nav-toggle span{display:block;width:22px;height:2px;background:var(--laque);margin:5px 0;border-radius:2px;}
-  .mobile-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--ivoire);border-bottom:1px solid rgba(110,29,49,.12);padding:8px 32px 20px;flex-direction:column;}
+  .mobile-menu{position:absolute;top:100%;left:0;right:0;background:var(--ivoire);border-bottom:1px solid rgba(110,29,49,.12);padding:8px 32px 20px;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .28s var(--ease),transform .28s var(--ease),visibility 0s linear .28s;pointer-events:none;}
   .mobile-menu a{padding:13px 0;text-decoration:none;color:var(--encre);font-size:15.5px;border-bottom:1px solid rgba(110,29,49,.08);}
-  .mobile-menu.open{display:flex;}
+  .mobile-menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .28s var(--ease),transform .28s var(--ease);pointer-events:auto;}
   .nav-actions{display:flex;align-items:center;gap:22px;}
   .nav-login{display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;color:var(--laque);text-decoration:none;padding-right:22px;border-right:1px solid rgba(110,29,49,.16);transition:color .15s ease,opacity .15s ease;}
   .nav-login:hover{color:var(--laque-clair);opacity:.85;}
   .mobile-login{display:flex !important;align-items:center;gap:8px;color:var(--laque) !important;font-weight:600;}
   @media (max-width:1000px){.nav-links{display:none;} .nav-actions{display:none;} .nav-toggle{display:block;}}
+
+  /* Barre CTA flottante — visible seulement sur mobile, entre le hero et le formulaire final */
+  .mobile-cta-bar{
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+    background:rgba(247,239,226,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid rgba(110,29,49,.14);box-shadow:0 -10px 28px rgba(110,29,49,.14);
+    transform:translateY(110%);transition:transform .32s var(--ease);
+  }
+  .mobile-cta-bar.is-visible{transform:translateY(0);}
+  .mobile-cta-bar .btn{width:100%;}
+  @media (max-width:900px){.mobile-cta-bar{display:block;}}
 
   /* ---------- Hero ---------- */
   .hero{padding:56px 0 100px;position:relative;overflow:hidden;}
@@ -623,6 +711,7 @@
         <a href="https://buy.stripe.com/7sYeVddgbcMggYnalL7Vm01" class="btn btn-primary" target="_blank" rel="noopener">Choisir Premium</a>
       </div>
     </div>
+    <p style="text-align:center;margin-top:24px;font-size:13px;color:var(--encre-doux);">Les frais de conversation facturés par Meta (WhatsApp Business) sont répercutés séparément selon votre usage réel — généralement quelques centimes par échange. Le détail vous est communiqué avant l'activation.</p>
   </div>
 </section>
 
@@ -691,6 +780,10 @@
     <div class="meta">© 2026 UGuest — <a href="mailto:contact@glow-ia.fr">contact@glow-ia.fr</a> — <a href="/portail.html">Espace salon</a> — <a href="/mentions-legales.html">Mentions légales</a> — <a href="/cgv.html">CGV</a> — <a href="/cgu.html">CGU</a> — <a href="/politique-confidentialite.html">Confidentialité</a></div>
   </div>
 </footer>
+
+<div class="mobile-cta-bar" id="mobileCtaBar">
+  <a href="#" onclick="openDemoChat();return false;" class="btn btn-primary">Essayer la démo</a>
+</div>
 
 <script>
 (function(){
@@ -807,6 +900,25 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  /* barre CTA flottante mobile : visible entre la fin du hero et le formulaire final */
+  var mobileCtaBar = document.getElementById('mobileCtaBar');
+  if (mobileCtaBar && 'IntersectionObserver' in window) {
+    var heroEl = document.getElementById('top');
+    var contactEl = document.getElementById('contact');
+    var heroPassed = false, contactReached = false;
+    var updateCtaBar = function(){ mobileCtaBar.classList.toggle('is-visible', heroPassed && !contactReached); };
+    if (heroEl) {
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ heroPassed = !e.isIntersecting; updateCtaBar(); });
+      }, { threshold: 0 }).observe(heroEl);
+    }
+    if (contactEl) {
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ contactReached = e.isIntersecting; updateCtaBar(); });
+      }, { threshold: 0 }).observe(contactEl);
+    }
+  }
 
   /* FAQ : une seule ouverte */
   var items = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
