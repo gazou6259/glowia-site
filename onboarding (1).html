@@ -16,6 +16,8 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   html{overflow-x:hidden;}
   body{background:var(--ivoire);color:var(--encre);font-family:'Work Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  input, textarea, select, button{max-width:100%;}
+  .grid2 > *, .hours-day > *, .presta-row > *{min-width:0;}
   .wrap{max-width:640px;margin:0 auto;padding:40px 24px 80px;}
   .brand{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
   .brand-mark{width:30px;height:31px;}
@@ -70,7 +72,62 @@
   .blocked-box{background:#fff;border-radius:16px;padding:32px 26px;text-align:center;border:1px solid rgba(170,51,51,.25);}
   .blocked-box h2{font-family:'Fraunces',Georgia,serif;font-size:18px;color:#a33;margin-bottom:10px;}
   .blocked-box p{font-size:14px;color:var(--encre-doux);}
-  .blocked-box a{color:var(--laque);font-weight:600;}
+  .blocked-box a{color:var(--laque);font-weight:600;}  .field-label-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .field-label-row label{margin-bottom:0;}
+  .help-toggle{width:16px;height:16px;border-radius:50%;border:1.3px solid var(--laiton-profond);color:var(--laiton-profond);background:none;font-size:11px;font-weight:700;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;}
+  .help-toggle:hover{background:var(--laiton-profond);color:#fff;}
+  .adresse-autocomplete-wrap{position:relative;}
+  .adresse-suggestions{position:absolute;top:100%;left:0;right:0;z-index:20;background:var(--porcelaine);border:1px solid rgba(110,29,49,.16);border-radius:10px;margin-top:5px;box-shadow:0 14px 30px rgba(110,29,49,.16);max-height:220px;overflow-y:auto;display:none;}
+  .adresse-suggestions.open{display:block;}
+  .adresse-suggestion-item{padding:11px 14px;font-size:13.8px;cursor:pointer;border-bottom:1px solid rgba(110,29,49,.07);}
+  .adresse-suggestion-item:last-child{border-bottom:none;}
+  .adresse-suggestion-item:hover,.adresse-suggestion-item.active{background:rgba(110,29,49,.06);}
+  .field-hint{display:none;background:var(--porcelaine);border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--encre-doux);margin:-2px 0 14px;}
+  .field-hint.open{display:block;}
+  .field-hint b{color:var(--laque);}
+  .field-hint ol{margin:8px 0 0 18px;}
+  .field-hint li{margin-bottom:4px;}
+  .field-hint a{color:var(--laiton-profond);font-weight:600;}
+
+  .keep-note{display:flex;align-items:flex-start;gap:8px;background:rgba(199,154,86,.1);border:1px solid rgba(199,154,86,.3);border-radius:10px;padding:11px 14px;font-size:12.5px;color:var(--laiton-profond);line-height:1.5;margin-top:12px;}
+  .keep-note svg{flex-shrink:0;margin-top:1px;}
+
+  .presta-header{display:grid;grid-template-columns:1fr 110px 90px 32px;gap:10px;padding:0 0 8px;font-size:12px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;}
+  .presta-row{display:grid;grid-template-columns:1fr 110px 90px 32px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(110,29,49,.08);}
+  .presta-row:last-child{border-bottom:none;}
+  .presta-row input[type=text]{border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;outline:none;}
+  .presta-price{display:flex;align-items:center;gap:5px;min-width:0;}
+  .presta-price input{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:14px;width:64px;text-align:right;outline:none;}
+  .presta-price span{font-size:13.5px;color:var(--encre-doux);}
+  .presta-active{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--encre-doux);white-space:nowrap;}
+  .presta-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:18px;line-height:1;padding:4px;border-radius:6px;}
+  .btn-add{background:none;border:1px solid rgba(110,29,49,.25);color:var(--laque);padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  @media (max-width:600px){
+    .presta-header{display:none;}
+    .presta-row{grid-template-columns:1fr auto;grid-template-areas:"name name" "price active" "price remove";row-gap:8px;padding:14px 0;}
+    .presta-row input[type=text]{grid-area:name;}
+    .presta-price{grid-area:price;}
+    .presta-active{grid-area:active;justify-self:end;}
+    .presta-remove{grid-area:remove;justify-self:end;}
+  }
+
+  .hours-day{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(110,29,49,.08);}
+  .hours-day:last-child{border-bottom:none;}
+  .hours-day-name{font-size:14px;font-weight:600;color:var(--encre);padding-top:9px;}
+  .hours-shifts{display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .hours-shift{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .hours-shift input[type=time]{border:1px solid #e3d7c6;border-radius:8px;padding:8px 10px;font-size:13.5px;font-family:'Work Sans',sans-serif;outline:none;}
+  .hours-shift span{font-size:13px;color:var(--encre-doux);}
+  .hours-shift-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:16px;padding:2px 6px;}
+  .hours-add-shift{background:none;border:none;color:var(--laque);font-size:12.5px;font-weight:600;cursor:pointer;text-align:left;padding:2px 0;}
+  .hours-closed-toggle{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--encre-doux);padding-top:9px;white-space:nowrap;}
+  @media (max-width:600px){
+    .hours-day{grid-template-columns:1fr;gap:6px;}
+    .hours-day-name{padding-top:0;}
+    .hours-closed-toggle{padding-top:0;}
+  }
+  .hours-preview{margin-top:14px;padding:12px 14px;background:var(--porcelaine);border-radius:10px;font-size:12.5px;color:var(--encre-doux);line-height:1.6;}
+  .hours-preview strong{color:var(--laque);}
 </style>
 </head>
 <body>
@@ -109,23 +166,79 @@
   <form id="onboardingForm">
     <div class="step">
       <div class="step-head"><div class="step-num">2</div><h2>Informations du salon</h2></div>
-      <div class="field"><label>Identifiant salon (slug)</label><input type="text" name="salon_id" placeholder="minuscules, sans espaces, ex: gazou" required></div>
+      <div class="field">
+        <div class="field-label-row"><label>Identifiant salon (slug)</label><button type="button" class="help-toggle" data-hint="hint-slug">?</button></div>
+        <input type="text" name="salon_id" placeholder="minuscules, sans espaces, ex: gazou" required>
+        <div class="field-hint" id="hint-slug">C'est un identifiant technique unique pour votre salon, utilisé en interne. <b>Uniquement des minuscules, des chiffres ou des tirets, sans espace ni accent.</b> Par exemple : <code>belle-etoile</code> ou <code>salon-camille</code>. Vous ne le voyez nulle part ailleurs, ce n'est pas visible par vos clientes.</div>
+      </div>
       <div class="grid2">
         <div class="field"><label>Nom du salon</label><input type="text" name="nom_salon" required></div>
         <div class="field"><label>Nom de la gérante / du gérant</label><input type="text" name="gerante_nom" required></div>
       </div>
-      <div class="field"><label>Email de contact</label><input type="email" name="email_contact" required></div>
-      <div class="field"><label>Horaires d'ouverture</label><textarea name="horaires" required></textarea></div>
-      <div class="field"><label>Lien avis Google (facultatif)</label><input type="text" name="lien_avis_google"></div>
-      <div class="field"><label>Prestations et tarifs (facultatif)</label><textarea name="prestations_brutes" placeholder="Une par ligne, ex: Pose gel - 45€ - 1h30"></textarea></div>
+      <div class="field">
+        <label>Adresse du salon</label>
+        <div class="adresse-autocomplete-wrap">
+          <input type="text" name="adresse" id="adresseInput" placeholder="Commencez à taper l'adresse…" autocomplete="off">
+          <div class="adresse-suggestions" id="adresseSuggestions"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Téléphone du salon (facultatif)</label>
+        <input type="tel" name="telephone_salon" placeholder="Ex : 01 23 45 67 89">
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Email de contact</label><button type="button" class="help-toggle" data-hint="hint-emailcontact">?</button></div>
+        <input type="email" name="email_contact" required>
+        <div class="field-hint" id="hint-emailcontact">L'email professionnel de votre salon, celui que vos clientes ou vos partenaires peuvent utiliser pour vous contacter. Il peut être différent de votre email de connexion au portail (plus bas).</div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Lien avis Google (facultatif)</label><button type="button" class="help-toggle" data-hint="hint-avis">?</button></div>
+        <input type="text" name="lien_avis_google">
+        <div class="field-hint" id="hint-avis">Le lien qui permet à une cliente de laisser un avis Google sur votre salon en un clic. Pour le trouver : cherchez votre salon sur Google, cliquez sur <b>« Rédiger un avis »</b>, puis copiez l'adresse qui s'affiche dans la barre du navigateur. Si vous ne l'avez pas sous la main, laissez vide, vous pourrez l'ajouter plus tard.</div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Horaires d'ouverture</label><button type="button" class="help-toggle" data-hint="hint-horaires">?</button></div>
+        <div id="hoursEditor"></div>
+        <div class="hours-preview" id="hoursPreview"></div>
+        <div class="field-hint" id="hint-horaires">Cochez « Fermé » pour les jours où le salon n'ouvre pas. Sinon, indiquez les heures — vous pouvez ajouter une pause déjeuner ou un créneau supplémentaire si besoin.</div>
+      </div>
+      <div class="field">
+        <div class="field-label-row"><label>Prestations et tarifs (facultatif)</label><button type="button" class="help-toggle" data-hint="hint-prestations">?</button></div>
+        <div class="presta-header"><span>Prestation</span><span>Prix</span><span>Statut</span><span></span></div>
+        <div id="prestaList"></div>
+        <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
+        <div class="field-hint" id="hint-prestations">C'est ce que l'IA proposera à vos clientes quand elles demanderont un rendez-vous. Vous pouvez en ajouter autant que vous voulez, ou laisser vide et les ajouter plus tard.</div>
+      </div>
+      <div class="keep-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#A97C33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.3"/></svg>
+        Rien n'est figé : vous pourrez modifier vos horaires, vos prestations et toutes vos informations à tout moment depuis votre tableau de bord, une fois votre salon créé.
+      </div>
     </div>
 
     <div class="step">
       <div class="step-head"><div class="step-num">3</div><h2>Accès et paiement</h2></div>
       <div class="grid2">
-        <div class="field"><label>Telegram chat ID de la gérante</label><input type="text" name="telegram_chat_id" required></div>
-        <div class="field"><label>ID Google Calendar (email)</label><input type="text" name="google_calendar_id" required></div>
+        <div class="field">
+          <div class="field-label-row"><label>Telegram chat ID de la gérante</label><button type="button" class="help-toggle" data-hint="hint-telegram">?</button></div>
+          <input type="text" name="telegram_chat_id" required>
+        </div>
+        <div class="field">
+          <div class="field-label-row"><label>ID Google Calendar (email)</label><button type="button" class="help-toggle" data-hint="hint-calendar">?</button></div>
+          <input type="text" name="google_calendar_id" required>
+        </div>
       </div>
+      <div class="field-hint" id="hint-telegram" style="margin-top:-8px;">
+        C'est ce qui permet à GlowIA de vous prévenir sur Telegram quand une situation demande votre attention. Pour le récupérer, c'est très rapide :
+        <ol>
+          <li>Ouvrez l'application <b>Telegram</b> sur votre téléphone</li>
+          <li>Cherchez le bot <b>@userinfobot</b> (avec le petit robot 🤖) et ouvrez la conversation</li>
+          <li>Appuyez sur <b>« Démarrer »</b> ou envoyez-lui n'importe quel message</li>
+          <li>Il vous répond instantanément avec votre <b>ID</b> — une suite de chiffres, par exemple <code>6934923545</code></li>
+          <li>Copiez ce numéro et collez-le ici</li>
+        </ol>
+        Si vous n'avez pas Telegram, téléchargez-le gratuitement (App Store ou Google Play) — c'est le seul moyen de recevoir ces alertes.
+      </div>
+      <div class="field-hint" id="hint-calendar" style="margin-top:-8px;">Généralement, c'est simplement votre adresse <b>Gmail</b> (la même que celle de votre compte Google Agenda). GlowIA s'en sert pour consulter vos disponibilités réelles et y ajouter les rendez-vous pris automatiquement.</div>
       <div class="grid2">
         <div class="field">
           <label>Email de connexion au portail</label>
@@ -165,10 +278,10 @@
 
 <script>
   var META_APP_ID = '1144959613784009';
-  var META_CONFIG_ID = '2922643884755372';
+  var META_CONFIG_ID = '1108063858414609';
   var WEBHOOK_URL = 'https://iagentleman.app.n8n.cloud/webhook/onboarding-complet-glowia';
 
-  var metaCode = null;
+  var metaData = null;
   var verified = null; // { formule, stripe_customer_id, stripe_subscription_id, session_id, email }
 
   var blockedBox = document.getElementById('blockedBox');
@@ -293,6 +406,185 @@
     });
   });
 
+  document.querySelectorAll('.help-toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var hint = document.getElementById(btn.getAttribute('data-hint'));
+      if (hint) { hint.classList.toggle('open'); }
+    });
+  });
+
+  var DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+  var hoursState = DAYS.map(function(){ return { closed: true, shifts: [{start:'09:00', end:'19:00'}] }; });
+
+  function formatTime(t){
+    var parts = t.split(':'); var h = parseInt(parts[0],10), m = parts[1];
+    return m === '00' ? h + 'h' : h + 'h' + m;
+  }
+  function updateHoursPreview(){
+    var lines = DAYS.map(function(day, i){
+      var d = hoursState[i];
+      if (d.closed) return day + ' : fermé';
+      var shifts = d.shifts.map(function(s){ return formatTime(s.start) + '-' + formatTime(s.end); }).join(', ');
+      return day + ' : ' + shifts;
+    });
+    document.getElementById('hoursPreview').innerHTML = '<strong>Aperçu :</strong> ' + lines.join(' · ');
+  }
+  function composeHoursText(){
+    return DAYS.map(function(day, i){
+      var d = hoursState[i];
+      if (d.closed) return day + ' : fermé';
+      return day + ' : ' + d.shifts.map(function(s){ return formatTime(s.start) + '-' + formatTime(s.end); }).join(', ');
+    }).join('. ') + '.';
+  }
+  (function(){
+    var input = document.getElementById('adresseInput');
+    var box = document.getElementById('adresseSuggestions');
+    if (!input || !box) return;
+    var debounceTimer = null;
+    var currentItems = [];
+    var activeIndex = -1;
+
+    function renderSuggestions(items){
+      currentItems = items; activeIndex = -1;
+      box.innerHTML = '';
+      items.forEach(function(item, i){
+        var row = document.createElement('div');
+        row.className = 'adresse-suggestion-item';
+        row.textContent = item.properties.label;
+        row.addEventListener('mousedown', function(e){ e.preventDefault(); selectItem(i); });
+        box.appendChild(row);
+      });
+      box.classList.toggle('open', items.length > 0);
+    }
+    function selectItem(i){
+      if (!currentItems[i]) return;
+      input.value = currentItems[i].properties.label;
+      box.classList.remove('open');
+    }
+    function closeBox(){ box.classList.remove('open'); }
+
+    input.addEventListener('input', function(){
+      var q = input.value.trim();
+      clearTimeout(debounceTimer);
+      if (q.length < 3) { closeBox(); return; }
+      debounceTimer = setTimeout(function(){
+        fetch('https://data.geopf.fr/geocodage/search?q=' + encodeURIComponent(q) + '&limit=5&autocomplete=1')
+          .then(function(r){ return r.json(); })
+          .then(function(res){ renderSuggestions(res.features || []); })
+          .catch(function(){ closeBox(); });
+      }, 300);
+    });
+    input.addEventListener('keydown', function(e){
+      if (!box.classList.contains('open')) return;
+      var rows = box.querySelectorAll('.adresse-suggestion-item');
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = Math.min(activeIndex + 1, rows.length - 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = Math.max(activeIndex - 1, 0); }
+      else if (e.key === 'Enter') { if (activeIndex >= 0) { e.preventDefault(); selectItem(activeIndex); } return; }
+      else if (e.key === 'Escape') { closeBox(); return; }
+      else { return; }
+      rows.forEach(function(r, i){ r.classList.toggle('active', i === activeIndex); });
+    });
+    document.addEventListener('click', function(e){
+      if (e.target !== input) closeBox();
+    });
+  })();
+
+  function renderHoursEditor(){
+    var wrap = document.getElementById('hoursEditor');
+    wrap.innerHTML = '';
+    DAYS.forEach(function(day, i){
+      var d = hoursState[i];
+      var row = document.createElement('div');
+      row.className = 'hours-day';
+      var shiftsHtml = d.shifts.map(function(s, si){
+        return '<div class="hours-shift">' +
+          '<input type="time" value="' + s.start + '" data-day="' + i + '" data-shift="' + si + '" data-f="start">' +
+          '<span>–</span>' +
+          '<input type="time" value="' + s.end + '" data-day="' + i + '" data-shift="' + si + '" data-f="end">' +
+          (d.shifts.length > 1 ? '<button type="button" class="hours-shift-remove" data-day="' + i + '" data-shift="' + si + '" title="Retirer ce créneau">×</button>' : '') +
+        '</div>';
+      }).join('');
+      row.innerHTML =
+        '<div class="hours-day-name">' + day + '</div>' +
+        '<div class="hours-shifts" style="' + (d.closed ? 'display:none;' : '') + '" data-shifts-for="' + i + '">' +
+          shiftsHtml +
+          '<button type="button" class="hours-add-shift" data-day="' + i + '">+ Ajouter un créneau</button>' +
+        '</div>' +
+        '<label class="hours-closed-toggle"><input type="checkbox" ' + (d.closed ? 'checked' : '') + ' data-day="' + i + '" data-f="closed"> Fermé</label>';
+      wrap.appendChild(row);
+    });
+
+    Array.prototype.forEach.call(wrap.querySelectorAll('input[type=time]'), function(inp){
+      inp.addEventListener('input', function(){
+        var day = parseInt(inp.getAttribute('data-day'),10), si = parseInt(inp.getAttribute('data-shift'),10), f = inp.getAttribute('data-f');
+        hoursState[day].shifts[si][f] = inp.value;
+        updateHoursPreview();
+      });
+    });
+    Array.prototype.forEach.call(wrap.querySelectorAll('input[data-f=closed]'), function(cb){
+      cb.addEventListener('change', function(){
+        var day = parseInt(cb.getAttribute('data-day'),10);
+        hoursState[day].closed = cb.checked;
+        renderHoursEditor(); updateHoursPreview();
+      });
+    });
+    Array.prototype.forEach.call(wrap.querySelectorAll('.hours-add-shift'), function(btn){
+      btn.addEventListener('click', function(){
+        var day = parseInt(btn.getAttribute('data-day'),10);
+        hoursState[day].shifts.push({start:'13:00', end:'19:00'});
+        renderHoursEditor(); updateHoursPreview();
+      });
+    });
+    Array.prototype.forEach.call(wrap.querySelectorAll('.hours-shift-remove'), function(btn){
+      btn.addEventListener('click', function(){
+        var day = parseInt(btn.getAttribute('data-day'),10), si = parseInt(btn.getAttribute('data-shift'),10);
+        hoursState[day].shifts.splice(si, 1);
+        renderHoursEditor(); updateHoursPreview();
+      });
+    });
+    updateHoursPreview();
+  }
+  renderHoursEditor();
+
+  var prestaData = [];
+  function renderPrestations(){
+    var list = document.getElementById('prestaList');
+    list.innerHTML = '';
+    prestaData.forEach(function(p, i){
+      var row = document.createElement('div');
+      row.className = 'presta-row';
+      row.innerHTML =
+        '<input type="text" value="' + (p.service_name || '').replace(/"/g,'&quot;') + '" data-i="' + i + '" data-f="service_name" placeholder="Nom de la prestation">' +
+        '<div class="presta-price"><input type="number" min="0" step="0.5" value="' + (p.price_eur != null ? p.price_eur : '') + '" data-i="' + i + '" data-f="price_eur"><span>€</span></div>' +
+        '<label class="presta-active"><input type="checkbox" ' + (p.active !== false ? 'checked' : '') + ' data-i="' + i + '" data-f="active"> Active</label>' +
+        '<button type="button" class="presta-remove" data-i="' + i + '" title="Supprimer">×</button>';
+      list.appendChild(row);
+    });
+    Array.prototype.forEach.call(list.querySelectorAll('input'), function(inp){
+      inp.addEventListener('input', function(){
+        var i = parseInt(inp.getAttribute('data-i'), 10), f = inp.getAttribute('data-f');
+        prestaData[i][f] = f === 'active' ? inp.checked : inp.value;
+      });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll('.presta-remove'), function(btn){
+      btn.addEventListener('click', function(){
+        var i = parseInt(btn.getAttribute('data-i'), 10);
+        prestaData.splice(i, 1);
+        renderPrestations();
+      });
+    });
+  }
+  document.getElementById('addPrestaBtn').addEventListener('click', function(){
+    prestaData.push({ service_name: '', price_eur: '', active: true });
+    renderPrestations();
+  });
+  function composePrestationsText(){
+    return prestaData
+      .filter(function(p){ return p.service_name && p.service_name.trim(); })
+      .map(function(p){ return p.service_name.trim() + ' - ' + (Number(p.price_eur) || 0) + '€'; })
+      .join('\n');
+  }
+
   var metaBtn = document.getElementById('metaBtn');
   var metaStatus = document.getElementById('metaStatus');
   var stepNum1 = document.getElementById('stepNum1');
@@ -305,17 +597,37 @@
     metaBtn.textContent = 'Connexion en cours…';
 
     FB.login(function(response) {
-      metaBtn.disabled = false;
-      metaBtn.textContent = 'Connecter WhatsApp & Instagram';
       if (response.authResponse && response.authResponse.code) {
-        metaCode = response.authResponse.code;
-        metaStatus.className = 'meta-status ok';
-        metaStatus.textContent = '✓ Comptes connectés. Complétez le formulaire ci-dessous puis validez.';
-        stepNum1.classList.add('done');
-        stepNum1.textContent = '✓';
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Créer le salon';
+        metaStatus.className = 'meta-status';
+        metaStatus.textContent = 'Finalisation de la connexion…';
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'exchange_meta_code', code: response.authResponse.code })
+        }).then(function(r){ return r.json(); }).then(function(data){
+          metaBtn.disabled = false;
+          metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+          if (data.whatsapp_phone_id) {
+            metaData = data;
+            metaStatus.className = 'meta-status ok';
+            metaStatus.textContent = '✓ Comptes connectés (' + (data.whatsapp_number || '') + '). Complétez le formulaire ci-dessous puis validez.';
+            stepNum1.classList.add('done');
+            stepNum1.textContent = '✓';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Créer le salon';
+          } else {
+            metaStatus.className = 'meta-status err';
+            metaStatus.textContent = 'Connexion Meta incomplète, réessayez.';
+          }
+        }).catch(function(){
+          metaBtn.disabled = false;
+          metaBtn.textContent = 'Connecter WhatsApp & Instagram';
+          metaStatus.className = 'meta-status err';
+          metaStatus.textContent = 'Souci réseau pendant la connexion Meta, réessayez.';
+        });
       } else {
+        metaBtn.disabled = false;
+        metaBtn.textContent = 'Connecter WhatsApp & Instagram';
         metaStatus.className = 'meta-status err';
         metaStatus.textContent = 'Connexion annulée ou refusée.';
       }
@@ -323,7 +635,6 @@
       config_id: META_CONFIG_ID,
       response_type: 'code',
       override_default_response_type: true,
-      redirect_uri: window.location.origin + window.location.pathname,
       extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' }
     });
   });
@@ -344,7 +655,7 @@
 
   document.getElementById('onboardingForm').addEventListener('submit', function(e){
     e.preventDefault();
-    if (!metaCode) return;
+    if (!metaData) return;
     if (!emailVerified) {
       var finalStatusE = document.getElementById('finalStatus');
       finalStatusE.className = 'final-status err';
@@ -365,7 +676,13 @@
     finalStatus.textContent = '';
 
     var data = Object.fromEntries(new FormData(e.target).entries());
-    data.code = metaCode;
+    data.horaires = composeHoursText();
+    data.prestations_brutes = composePrestationsText();
+    data.whatsapp_phone_id = metaData.whatsapp_phone_id;
+    data.whatsapp_number = metaData.whatsapp_number;
+    data.instagram_id = metaData.instagram_id;
+    data.instagram_username = metaData.instagram_username;
+    data.instagram_access_token = metaData.instagram_access_token;
     data.formule = verified.formule;
     data.stripe_customer_id = verified.stripe_customer_id;
     data.stripe_subscription_id = verified.stripe_subscription_id;
@@ -380,7 +697,9 @@
       submitBtn.textContent = 'Créer le salon';
       if (res.success) {
         finalStatus.className = 'final-status ok';
-        finalStatus.textContent = '✓ Salon créé et connecté avec succès !';
+        finalStatus.textContent = '✓ Salon créé et connecté avec succès ! Redirection vers le portail…';
+        submitBtn.textContent = 'Redirection…';
+        setTimeout(function(){ window.location.href = 'portail.html'; }, 2000);
       } else {
         finalStatus.className = 'final-status err';
         finalStatus.textContent = 'Erreur : ' + (res.message || 'réessayez.');
