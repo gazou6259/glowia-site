@@ -97,7 +97,7 @@
   .keep-note svg{flex-shrink:0;margin-top:1px;}
 
   .presta-header{display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;padding:0 0 8px;font-size:12px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;}
-  .presta-row{background:var(--porcelaine);border:1px solid rgba(110,29,49,.08);border-radius:12px;display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;align-items:center;padding:12px 14px;margin-bottom:8px;}
+  .presta-row{position:relative;background:var(--porcelaine);border:1px solid rgba(110,29,49,.08);border-radius:12px;display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;align-items:center;padding:12px 14px;margin-bottom:8px;}
   .presta-row:last-child{margin-bottom:0;}
   .presta-row input[type=text]{border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;outline:none;background:#fff;}
   .presta-row select{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:13.5px;font-family:'Work Sans',sans-serif;width:100%;outline:none;background:#fff;}
@@ -109,12 +109,13 @@
   .btn-add{background:none;border:1px solid rgba(110,29,49,.25);color:var(--laque);padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
   @media (max-width:600px){
     .presta-header{display:none;}
-    .presta-row{grid-template-columns:1fr auto;grid-template-areas:"name name" "duree duree" "price active" "price remove";row-gap:9px;padding:14px;}
+    .presta-row{grid-template-columns:1fr 104px;grid-template-areas:"name name" "duree price" "active active";row-gap:10px;column-gap:10px;padding:14px 42px 14px 14px;}
     .presta-row input[type=text]{grid-area:name;}
     .presta-row select{grid-area:duree;}
-    .presta-price{grid-area:price;}
-    .presta-active{grid-area:active;justify-self:end;}
-    .presta-remove{grid-area:remove;justify-self:end;}
+    .presta-price{grid-area:price;justify-self:end;}
+    .presta-price input{width:72px;}
+    .presta-active{grid-area:active;}
+    .presta-remove{position:absolute;top:10px;right:8px;}
   }
 
   .hours-list{background:var(--porcelaine);border:1px solid rgba(110,29,49,.08);border-radius:12px;overflow:hidden;}
