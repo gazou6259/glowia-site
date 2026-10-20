@@ -244,13 +244,14 @@
   }
 
   /* prestations */
-  .presta-header{display:grid;grid-template-columns:1fr 110px 90px 32px;gap:10px;padding:0 0 8px;font-size:12px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;}
-  .presta-row{display:grid;grid-template-columns:1fr 110px 90px 32px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(110,29,49,.08);}
-  .presta-row:last-child{border-bottom:none;}
-  .presta-row input[type=text]{border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;outline:none;transition:border-color .16s ease;}
+  .presta-header{display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;padding:0 0 8px;font-size:12px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;}
+  .presta-row{position:relative;background:var(--porcelaine);border:1px solid rgba(110,29,49,.08);border-radius:12px;display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;align-items:center;padding:12px 14px;margin-bottom:8px;}
+  .presta-row:last-child{margin-bottom:0;}
+  .presta-row input[type=text]{border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;outline:none;transition:border-color .16s ease;background:#fff;}
   .presta-row input[type=text]:focus{border-color:var(--laiton);}
-  .presta-price{display:flex;align-items:center;gap:5px;}
-  .presta-price input{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:14px;width:64px;text-align:right;outline:none;}
+  .presta-row select{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:13.5px;font-family:'Work Sans',sans-serif;width:100%;outline:none;background:#fff;}
+  .presta-price{display:flex;align-items:center;gap:5px;min-width:0;}
+  .presta-price input{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:14px;width:64px;text-align:right;outline:none;background:#fff;}
   .presta-price input:focus{border-color:var(--laiton);}
   .presta-price span{font-size:13.5px;color:var(--encre-doux);}
   .presta-active{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--encre-doux);white-space:nowrap;}
@@ -261,36 +262,38 @@
 
   @media (max-width:600px){
     .presta-header{display:none;}
-    .presta-row{
-      grid-template-columns:1fr auto;
-      grid-template-areas:"name name" "price active" "price remove";
-      row-gap:8px;padding:14px 0;
-    }
+    .presta-row{grid-template-columns:1fr 104px;grid-template-areas:"name name" "duree price" "active active";row-gap:10px;column-gap:10px;padding:14px 42px 14px 14px;}
     .presta-row input[type=text]{grid-area:name;}
-    .presta-price{grid-area:price;}
-    .presta-active{grid-area:active;justify-self:end;}
-    .presta-remove{grid-area:remove;justify-self:end;}
+    .presta-row select{grid-area:duree;}
+    .presta-price{grid-area:price;justify-self:end;}
+    .presta-price input{width:72px;}
+    .presta-active{grid-area:active;}
+    .presta-remove{position:absolute;top:10px;right:8px;}
   }
 
   /* horaires */
-  .hours-day{display:grid;grid-template-columns:120px 1fr auto;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(110,29,49,.08);}
+  .hours-list{background:var(--ivoire);border:1px solid rgba(110,29,49,.08);border-radius:12px;overflow:hidden;}
+  .hours-day{padding:11px 14px;border-bottom:1px solid rgba(110,29,49,.08);}
   .hours-day:last-child{border-bottom:none;}
-  .hours-day-name{font-size:14.5px;font-weight:600;color:var(--encre);padding-top:9px;}
-  .hours-shifts{display:flex;flex-direction:column;gap:8px;}
-  .hours-shift{display:flex;align-items:center;gap:8px;}
-  .hours-shift input[type=time]{border:1px solid #e3d7c6;border-radius:8px;padding:8px 10px;font-size:13.5px;font-family:'Work Sans',sans-serif;outline:none;}
+  .hours-day-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .hours-day-name{font-size:13.5px;font-weight:600;color:var(--encre);flex-shrink:0;}
+  .hours-seg{display:inline-flex;background:#e9ddc9;border-radius:999px;padding:3px;flex-shrink:0;}
+  .hours-seg-btn{border:none;background:none;padding:6px 13px;font-size:12px;font-weight:700;border-radius:999px;cursor:pointer;color:var(--encre-doux);white-space:nowrap;line-height:1.2;}
+  .hours-seg-btn.active-open{background:#3d7a4a;color:#fff;}
+  .hours-seg-btn.active-closed{background:#a33;color:#fff;}
+  .hours-shifts{display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:11px;}
+  .hours-shift{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .hours-shift input[type=time]{border:1px solid #e3d7c6;border-radius:8px;padding:7px 9px;font-size:13px;font-family:'Work Sans',sans-serif;outline:none;background:#fff;}
   .hours-shift input[type=time]:focus{border-color:var(--laiton);}
   .hours-shift span{font-size:13px;color:var(--encre-doux);}
   .hours-shift-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:16px;padding:2px 6px;}
-  .hours-add-shift{background:none;border:none;color:var(--laque);font-size:13px;font-weight:600;cursor:pointer;text-align:left;padding:2px 0;}
+  .hours-add-shift{background:none;border:none;color:var(--laque);font-size:12px;font-weight:600;cursor:pointer;text-align:left;padding:2px 0;}
   .hours-add-shift:hover{text-decoration:underline;}
-  .hours-closed-toggle{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--encre-doux);padding-top:9px;white-space:nowrap;}
-  @media (max-width:600px){
-    .hours-day{grid-template-columns:1fr;gap:6px;}
-    .hours-day-name{padding-top:0;}
-    .hours-closed-toggle{padding-top:0;}
+  @media (max-width:420px){
+    .hours-day-name{font-size:12.5px;}
+    .hours-seg-btn{padding:6px 10px;font-size:11.5px;}
   }
-  .hours-preview{margin-top:18px;padding:14px 16px;background:var(--ivoire);border-radius:10px;font-size:13px;color:var(--encre-doux);line-height:1.6;}
+  .hours-preview{margin-top:14px;padding:12px 14px;background:rgba(110,29,49,.05);border-radius:10px;font-size:12.5px;color:var(--encre-doux);line-height:1.6;}
   .hours-preview strong{color:var(--laque);}
 </style>
 </head>
@@ -531,7 +534,7 @@
 
     <div class="panel anim" style="animation-delay:.5s;">
       <h2>Vos horaires d'ouverture</h2>
-      <div id="hoursEditor"></div>
+      <div id="hoursEditor" class="hours-list"></div>
       <div class="hours-preview" id="hoursPreview"></div>
       <button type="button" class="btn" id="saveHoursBtn" style="width:auto;padding:11px 24px;margin-top:16px;">Enregistrer</button>
       <p class="save-msg" id="saveMsg"></p>
@@ -542,7 +545,7 @@
         <h2>Vos prestations et tarifs</h2>
         <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
       </div>
-      <div class="presta-header"><span>Prestation</span><span>Prix</span><span>Statut</span><span></span></div>
+      <div class="presta-header"><span>Prestation</span><span>Durée</span><span>Prix</span><span>Statut</span><span></span></div>
       <div id="prestaList"></div>
       <button type="button" class="btn" id="savePrestaBtn" style="width:auto;padding:11px 24px;margin-top:18px;">Enregistrer les prestations</button>
       <p class="save-msg" id="prestaMsg"></p>
@@ -637,12 +640,17 @@
         '</div>';
       }).join('');
       row.innerHTML =
-        '<div class="hours-day-name">' + day + '</div>' +
+        '<div class="hours-day-top">' +
+          '<div class="hours-day-name">' + day + '</div>' +
+          '<div class="hours-seg" data-day="' + i + '">' +
+            '<button type="button" class="hours-seg-btn' + (!d.closed ? ' active-open' : '') + '" data-day="' + i + '" data-val="open">Ouvert</button>' +
+            '<button type="button" class="hours-seg-btn' + (d.closed ? ' active-closed' : '') + '" data-day="' + i + '" data-val="closed">Fermé</button>' +
+          '</div>' +
+        '</div>' +
         '<div class="hours-shifts" style="' + (d.closed ? 'display:none;' : '') + '" data-shifts-for="' + i + '">' +
           shiftsHtml +
           '<button type="button" class="hours-add-shift" data-day="' + i + '">+ Ajouter une pause déjeuner / un créneau</button>' +
-        '</div>' +
-        '<label class="hours-closed-toggle"><input type="checkbox" ' + (d.closed ? 'checked' : '') + ' data-day="' + i + '" data-f="closed"> Fermé</label>';
+        '</div>';
       wrap.appendChild(row);
     });
 
@@ -653,10 +661,10 @@
         updateHoursPreview();
       });
     });
-    Array.prototype.forEach.call(wrap.querySelectorAll('input[data-f=closed]'), function(cb){
-      cb.addEventListener('change', function(){
-        var day = parseInt(cb.getAttribute('data-day'),10);
-        hoursState[day].closed = cb.checked;
+    Array.prototype.forEach.call(wrap.querySelectorAll('.hours-seg-btn'), function(btn){
+      btn.addEventListener('click', function(){
+        var day = parseInt(btn.getAttribute('data-day'),10);
+        hoursState[day].closed = (btn.getAttribute('data-val') === 'closed');
         renderHoursEditor(); updateHoursPreview();
       });
     });
@@ -776,6 +784,12 @@
     reader.readAsDataURL(file);
   });
 
+  var DUREES = [15,20,30,45,60,75,90,105,120,150,180];
+  function formatDuree(min){
+    if (min < 60) return min + ' min';
+    var h = Math.floor(min/60), r = min % 60;
+    return r === 0 ? h + 'h' : h + 'h' + r;
+  }
   var prestaData = [];
   function renderPrestations(){
     var list = document.getElementById('prestaList');
@@ -783,17 +797,22 @@
     prestaData.forEach(function(p, i){
       var row = document.createElement('div');
       row.className = 'presta-row';
+      var dureeOptions = DUREES.map(function(m){
+        return '<option value="' + m + '"' + (Number(p.duree_min) === m ? ' selected' : '') + '>' + formatDuree(m) + '</option>';
+      }).join('');
       row.innerHTML =
         '<input type="text" value="' + (p.service_name || '').replace(/"/g,'&quot;') + '" data-i="' + i + '" data-f="service_name" placeholder="Nom de la prestation">' +
+        '<select data-i="' + i + '" data-f="duree_min">' + dureeOptions + '</select>' +
         '<div class="presta-price"><input type="number" min="0" step="0.5" value="' + (p.price_eur != null ? p.price_eur : '') + '" data-i="' + i + '" data-f="price_eur"><span>€</span></div>' +
         '<label class="presta-active"><input type="checkbox" ' + (p.active !== false ? 'checked' : '') + ' data-i="' + i + '" data-f="active"> Active</label>' +
         '<button type="button" class="presta-remove" data-i="' + i + '" title="Supprimer">×</button>';
       list.appendChild(row);
     });
-    Array.prototype.forEach.call(list.querySelectorAll('input'), function(inp){
-      inp.addEventListener('input', function(){
+    Array.prototype.forEach.call(list.querySelectorAll('input, select'), function(inp){
+      var evt = inp.tagName === 'SELECT' ? 'change' : 'input';
+      inp.addEventListener(evt, function(){
         var i = parseInt(inp.getAttribute('data-i'), 10), f = inp.getAttribute('data-f');
-        prestaData[i][f] = f === 'active' ? inp.checked : (f === 'price_eur' ? inp.value : inp.value);
+        prestaData[i][f] = f === 'active' ? inp.checked : inp.value;
       });
     });
     Array.prototype.forEach.call(list.querySelectorAll('.presta-remove'), function(btn){
@@ -805,13 +824,13 @@
     });
   }
   document.getElementById('addPrestaBtn').addEventListener('click', function(){
-    prestaData.push({ service_name: '', price_eur: '', active: true });
+    prestaData.push({ service_name: '', duree_min: 30, price_eur: '', active: true });
     renderPrestations();
   });
   document.getElementById('savePrestaBtn').addEventListener('click', function(){
     var msg = document.getElementById('prestaMsg');
     var clean = prestaData.filter(function(p){ return p.service_name && p.service_name.trim(); })
-      .map(function(p){ return { service_name: p.service_name.trim(), price_eur: Number(p.price_eur) || 0, active: p.active !== false }; });
+      .map(function(p){ return { service_name: p.service_name.trim(), duree_min: Number(p.duree_min) || 30, price_eur: Number(p.price_eur) || 0, active: p.active !== false }; });
     msg.textContent = 'Enregistrement…'; msg.classList.add('show');
     fetch(API, {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -971,7 +990,7 @@
     document.getElementById('infoAvis').textContent = data.lien_avis_google || '—';
     document.getElementById('infoStatut').textContent = data.statut || '—';
     if (data.monthly) { renderChart(data.monthly); }
-    prestaData = (data.prestations || []).map(function(p){ return { service_name: p.service_name, price_eur: p.price_eur, active: p.active }; });
+    prestaData = (data.prestations || []).map(function(p){ return { service_name: p.service_name, duree_min: p.duration_min || 30, price_eur: p.price_eur, active: p.active }; });
     renderPrestations();
     checkInstallBanner();
   }
