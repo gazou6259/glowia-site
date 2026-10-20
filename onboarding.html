@@ -40,6 +40,7 @@
   .meta-status{margin-top:12px;font-size:13.5px;min-height:1.2em;}
   .meta-status.ok{color:#3d7a4a;font-weight:600;}
   .meta-status.err{color:#a33;}
+  .spam-hint{font-size:12.5px;color:var(--laiton-profond);background:rgba(199,154,86,.1);border:1px solid rgba(199,154,86,.3);border-radius:8px;padding:8px 11px;margin-top:8px;line-height:1.5;}
   .connect-tip{display:flex;gap:10px;align-items:flex-start;background:rgba(199,154,86,.1);border:1px solid rgba(199,154,86,.3);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--encre-doux);margin-top:14px;}
   .connect-tip svg{flex-shrink:0;margin-top:2px;}
   .connect-tip b{color:var(--laque);}
@@ -262,6 +263,7 @@
             <button type="button" class="btn-meta" id="sendCodeBtn" style="padding:9px 16px;font-size:13px;">Vérifier cet email</button>
             <p class="meta-status" id="emailVerifyStatus"></p>
           </div>
+          <p class="spam-hint" id="spamHint" style="display:none;">📩 Le code n'arrive pas ? Pensez à vérifier vos <b>spams / courriers indésirables</b> — surtout la première fois.</p>
           <div class="grid2" id="emailCodeRow" style="display:none;margin-top:8px;">
             <div class="field" style="margin-bottom:0;"><input type="text" id="emailCodeInput" placeholder="Code reçu par email" maxlength="6"></div>
             <button type="button" class="btn-meta" id="confirmCodeBtn" style="padding:11px 16px;font-size:13px;">Confirmer</button>
@@ -378,6 +380,7 @@
         emailVerifyStatus.className = 'meta-status ok';
         emailVerifyStatus.textContent = '✓ Code envoyé, vérifiez votre boîte mail.';
         emailCodeRow.style.display = 'grid';
+        document.getElementById('spamHint').style.display = 'block';
       } else {
         emailVerifyStatus.className = 'meta-status err';
         emailVerifyStatus.textContent = 'Erreur lors de l\'envoi, réessayez.';
@@ -407,6 +410,7 @@
         emailVerifyStatus.className = 'meta-status ok';
         emailVerifyStatus.textContent = '✓ Email vérifié.';
         emailCodeRow.style.display = 'none';
+        document.getElementById('spamHint').style.display = 'none';
         sendCodeBtn.style.display = 'none';
         emailLoginInput.readOnly = true;
       } else {
@@ -709,6 +713,9 @@
     var data = Object.fromEntries(new FormData(e.target).entries());
     data.horaires = composeHoursText();
     data.prestations_brutes = composePrestationsText();
+    data.prestations = prestaData
+      .filter(function(p){ return p.service_name && p.service_name.trim(); })
+      .map(function(p){ return { service_name: p.service_name.trim(), duree_min: Number(p.duree_min) || 30, price_eur: Number(p.price_eur) || 0, active: p.active !== false }; });
     data.whatsapp_phone_id = metaData.whatsapp_phone_id;
     data.whatsapp_number = metaData.whatsapp_number;
     data.instagram_id = metaData.instagram_id;
