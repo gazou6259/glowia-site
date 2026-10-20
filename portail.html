@@ -166,6 +166,11 @@
   .plan-msg{font-size:12.5px;margin-top:8px;width:100%;min-height:1.2em;}
   .plan-msg.ok{color:#3d7a4a;font-weight:600;}
   .plan-msg.err{color:#a33;}
+  .btn-cancel-plan{background:none;border:none;color:var(--encre-doux);padding:7px 4px;font-size:12.5px;text-decoration:underline;cursor:pointer;opacity:.75;}
+  .btn-cancel-plan:hover{opacity:1;color:#a33;}
+  .btn-cancel-plan:disabled{opacity:.4;cursor:default;}
+  .cancel-info{display:flex;align-items:flex-start;gap:8px;background:rgba(170,51,51,.07);border:1px solid rgba(170,51,51,.22);border-radius:10px;padding:11px 14px;font-size:13px;color:#8a2a2a;line-height:1.55;margin-top:12px;width:100%;}
+  .cancel-info a, .cancel-info button.link{color:var(--laque);font-weight:600;text-decoration:underline;background:none;border:none;cursor:pointer;padding:0;font-size:13px;}
   .stat-grid{margin-top:32px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   @media (max-width:720px){.stat-grid{grid-template-columns:1fr;}}
   .stat-card,.panel{background:var(--porcelaine);border:1px solid rgba(110,29,49,.12);border-radius:16px;transition:transform .24s var(--ease),box-shadow .24s ease,border-color .24s ease;}
@@ -385,8 +390,10 @@
       <div class="plan-row">
         <span class="plan-pill" id="planPill">—</span>
         <button type="button" class="btn-change-plan" id="changePlanBtn" style="display:none;">Passer en Premium</button>
+        <button type="button" class="btn-cancel-plan" id="cancelPlanBtn" style="display:none;">Annuler mon abonnement</button>
         <p class="plan-msg" id="planMsg"></p>
       </div>
+      <div class="cancel-info" id="cancelInfo" style="display:none;"></div>
     </div>
 
     <div class="install-banner" id="installBanner" style="display:none;">
@@ -925,6 +932,7 @@
 
     var planPill = document.getElementById('planPill');
     var changePlanBtn = document.getElementById('changePlanBtn');
+    var cancelPlanBtn = document.getElementById('cancelPlanBtn');
     var planMsg = document.getElementById('planMsg');
     planMsg.textContent = '';
     if (formule === 'premium') {
@@ -933,15 +941,18 @@
       changePlanBtn.textContent = 'Repasser en Classic';
       changePlanBtn.setAttribute('data-target', 'Classic');
       changePlanBtn.style.display = 'inline-flex';
+      cancelPlanBtn.style.display = 'inline-flex';
     } else if (formule === 'classic') {
       planPill.textContent = 'Formule Classic';
       planPill.className = 'plan-pill';
       changePlanBtn.textContent = 'Passer en Premium';
       changePlanBtn.setAttribute('data-target', 'Premium');
       changePlanBtn.style.display = 'inline-flex';
+      cancelPlanBtn.style.display = 'inline-flex';
     } else {
       planPill.textContent = '—';
       changePlanBtn.style.display = 'none';
+      cancelPlanBtn.style.display = 'none';
     }
     document.getElementById('profilNomAffiche').textContent = data.nom_salon || '—';
     document.getElementById('profilAdresse').value = data.adresse || '';
@@ -1130,6 +1141,55 @@
       planMsg.className = 'plan-msg err';
       planMsg.textContent = 'Souci réseau, réessayez.';
     });
+  });
+
+  function formatDateFr(ts){
+    if (!ts) return '';
+    var d = new Date(ts * 1000);
+    return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function callCancelSubscription(resume, btn){
+    var cancelInfo = document.getElementById('cancelInfo');
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    btn.textContent = resume ? 'Annulation en cours…' : 'Traitement…';
+    fetch(API, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'cancel_subscription', token: getToken(), resume: !!resume })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      btn.disabled = false;
+      btn.textContent = originalText;
+      if (res.success) {
+        if (res.resumed) {
+          cancelInfo.style.display = 'none';
+          document.getElementById('cancelPlanBtn').style.display = 'inline-flex';
+        } else {
+          var dateStr = formatDateFr(res.current_period_end);
+          cancelInfo.style.display = 'flex';
+          cancelInfo.innerHTML = '<span>Votre abonnement est annulé' + (dateStr ? ' et prendra fin le <b>' + dateStr + '</b>' : '') + '. Vous gardez l\'accès jusqu\'à cette date, aucun prélèvement ne sera fait ensuite. <button type="button" class="link" id="undoCancelBtn">Annuler cette résiliation</button></span>';
+          document.getElementById('cancelPlanBtn').style.display = 'none';
+          document.getElementById('undoCancelBtn').addEventListener('click', function(){
+            callCancelSubscription(true, this);
+          });
+        }
+      } else {
+        var planMsgC = document.getElementById('planMsg');
+        planMsgC.className = 'plan-msg err';
+        planMsgC.textContent = res.error || 'Une erreur est survenue.';
+      }
+    }).catch(function(){
+      btn.disabled = false;
+      btn.textContent = originalText;
+      var planMsgC = document.getElementById('planMsg');
+      planMsgC.className = 'plan-msg err';
+      planMsgC.textContent = 'Souci réseau, réessayez.';
+    });
+  }
+
+  document.getElementById('cancelPlanBtn').addEventListener('click', function(){
+    if (!window.confirm("Annuler votre abonnement GlowIA ?\n\nVous n'êtes pas engagé(e) : vous pouvez arrêter à tout moment. Vous garderez l'accès jusqu'à la fin de la période déjà payée, et aucun prélèvement ne sera fait ensuite. Vous pourrez annuler cette résiliation à tout moment avant cette date.")) return;
+    callCancelSubscription(false, this);
   });
 
   loadDashboard();

@@ -40,6 +40,10 @@
   .meta-status{margin-top:12px;font-size:13.5px;min-height:1.2em;}
   .meta-status.ok{color:#3d7a4a;font-weight:600;}
   .meta-status.err{color:#a33;}
+  .connect-tip{display:flex;gap:10px;align-items:flex-start;background:rgba(199,154,86,.1);border:1px solid rgba(199,154,86,.3);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--encre-doux);margin-top:14px;}
+  .connect-tip svg{flex-shrink:0;margin-top:2px;}
+  .connect-tip b{color:var(--laque);}
+  .connect-tip a{color:var(--laiton-profond);font-weight:600;}
 
   .field{margin-bottom:16px;}
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
@@ -92,41 +96,51 @@
   .keep-note{display:flex;align-items:flex-start;gap:8px;background:rgba(199,154,86,.1);border:1px solid rgba(199,154,86,.3);border-radius:10px;padding:11px 14px;font-size:12.5px;color:var(--laiton-profond);line-height:1.5;margin-top:12px;}
   .keep-note svg{flex-shrink:0;margin-top:1px;}
 
-  .presta-header{display:grid;grid-template-columns:1fr 110px 90px 32px;gap:10px;padding:0 0 8px;font-size:12px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;}
-  .presta-row{display:grid;grid-template-columns:1fr 110px 90px 32px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(110,29,49,.08);}
-  .presta-row:last-child{border-bottom:none;}
-  .presta-row input[type=text]{border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;outline:none;}
+  .presta-header{display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;padding:0 0 8px;font-size:12px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;}
+  .presta-row{background:var(--porcelaine);border:1px solid rgba(110,29,49,.08);border-radius:12px;display:grid;grid-template-columns:1fr 108px 90px 90px 32px;gap:10px;align-items:center;padding:12px 14px;margin-bottom:8px;}
+  .presta-row:last-child{margin-bottom:0;}
+  .presta-row input[type=text]{border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;font-family:'Work Sans',sans-serif;width:100%;outline:none;background:#fff;}
+  .presta-row select{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:13.5px;font-family:'Work Sans',sans-serif;width:100%;outline:none;background:#fff;}
   .presta-price{display:flex;align-items:center;gap:5px;min-width:0;}
-  .presta-price input{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:14px;width:64px;text-align:right;outline:none;}
+  .presta-price input{border:1px solid #e3d7c6;border-radius:8px;padding:9px 8px;font-size:14px;width:64px;text-align:right;outline:none;background:#fff;}
   .presta-price span{font-size:13.5px;color:var(--encre-doux);}
   .presta-active{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--encre-doux);white-space:nowrap;}
   .presta-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:18px;line-height:1;padding:4px;border-radius:6px;}
   .btn-add{background:none;border:1px solid rgba(110,29,49,.25);color:var(--laque);padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
   @media (max-width:600px){
     .presta-header{display:none;}
-    .presta-row{grid-template-columns:1fr auto;grid-template-areas:"name name" "price active" "price remove";row-gap:8px;padding:14px 0;}
+    .presta-row{grid-template-columns:1fr auto;grid-template-areas:"name name" "duree duree" "price active" "price remove";row-gap:9px;padding:14px;}
     .presta-row input[type=text]{grid-area:name;}
+    .presta-row select{grid-area:duree;}
     .presta-price{grid-area:price;}
     .presta-active{grid-area:active;justify-self:end;}
     .presta-remove{grid-area:remove;justify-self:end;}
   }
 
-  .hours-day{display:grid;grid-template-columns:100px 1fr auto;gap:14px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(110,29,49,.08);}
-  .hours-day:last-child{border-bottom:none;}
-  .hours-day-name{font-size:14px;font-weight:600;color:var(--encre);padding-top:9px;}
-  .hours-shifts{display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .hours-day{background:var(--porcelaine);border:1px solid rgba(110,29,49,.08);border-radius:12px;padding:14px 16px;margin-bottom:8px;}
+  .hours-day:last-child{margin-bottom:0;}
+  .hours-day-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .hours-day-name{font-size:14px;font-weight:600;color:var(--encre);}
+  .hours-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;}
+  .hours-toggle-label{font-size:12.5px;font-weight:600;color:var(--encre-doux);white-space:nowrap;}
+  .hours-toggle-label.is-open{color:#2f5f39;}
+  .hours-toggle-switch{position:relative;width:38px;height:22px;border-radius:999px;background:#d8cdbd;transition:background .15s;flex-shrink:0;}
+  .hours-toggle-switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+  .hours-toggle input{position:absolute;opacity:0;width:1px;height:1px;}
+  .hours-toggle input:checked + .hours-toggle-switch{background:#3d7a4a;}
+  .hours-toggle input:checked + .hours-toggle-switch::after{transform:translateX(16px);}
+  .hours-shifts{display:flex;flex-direction:column;gap:8px;min-width:0;margin-top:12px;}
   .hours-shift{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .hours-shift input[type=time]{border:1px solid #e3d7c6;border-radius:8px;padding:8px 10px;font-size:13.5px;font-family:'Work Sans',sans-serif;outline:none;}
+  .hours-shift input[type=time]{border:1px solid #e3d7c6;border-radius:8px;padding:8px 10px;font-size:13.5px;font-family:'Work Sans',sans-serif;outline:none;background:#fff;}
   .hours-shift span{font-size:13px;color:var(--encre-doux);}
   .hours-shift-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:16px;padding:2px 6px;}
   .hours-add-shift{background:none;border:none;color:var(--laque);font-size:12.5px;font-weight:600;cursor:pointer;text-align:left;padding:2px 0;}
-  .hours-closed-toggle{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--encre-doux);padding-top:9px;white-space:nowrap;}
   @media (max-width:600px){
-    .hours-day{grid-template-columns:1fr;gap:6px;}
-    .hours-day-name{padding-top:0;}
-    .hours-closed-toggle{padding-top:0;}
+    .hours-day{padding:13px 14px;}
+    .hours-shift{gap:6px;}
+    .hours-shift input[type=time]{padding:8px 6px;font-size:13px;}
   }
-  .hours-preview{margin-top:14px;padding:12px 14px;background:var(--porcelaine);border-radius:10px;font-size:12.5px;color:var(--encre-doux);line-height:1.6;}
+  .hours-preview{margin-top:14px;padding:12px 14px;background:rgba(110,29,49,.05);border-radius:10px;font-size:12.5px;color:var(--encre-doux);line-height:1.6;}
   .hours-preview strong{color:var(--laque);}
 </style>
 </head>
@@ -160,6 +174,10 @@
     <div class="connect-box">
       <button type="button" class="btn-meta" id="metaBtn">Connecter WhatsApp &amp; Instagram</button>
       <p class="meta-status" id="metaStatus"></p>
+      <div class="connect-tip">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#A97C33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.3"/></svg>
+        <span><b>Avant de connecter :</b> utilisez un numéro WhatsApp pas encore utilisé, ou passez-le d'abord sur l'appli <b>WhatsApp Business</b> (pas WhatsApp classique) — ça évite un message de blocage. Pas encore sur WhatsApp Business ? <a href="aide-whatsapp.html" target="_blank">Voir comment transférer votre compte sans rien perdre →</a></span>
+      </div>
     </div>
   </div>
 
@@ -204,7 +222,7 @@
       </div>
       <div class="field">
         <div class="field-label-row"><label>Prestations et tarifs (facultatif)</label><button type="button" class="help-toggle" data-hint="hint-prestations">?</button></div>
-        <div class="presta-header"><span>Prestation</span><span>Prix</span><span>Statut</span><span></span></div>
+        <div class="presta-header"><span>Prestation</span><span>Durée</span><span>Prix</span><span>Statut</span><span></span></div>
         <div id="prestaList"></div>
         <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
         <div class="field-hint" id="hint-prestations">C'est ce que l'IA proposera à vos clientes quand elles demanderont un rendez-vous. Vous pouvez en ajouter autant que vous voulez, ou laisser vide et les ajouter plus tard.</div>
@@ -505,12 +523,18 @@
         '</div>';
       }).join('');
       row.innerHTML =
-        '<div class="hours-day-name">' + day + '</div>' +
+        '<div class="hours-day-top">' +
+          '<div class="hours-day-name">' + day + '</div>' +
+          '<label class="hours-toggle">' +
+            '<input type="checkbox" ' + (!d.closed ? 'checked' : '') + ' data-day="' + i + '" data-f="open">' +
+            '<span class="hours-toggle-switch"></span>' +
+            '<span class="hours-toggle-label ' + (!d.closed ? 'is-open' : '') + '">' + (!d.closed ? 'Ouvert' : 'Fermé') + '</span>' +
+          '</label>' +
+        '</div>' +
         '<div class="hours-shifts" style="' + (d.closed ? 'display:none;' : '') + '" data-shifts-for="' + i + '">' +
           shiftsHtml +
           '<button type="button" class="hours-add-shift" data-day="' + i + '">+ Ajouter un créneau</button>' +
-        '</div>' +
-        '<label class="hours-closed-toggle"><input type="checkbox" ' + (d.closed ? 'checked' : '') + ' data-day="' + i + '" data-f="closed"> Fermé</label>';
+        '</div>';
       wrap.appendChild(row);
     });
 
@@ -521,10 +545,10 @@
         updateHoursPreview();
       });
     });
-    Array.prototype.forEach.call(wrap.querySelectorAll('input[data-f=closed]'), function(cb){
+    Array.prototype.forEach.call(wrap.querySelectorAll('input[data-f=open]'), function(cb){
       cb.addEventListener('change', function(){
         var day = parseInt(cb.getAttribute('data-day'),10);
-        hoursState[day].closed = cb.checked;
+        hoursState[day].closed = !cb.checked;
         renderHoursEditor(); updateHoursPreview();
       });
     });
@@ -546,6 +570,12 @@
   }
   renderHoursEditor();
 
+  var DUREES = [15,20,30,45,60,75,90,105,120,150,180];
+  function formatDuree(min){
+    if (min < 60) return min + ' min';
+    var h = Math.floor(min/60), r = min % 60;
+    return r === 0 ? h + 'h' : h + 'h' + r;
+  }
   var prestaData = [];
   function renderPrestations(){
     var list = document.getElementById('prestaList');
@@ -553,15 +583,20 @@
     prestaData.forEach(function(p, i){
       var row = document.createElement('div');
       row.className = 'presta-row';
+      var dureeOptions = DUREES.map(function(m){
+        return '<option value="' + m + '"' + (Number(p.duree_min) === m ? ' selected' : '') + '>' + formatDuree(m) + '</option>';
+      }).join('');
       row.innerHTML =
         '<input type="text" value="' + (p.service_name || '').replace(/"/g,'&quot;') + '" data-i="' + i + '" data-f="service_name" placeholder="Nom de la prestation">' +
+        '<select data-i="' + i + '" data-f="duree_min">' + dureeOptions + '</select>' +
         '<div class="presta-price"><input type="number" min="0" step="0.5" value="' + (p.price_eur != null ? p.price_eur : '') + '" data-i="' + i + '" data-f="price_eur"><span>€</span></div>' +
         '<label class="presta-active"><input type="checkbox" ' + (p.active !== false ? 'checked' : '') + ' data-i="' + i + '" data-f="active"> Active</label>' +
         '<button type="button" class="presta-remove" data-i="' + i + '" title="Supprimer">×</button>';
       list.appendChild(row);
     });
-    Array.prototype.forEach.call(list.querySelectorAll('input'), function(inp){
-      inp.addEventListener('input', function(){
+    Array.prototype.forEach.call(list.querySelectorAll('input, select'), function(inp){
+      var evt = inp.tagName === 'SELECT' ? 'change' : 'input';
+      inp.addEventListener(evt, function(){
         var i = parseInt(inp.getAttribute('data-i'), 10), f = inp.getAttribute('data-f');
         prestaData[i][f] = f === 'active' ? inp.checked : inp.value;
       });
@@ -575,13 +610,13 @@
     });
   }
   document.getElementById('addPrestaBtn').addEventListener('click', function(){
-    prestaData.push({ service_name: '', price_eur: '', active: true });
+    prestaData.push({ service_name: '', duree_min: 30, price_eur: '', active: true });
     renderPrestations();
   });
   function composePrestationsText(){
     return prestaData
       .filter(function(p){ return p.service_name && p.service_name.trim(); })
-      .map(function(p){ return p.service_name.trim() + ' - ' + (Number(p.price_eur) || 0) + '€'; })
+      .map(function(p){ return p.service_name.trim() + ' - ' + (Number(p.price_eur) || 0) + '€ - ' + formatDuree(Number(p.duree_min) || 30); })
       .join('\n');
   }
 
