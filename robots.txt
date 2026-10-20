@@ -2,6 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /onboarding.html
 Disallow: /portail.html
-Disallow: /connect.html
 
 Sitemap: https://glow-ia.fr/sitemap.xml
