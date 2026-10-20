@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tableau de bord santé — GlowIA</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --laque:#6E1D31; --laque-clair:#8C2E45; --laque-fonce:#4A1220;
+    --ivoire:#F7EFE2; --porcelaine:#FDF9F1; --laiton:#C79A56; --laiton-profond:#A97C33;
+    --encre:#2B1A1F; --encre-doux:#5a4148;
+    --ok:#2f5f39; --ok-bg:rgba(61,122,74,.1); --ok-border:rgba(61,122,74,.25);
+    --down:#a33; --down-bg:rgba(170,51,51,.08); --down-border:rgba(170,51,51,.3);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{overflow-x:hidden;}
+  body{background:var(--ivoire);color:var(--encre);font-family:'Work Sans',sans-serif;line-height:1.5;overflow-x:hidden;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px;}
+  header{padding:22px 0;border-bottom:1px solid rgba(110,29,49,.1);}
+  .hdr-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+  .brand-mark{width:28px;height:29px;flex-shrink:0;}
+  .brand .word{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;color:var(--laque);letter-spacing:-0.02em;}
+  .brand .ia{color:var(--laiton-profond);font-style:italic;}
+  .maj{font-size:12.5px;color:var(--encre-doux);}
+  main{padding:32px 0 80px;}
+  h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(22px,3.5vw,28px);color:var(--laque);margin-bottom:18px;letter-spacing:-0.01em;}
+  h2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:17px;color:var(--laque);margin:30px 0 12px;}
+  .banner{border-radius:14px;padding:16px 20px;font-weight:600;font-size:15px;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+  .banner.ok{background:var(--ok-bg);border:1px solid var(--ok-border);color:var(--ok);}
+  .banner.down{background:var(--down-bg);border:1px solid var(--down-border);color:var(--down);}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:8px;}
+  .card{background:#fff;border:1px solid rgba(110,29,49,.1);border-radius:14px;padding:18px;}
+  .kpi-num{font-family:'Fraunces',Georgia,serif;font-size:28px;font-weight:600;color:var(--laque);}
+  .kpi-label{font-size:13px;color:var(--encre-doux);margin-top:4px;}
+  .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .check-card{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid rgba(110,29,49,.1);border-radius:12px;padding:14px 16px;}
+  .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .dot.ok{background:var(--ok);}
+  .dot.down{background:var(--down);}
+  .check-name{font-weight:600;font-size:14px;}
+  .check-detail{font-size:12.5px;color:var(--encre-doux);}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px;background:#fff;border-radius:12px;overflow:hidden;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(110,29,49,.08);}
+  th{color:var(--laque);font-weight:600;background:var(--porcelaine);font-size:12.5px;}
+  .empty{color:var(--encre-doux);font-size:14px;padding:16px;text-align:center;background:#fff;border-radius:12px;}
+  .note{font-size:12.5px;color:var(--encre-doux);margin-top:10px;}
+  .err{color:var(--down);font-size:14px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hdr-row">
+    <a href="/" class="brand">
+      <svg class="brand-mark" viewBox="0 0 64 66" role="img" aria-label="GlowIA">
+        <rect x="4" y="6" width="56" height="40" rx="14" fill="#6E1D31"></rect>
+        <path d="M14 44 L14 62 L32 45 Z" fill="#6E1D31"></path>
+        <path d="M19 20 A13 13 0 0 0 45 20" fill="none" stroke="#C79A56" stroke-width="7" stroke-linecap="round"></path>
+      </svg>
+      <span class="word">Glow<span class="ia">IA</span></span>
+    </a>
+    <span class="maj" id="maj">Chargement…</span>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <h1>Tableau de bord santé</h1>
+
+    <div id="banner" class="banner ok">Chargement des données…</div>
+
+    <div class="kpis">
+      <div class="card">
+        <div class="kpi-num" id="kpi-actifs">—</div>
+        <div class="kpi-label">Salons actifs</div>
+      </div>
+      <div class="card">
+        <div class="kpi-num" id="kpi-suspendus">—</div>
+        <div class="kpi-label">Salons suspendus</div>
+      </div>
+      <div class="card">
+        <div class="kpi-num" id="kpi-erreurs">—</div>
+        <div class="kpi-label">Erreurs (24h)</div>
+      </div>
+    </div>
+
+    <h2>Services externes</h2>
+    <div class="checks" id="checks">
+      <div class="empty">Chargement…</div>
+    </div>
+
+    <h2>Derniers incidents</h2>
+    <div id="incidents">
+      <div class="empty">Chargement…</div>
+    </div>
+
+    <p class="note" id="orphan-note"></p>
+    <p class="note">Rafraîchissement automatique toutes les 60 secondes. Page non référencée, réservée à un usage interne.</p>
+  </div>
+</main>
+
+<script>
+  var ENDPOINT = 'https://iagentleman.app.n8n.cloud/webhook/dashboard-sante-glowia';
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try {
+      var d = new Date(iso);
+      return d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return iso; }
+  }
+
+  function render(data) {
+    document.getElementById('maj').textContent = 'Dernière mise à jour : ' + fmtDate(data.genere_le);
+
+    document.getElementById('kpi-actifs').textContent = data.salons.actifs;
+    document.getElementById('kpi-suspendus').textContent = data.salons.suspendus;
+    document.getElementById('kpi-erreurs').textContent = data.erreurs_24h;
+
+    var anyDown = (data.health_checks || []).some(function (c) { return c.status !== 'ok'; });
+    var hasRecentErrors = data.erreurs_24h > 0;
+    var banner = document.getElementById('banner');
+    if (anyDown || hasRecentErrors) {
+      banner.className = 'banner down';
+      banner.textContent = anyDown ? '⚠️ Un service externe ne répond pas correctement.' : ('⚠️ ' + data.erreurs_24h + ' erreur(s) système dans les dernières 24h.');
+    } else {
+      banner.className = 'banner ok';
+      banner.textContent = '✓ Tout fonctionne normalement.';
+    }
+
+    var checksHtml = (data.health_checks || []).map(function (c) {
+      return '<div class="check-card"><span class="dot ' + (c.status === 'ok' ? 'ok' : 'down') + '"></span>' +
+        '<div><div class="check-name">' + c.check_name + '</div>' +
+        '<div class="check-detail">' + c.detail + ' · ' + fmtDate(c.checked_at) + '</div></div></div>';
+    }).join('');
+    document.getElementById('checks').innerHTML = checksHtml || '<div class="empty">Aucune vérification enregistrée encore.</div>';
+
+    var incidents = data.dernieres_erreurs || [];
+    if (incidents.length === 0) {
+      document.getElementById('incidents').innerHTML = '<div class="empty">Aucun incident enregistré.</div>';
+    } else {
+      var rows = incidents.map(function (e) {
+        return '<tr><td>' + fmtDate(e.occurred_at) + '</td><td>' + (e.workflow_name || '') + '</td><td>' + (e.node_name || '') + '</td><td>' + (e.error_message || '') + '</td></tr>';
+      }).join('');
+      document.getElementById('incidents').innerHTML = '<table><thead><tr><th>Date</th><th>Workflow</th><th>Nœud</th><th>Erreur</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    }
+
+    var orphanNote = document.getElementById('orphan-note');
+    if (data.catalogue_lignes_orphelines > 0) {
+      orphanNote.textContent = data.catalogue_lignes_orphelines + ' ligne(s) du catalogue de prestations ne sont liées à aucun salon (données de démo à nettoyer).';
+    } else {
+      orphanNote.textContent = '';
+    }
+  }
+
+  function load() {
+    fetch(ENDPOINT, { method: 'GET' })
+      .then(function (r) { return r.json(); })
+      .then(render)
+      .catch(function (err) {
+        document.getElementById('banner').className = 'banner down';
+        document.getElementById('banner').textContent = '⚠️ Impossible de charger les données du tableau de bord.';
+        document.getElementById('maj').textContent = 'Erreur de chargement';
+      });
+  }
+
+  load();
+  setInterval(load, 60000);
+</script>
+</body>
+</html>
