@@ -170,6 +170,31 @@
   .intro-cta:hover{background:var(--laque-clair);}
   .intro-overlay.hide{animation:introFadeOut .4s ease forwards;}
   @keyframes introFadeOut{to{opacity:0;visibility:hidden;}}
+
+  /* --- Guide annoté (captures réelles) --- */
+  .btn-guide{display:block;background:none;border:none;color:var(--laiton-profond);font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;padding:4px 0;text-align:left;}
+  .btn-guide:hover{color:var(--laque);text-decoration:underline;}
+  .guide-overlay{position:fixed;inset:0;z-index:1000;background:rgba(43,26,31,.55);display:flex;align-items:center;justify-content:center;padding:18px;}
+  .guide-panel{background:var(--porcelaine);border-radius:18px;max-width:420px;width:100%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(43,26,31,.35);}
+  .guide-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;flex-shrink:0;}
+  .guide-step-label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--laiton-profond);}
+  .guide-close{background:none;border:none;color:var(--encre-doux);font-size:16px;cursor:pointer;padding:4px 8px;border-radius:8px;}
+  .guide-close:hover{background:rgba(110,29,49,.08);color:var(--laque);}
+  .guide-media{flex:1;min-height:0;overflow:auto;background:#fff;border-top:1px solid rgba(110,29,49,.08);border-bottom:1px solid rgba(110,29,49,.08);display:flex;align-items:flex-start;justify-content:center;padding:10px;}
+  .guide-media img{max-width:100%;height:auto;border-radius:10px;display:block;}
+  .guide-media.empty{align-items:center;justify-content:center;min-height:180px;padding:28px;}
+  .guide-media-placeholder{text-align:center;color:var(--encre-doux);font-size:13.5px;line-height:1.6;}
+  .guide-media-placeholder svg{margin-bottom:10px;}
+  .guide-text{padding:14px 18px 4px;flex-shrink:0;}
+  .guide-text h3{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:16.5px;color:var(--laque);margin-bottom:6px;}
+  .guide-text p{font-size:13.5px;color:var(--encre-doux);line-height:1.6;}
+  .guide-text b{color:var(--encre);}
+  .guide-nav{display:flex;gap:10px;padding:14px 18px 18px;flex-shrink:0;}
+  .guide-nav-btn{flex:1;background:none;border:1px solid rgba(110,29,49,.2);color:var(--laque);border-radius:10px;padding:11px 14px;font-size:13.5px;font-weight:600;cursor:pointer;}
+  .guide-nav-btn:hover{background:rgba(110,29,49,.06);}
+  .guide-nav-btn.primary{background:var(--laque);color:var(--ivoire);border-color:var(--laque);}
+  .guide-nav-btn.primary:hover{background:var(--laque-clair);}
+  .guide-nav-btn[hidden]{visibility:hidden;}
 </style>
 </head>
 <body>
@@ -266,6 +291,7 @@
     <p class="desc">Le salon connecte ses comptes professionnels via l'outil officiel de Meta.</p>
     <div class="connect-box">
       <button type="button" class="btn-meta" id="metaBtn">Connecter WhatsApp &amp; Instagram</button>
+      <button type="button" class="btn-guide" id="metaGuideBtn">▶ Voir comment ça se passe, étape par étape (captures réelles)</button>
       <p class="meta-status" id="metaStatus"></p>
       <div class="connect-tip">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#A97C33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.3"/></svg>
@@ -392,6 +418,24 @@
   </div>
 </div>
 
+<div class="guide-overlay" id="guideOverlay" style="display:none;">
+  <div class="guide-panel">
+    <div class="guide-head">
+      <span class="guide-step-label" id="guideStepLabel">Étape 1 / 11</span>
+      <button type="button" class="guide-close" id="guideClose" aria-label="Fermer">✕</button>
+    </div>
+    <div class="guide-media" id="guideMedia"></div>
+    <div class="guide-text">
+      <h3 id="guideTitle"></h3>
+      <p id="guideText"></p>
+    </div>
+    <div class="guide-nav">
+      <button type="button" class="guide-nav-btn" id="guidePrev">← Précédent</button>
+      <button type="button" class="guide-nav-btn primary" id="guideNext">Suivant →</button>
+    </div>
+  </div>
+</div>
+
 <script>
   (function(){
     var overlay = document.getElementById('introOverlay');
@@ -476,6 +520,115 @@
     skipBtn.addEventListener('click', dismiss);
     cta.addEventListener('click', dismiss);
     goTo(0);
+  })();
+
+  // --- Guide annoté "comment ça se passe" (captures réelles de la connexion Meta) ---
+  (function(){
+    var openBtn = document.getElementById('metaGuideBtn');
+    var overlay = document.getElementById('guideOverlay');
+    if (!openBtn || !overlay) return;
+
+    var steps = [
+      {
+        img: 'assets/meta-guide/01-intro.png',
+        title: 'Meta vous explique le principe',
+        text: 'Après avoir cliqué sur « Connecter WhatsApp &amp; Instagram », un premier écran Meta résume ce qui va se passer. Cliquez sur <b>Continuer</b>.'
+      },
+      {
+        title: 'Connexion à Facebook',
+        text: 'Si vous n\'êtes pas déjà connecté à Facebook sur votre téléphone, un écran <b>facebook.com</b> vous demande de vous connecter — c\'est normal, c\'est Meta qui vérifie le compte professionnel. Entrez l\'email et le mot de passe du compte Facebook qui gère la Page et l\'Instagram du salon.'
+      },
+      {
+        title: 'Code de sécurité (si demandé)',
+        text: 'Si la double authentification est activée sur ce compte Facebook, un code reçu par SMS peut être demandé à cette étape. Ce n\'est pas spécifique à GlowIA, c\'est une sécurité propre à Facebook — tout le monde ne le verra pas.'
+      },
+      {
+        title: 'Enregistrer les informations de connexion ?',
+        text: 'Facebook propose parfois de mémoriser la connexion sur l\'appareil. <b>Enregistrer</b> ou <b>Plus tard</b>, peu importe, ça n\'a aucun impact sur la suite.'
+      },
+      {
+        img: 'assets/meta-guide/02-numero.png',
+        title: 'Le numéro WhatsApp du salon',
+        text: 'Entrez le numéro professionnel du salon (celui que vos clientes utiliseront). Choisissez <b>SMS</b> ou <b>appel</b> pour recevoir le code, puis entrez-le. Rappel : ce numéro doit déjà être sur <b>WhatsApp Business</b> (voir le conseil au-dessus du bouton).'
+      },
+      {
+        img: 'assets/meta-guide/03-portefeuille.png',
+        title: 'Portefeuille professionnel',
+        text: 'Meta demande à quel « portefeuille business » associer le compte. La première fois, vous ne verrez souvent qu\'une seule option (ou « Créer un portefeuille business ») — sélectionnez-la, puis choisissez le compte WhatsApp correspondant.'
+      },
+      {
+        img: 'assets/meta-guide/04-nom.png',
+        title: 'Nom affiché sur WhatsApp',
+        text: 'C\'est le nom que verront vos clientes dans la conversation WhatsApp — en général, le nom de votre salon.'
+      },
+      {
+        img: 'assets/meta-guide/05-permissions.png',
+        title: 'Autorisations demandées',
+        text: 'Meta récapitule à quoi GlowIA aura accès (le compte WhatsApp, l\'entreprise). C\'est normal et nécessaire : c\'est ce qui permet à l\'IA de lire et répondre aux messages de vos clientes. Cliquez sur <b>Confirmer</b>.'
+      },
+      {
+        img: 'assets/meta-guide/06-patientez.png',
+        title: 'Association en cours',
+        text: 'Quelques secondes de patience pendant que Meta relie votre compte à GlowIA.'
+      },
+      {
+        img: 'assets/meta-guide/07-succes.png',
+        title: 'C\'est connecté !',
+        text: 'Vous verrez « Votre compte est associé ». Le bouton vert <b>« Ajouter un moyen de paiement »</b> est <b>facultatif</b> — vous pouvez l\'ignorer et cliquer directement sur <b>Terminer</b>.'
+      },
+      {
+        img: 'assets/meta-guide/08-retour.png',
+        title: 'Retour sur la page GlowIA',
+        text: 'Vous revenez automatiquement ici, avec la confirmation <b>✓ Comptes connectés</b>. Il ne reste plus qu\'à compléter le reste du formulaire ci-dessous puis valider.'
+      }
+    ];
+
+    var stepLabel = document.getElementById('guideStepLabel');
+    var media = document.getElementById('guideMedia');
+    var titleEl = document.getElementById('guideTitle');
+    var textEl = document.getElementById('guideText');
+    var prevBtn = document.getElementById('guidePrev');
+    var nextBtn = document.getElementById('guideNext');
+    var closeBtn = document.getElementById('guideClose');
+    var current = 0;
+
+    function render(){
+      var s = steps[current];
+      stepLabel.textContent = 'Étape ' + (current + 1) + ' / ' + steps.length;
+      titleEl.textContent = s.title;
+      textEl.innerHTML = s.text;
+      if (s.img) {
+        media.className = 'guide-media';
+        media.innerHTML = '<img src="' + s.img + '" alt="' + s.title + '">';
+      } else {
+        media.className = 'guide-media empty';
+        media.innerHTML = '<div class="guide-media-placeholder"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.5"/><path d="M12 8v5M12 16h.01" stroke="#A97C33" stroke-width="1.7" stroke-linecap="round"/></svg><div>Étape côté Facebook — l\'écran exact peut varier selon votre appareil.</div></div>';
+      }
+      prevBtn.hidden = current === 0;
+      nextBtn.textContent = current === steps.length - 1 ? 'Fermer' : 'Suivant →';
+      media.scrollTop = 0;
+    }
+
+    function open(){
+      current = 0;
+      overlay.style.display = 'flex';
+      render();
+    }
+    function close(){ overlay.style.display = 'none'; }
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+    prevBtn.addEventListener('click', function(){ if (current > 0) { current--; render(); } });
+    nextBtn.addEventListener('click', function(){
+      if (current < steps.length - 1) { current++; render(); } else { close(); }
+    });
+    document.addEventListener('keydown', function(e){
+      if (overlay.style.display !== 'flex') return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') nextBtn.click();
+      if (e.key === 'ArrowLeft' && current > 0) { current--; render(); }
+    });
   })();
 
   var META_APP_ID = '1144959613784009';
