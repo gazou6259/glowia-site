@@ -246,6 +246,8 @@
   h2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:clamp(28px,3.2vw,36px);line-height:1.15;color:var(--laque);letter-spacing:-0.01em;}
   .section-head{text-align:center;max-width:640px;margin:0 auto;}
   .card{background:rgba(253,249,241,.7);border:1px solid rgba(110,29,49,.12);border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+  .video-frame{margin-top:44px;border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -24px rgba(110,29,49,.4);border:1px solid rgba(199,154,86,.4);background:var(--laque-fonce,#4A1220);}
+  .video-el{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--laque-fonce,#4A1220);}
   .lift{transition:transform .24s var(--ease),box-shadow .24s ease,border-color .24s ease,opacity .7s var(--ease);}
   .lift.is-in:hover{transform:translateY(-3px);box-shadow:0 18px 40px -18px rgba(110,29,49,.32);border-color:rgba(199,154,86,.7);}
 
@@ -599,6 +601,21 @@
         <h3>Votre planning se remplit</h3>
         <p>Vos clientes sont accueillies jour et nuit. Vous gardez la main dès que vous le souhaitez.</p>
       </div>
+    </div>
+
+    <div class="video-frame rv rv-up" data-delay="60">
+      <video
+        class="video-el"
+        poster="assets/video/glowia-teaser-poster.jpg"
+        preload="metadata"
+        muted
+        loop
+        playsinline
+        controls
+        aria-label="Présentation animée de GlowIA">
+        <source src="assets/video/glowia-teaser.mp4" type="video/mp4">
+        Votre navigateur ne permet pas la lecture de cette vidéo.
+      </video>
     </div>
   </div>
 </section>
