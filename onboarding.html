@@ -159,6 +159,12 @@
   .intro-dots{display:flex;gap:7px;margin-top:30px;}
   .intro-dot{width:7px;height:7px;border-radius:50%;background:rgba(110,29,49,.18);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;}
   .intro-dot.active{background:var(--laque);transform:scale(1.25);}
+  .intro-nav{display:flex;align-items:center;gap:14px;margin-top:22px;}
+  .intro-nav-btn{background:none;border:1px solid rgba(110,29,49,.2);color:var(--laque);border-radius:10px;padding:10px 18px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s,opacity .15s;}
+  .intro-nav-btn:hover{background:rgba(110,29,49,.06);}
+  .intro-nav-btn.primary{background:var(--laque);color:var(--ivoire);border-color:var(--laque);}
+  .intro-nav-btn.primary:hover{background:var(--laque-clair);}
+  .intro-nav-btn[hidden]{display:none;}
   .intro-cta{margin-top:28px;background:var(--laque);color:var(--ivoire);border:none;border-radius:12px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease,background .2s;pointer-events:none;}
   .intro-cta.show{opacity:1;transform:translateY(0);pointer-events:auto;}
   .intro-cta:hover{background:var(--laque-clair);}
@@ -226,6 +232,11 @@
   </div>
 
   <div class="intro-dots" id="introDots"></div>
+
+  <div class="intro-nav">
+    <button type="button" class="intro-nav-btn" id="introPrev">← Précédent</button>
+    <button type="button" class="intro-nav-btn primary" id="introNext">Suivant →</button>
+  </div>
 </div>
 
 <div class="wrap">
@@ -394,9 +405,9 @@
     var fill = document.getElementById('introProgressFill');
     var cta = document.getElementById('introCta');
     var skipBtn = document.getElementById('introSkip');
-    var SCENE_MS = 3400;
+    var prevBtn = document.getElementById('introPrev');
+    var nextBtn = document.getElementById('introNext');
     var current = 0;
-    var timer = null;
     var dismissed = false;
 
     scenes.forEach(function(_, i){
@@ -404,50 +415,59 @@
       dot.type = 'button';
       dot.className = 'intro-dot' + (i === 0 ? ' active' : '');
       dot.setAttribute('aria-label', 'Étape ' + (i + 1));
-      dot.addEventListener('click', function(){ goTo(i, true); });
+      dot.addEventListener('click', function(){ goTo(i); });
       dotsWrap.appendChild(dot);
     });
     var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.intro-dot'));
 
-    function dismiss(instant){
+    function dismiss(){
       if (dismissed) return;
       dismissed = true;
-      clearTimeout(timer);
       try { sessionStorage.setItem('glowia_intro_seen', '1'); } catch (e) {}
-      if (instant) {
-        overlay.style.display = 'none';
-        return;
-      }
       overlay.classList.add('hide');
       setTimeout(function(){ overlay.style.display = 'none'; }, 420);
     }
+    dismiss.instant = function(){
+      if (dismissed) return;
+      dismissed = true;
+      try { sessionStorage.setItem('glowia_intro_seen', '1'); } catch (e) {}
+      overlay.style.display = 'none';
+    };
 
     // Permet au reste de la page (ex. page bloquée faute de paiement valide) de couper l'intro sans attendre.
-    window.dismissGlowiaIntro = function(){ dismiss(true); };
+    window.dismissGlowiaIntro = function(){ dismiss.instant(); };
 
-    function startProgress(){
-      fill.style.transition = 'none';
-      fill.style.width = '0%';
-      void fill.offsetWidth;
-      fill.style.transition = 'width ' + SCENE_MS + 'ms linear';
-      fill.style.width = '100%';
+    // Rejoue la petite animation d'icône à chaque arrivée sur une scène, sans minuteur ni contrainte de temps.
+    function replayIconAnim(scene){
+      var icon = scene.querySelector('.intro-icon-wrap');
+      if (!icon) return;
+      icon.style.animation = 'none';
+      void icon.offsetWidth;
+      icon.style.animation = '';
     }
 
-    function goTo(i, manual){
+    function goTo(i){
       if (dismissed) return;
-      clearTimeout(timer);
-      current = i;
-      scenes.forEach(function(s, si){ s.classList.toggle('active', si === i); });
-      dots.forEach(function(d, di){ d.classList.toggle('active', di === i); });
-      if (i === scenes.length - 1) {
-        fill.style.transition = 'width .3s ease';
-        fill.style.width = '100%';
-        setTimeout(function(){ cta.classList.add('show'); }, 250);
-      } else {
-        startProgress();
-        timer = setTimeout(function(){ goTo(i + 1); }, SCENE_MS);
-      }
+      current = Math.max(0, Math.min(scenes.length - 1, i));
+      scenes.forEach(function(s, si){ s.classList.toggle('active', si === current); });
+      dots.forEach(function(d, di){ d.classList.toggle('active', di === current); });
+      replayIconAnim(scenes[current]);
+      fill.style.transition = 'width .35s ease';
+      fill.style.width = (((current + 1) / scenes.length) * 100) + '%';
+      prevBtn.hidden = current === 0;
+      var isLast = current === scenes.length - 1;
+      nextBtn.hidden = isLast;
+      cta.classList.toggle('show', isLast);
     }
+
+    prevBtn.addEventListener('click', function(){ goTo(current - 1); });
+    nextBtn.addEventListener('click', function(){ goTo(current + 1); });
+    document.addEventListener('keydown', function(e){
+      if (overlay.style.display === 'none' || dismissed) return;
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+      if (e.key === 'Escape') dismiss();
+    });
 
     skipBtn.addEventListener('click', dismiss);
     cta.addEventListener('click', dismiss);
