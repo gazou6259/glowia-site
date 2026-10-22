@@ -63,9 +63,42 @@
   .limite b{color:var(--laque);}
   .tag-formule{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11.5px;font-weight:700;background:var(--ok-bg);color:var(--ok);}
   .tag-statut{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11.5px;font-weight:700;background:var(--down-bg);color:var(--down);}
+  .logout-link{font-size:12.5px;color:var(--laque);text-decoration:none;font-weight:600;border:1px solid rgba(110,29,49,.2);border-radius:100px;padding:5px 14px;}
+  .logout-link:hover{background:var(--porcelaine);}
+  .login-wrap{max-width:380px;margin:90px auto;padding:0 24px;}
+  .login-card{background:#fff;border:1px solid rgba(110,29,49,.1);border-radius:16px;padding:32px 28px;}
+  .login-card h1{margin-bottom:6px;}
+  .login-card p.sub{font-size:13.5px;color:var(--encre-doux);margin-bottom:22px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--laque);margin-bottom:6px;}
+  .field input{width:100%;padding:11px 14px;border:1px solid rgba(110,29,49,.2);border-radius:10px;font-size:14.5px;font-family:inherit;background:var(--porcelaine);}
+  .field input:focus{outline:2px solid var(--laiton);border-color:transparent;}
+  .login-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--laque);color:#fff;font-weight:600;font-size:14.5px;cursor:pointer;font-family:inherit;}
+  .login-btn:hover{background:var(--laque-clair);}
+  .login-btn:disabled{opacity:.6;cursor:default;}
+  .login-err{color:var(--down);font-size:13px;margin-top:14px;text-align:center;display:none;}
 </style>
 </head>
 <body>
+<div id="login-screen" class="login-wrap" style="display:none;">
+  <div class="login-card">
+    <h1>Accès admin</h1>
+    <p class="sub">Tableau de bord GlowIA — réservé à l'administrateur.</p>
+    <form id="login-form">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="login-password">Mot de passe</label>
+        <input type="password" id="login-password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="login-btn" id="login-btn">Se connecter</button>
+      <p class="login-err" id="login-err"></p>
+    </form>
+  </div>
+</div>
+<div id="dashboard-screen" style="display:none;">
 <header>
   <div class="wrap hdr-row">
     <a href="/" class="brand">
@@ -76,7 +109,10 @@
       </svg>
       <span class="word">Glow<span class="ia">IA</span></span>
     </a>
-    <span class="maj" id="maj">Chargement…</span>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span class="maj" id="maj">Chargement…</span>
+      <a href="#" id="logout-link" class="logout-link">Se déconnecter</a>
+    </div>
   </div>
 </header>
 <main>
@@ -160,9 +196,31 @@
     <p class="note">Rafraîchissement automatique toutes les 60 secondes. Page non référencée, réservée à un usage interne.</p>
   </div>
 </main>
+</div>
 
 <script>
   var ENDPOINT = 'https://iagentleman.app.n8n.cloud/webhook/dashboard-sante-glowia';
+  var LOGIN_ENDPOINT = 'https://iagentleman.app.n8n.cloud/webhook/admin-auth-glowia';
+  var TOKEN_KEY = 'glowia_admin_token';
+
+  function getToken() {
+    try { return localStorage.getItem(TOKEN_KEY); } catch (e) { return null; }
+  }
+  function setToken(t) {
+    try { localStorage.setItem(TOKEN_KEY, t); } catch (e) {}
+  }
+  function clearToken() {
+    try { localStorage.removeItem(TOKEN_KEY); } catch (e) {}
+  }
+
+  function showLogin() {
+    document.getElementById('dashboard-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = '';
+  }
+  function showDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = '';
+  }
 
   function fmtDate(iso) {
     if (!iso) return '—';
@@ -287,18 +345,74 @@
   }
 
   function load() {
-    fetch(ENDPOINT, { method: 'GET' })
-      .then(function (r) { return r.json(); })
+    var token = getToken();
+    if (!token) { showLogin(); return; }
+    fetch(ENDPOINT, { method: 'GET', headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function (r) {
+        if (r.status === 401) {
+          clearToken();
+          showLogin();
+          throw new Error('non autorise');
+        }
+        return r.json();
+      })
       .then(render)
       .catch(function (err) {
+        if (!getToken()) return; // déjà redirigé vers le login
         document.getElementById('banner').className = 'banner down';
         document.getElementById('banner').textContent = '⚠️ Impossible de charger les données du tableau de bord.';
         document.getElementById('maj').textContent = 'Erreur de chargement';
       });
   }
 
-  load();
-  setInterval(load, 60000);
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = document.getElementById('login-email').value.trim();
+    var password = document.getElementById('login-password').value;
+    var btn = document.getElementById('login-btn');
+    var errEl = document.getElementById('login-err');
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Connexion…';
+    fetch(LOGIN_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        btn.disabled = false;
+        btn.textContent = 'Se connecter';
+        if (data && data.success && data.token) {
+          setToken(data.token);
+          showDashboard();
+          load();
+        } else {
+          errEl.textContent = (data && data.error) || 'Identifiants invalides.';
+          errEl.style.display = '';
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = 'Se connecter';
+        errEl.textContent = 'Erreur de connexion, réessayez.';
+        errEl.style.display = '';
+      });
+  });
+
+  document.getElementById('logout-link').addEventListener('click', function (e) {
+    e.preventDefault();
+    clearToken();
+    showLogin();
+  });
+
+  if (getToken()) {
+    showDashboard();
+    load();
+    setInterval(load, 60000);
+  } else {
+    showLogin();
+  }
 </script>
 </body>
 </html>
