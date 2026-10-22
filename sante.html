@@ -320,9 +320,14 @@
     }
 
     var checksHtml = (data.health_checks || []).map(function (c) {
+      var histoire = '';
+      if (c.pannes_24h > 0) {
+        histoire = '<div class="check-detail" style="color:var(--down);margin-top:2px;">⚠ ' + c.pannes_24h + ' panne(s) dans les 24h' +
+          (c.derniere_panne_24h ? ' · dernière : ' + esc(c.derniere_panne_24h.detail) + ' à ' + fmtDate(c.derniere_panne_24h.checked_at) : '') + '</div>';
+      }
       return '<div class="check-card"><span class="dot ' + (c.status === 'ok' ? 'ok' : 'down') + '"></span>' +
-        '<div><div class="check-name">' + c.check_name + '</div>' +
-        '<div class="check-detail">' + c.detail + ' · ' + fmtDate(c.checked_at) + '</div></div></div>';
+        '<div><div class="check-name">' + esc(c.check_name) + '</div>' +
+        '<div class="check-detail">' + esc(c.detail) + ' · ' + fmtDate(c.checked_at) + '</div>' + histoire + '</div></div>';
     }).join('');
     document.getElementById('checks').innerHTML = checksHtml || '<div class="empty">Aucune vérification enregistrée encore.</div>';
 
