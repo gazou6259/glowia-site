@@ -970,7 +970,7 @@
     demoBtn.textContent = 'Envoi en cours…';
     demoMsg.classList.remove('show');
     var data = Object.fromEntries(new FormData(demoForm).entries());
-    fetch('https://iagentleman.app.n8n.cloud/webhook/demande-demo-glowia', {
+    fetch('https://n8n-cpov.srv2127351.hstgr.cloud/webhook/demande-demo-glowia', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
@@ -988,7 +988,7 @@
 })();
   /* ===== Widget FAQ (bulle flottante, assistant expert) ===== */
   document.addEventListener('DOMContentLoaded', function(){
-    var API = 'https://iagentleman.app.n8n.cloud/webhook/faq-chat-glowia';
+    var API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/faq-chat-glowia';
     var launcher = document.getElementById('faqLauncher');
     var panel = document.getElementById('faqPanel');
     var tooltip = document.getElementById('faqTooltip');
@@ -1133,7 +1133,7 @@
 
   /* ===== Demo chat scriptée (ouverte uniquement via les boutons "Essayer la démo") ===== */
   document.addEventListener('DOMContentLoaded', function(){
-    var API = 'https://iagentleman.app.n8n.cloud/webhook/demo-chat-glowia';
+    var API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/demo-chat-glowia';
     var panel = document.getElementById('demoPanel');
     var closeBtn = document.getElementById('demoClose');
     var messagesEl = document.getElementById('demoMessages');
