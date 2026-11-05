@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Connexion Instagram — GlowIA</title>
+<style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:90vh;color:#333;text-align:center;padding:20px}</style></head>
+<body><p id="m">Connexion Instagram en cours…</p>
+<script>
+(function(){
+  var p = new URLSearchParams(location.search);
+  var msg = { type: 'GLOWIA_IG', code: (p.get('code') || '').replace(/#_$/, ''), error: p.get('error_description') || p.get('error') || '' };
+  if (window.opener) { window.opener.postMessage(msg, 'https://glow-ia.fr'); setTimeout(function(){ window.close(); }, 400); }
+  else { document.getElementById('m').textContent = msg.code ? 'Connexion reçue. Revenez sur la page du formulaire.' : 'Connexion annulée. Vous pouvez fermer cette page.'; }
+})();
+</script></body></html>

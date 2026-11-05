@@ -308,6 +308,8 @@
       <button type="button" class="btn-meta" id="metaBtn">Connecter WhatsApp &amp; Instagram</button>
       <button type="button" class="btn-guide" id="metaGuideBtn">▶ Voir comment ça se passe, étape par étape (captures réelles)</button>
       <p class="meta-status" id="metaStatus"></p>
+      <button type="button" class="btn-meta" id="igBtn" style="margin-top:12px;">Connecter Instagram seul</button>
+      <p class="meta-status" id="igStatus"></p>
       <button type="button" class="btn-guide" id="metaSkipBtn">Continuer sans connecter WhatsApp pour l'instant (GlowIA le fera avec vous plus tard)</button>
       <div class="connect-tip">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#A97C33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.3"/></svg>
@@ -1023,6 +1025,28 @@
   var metaStatus = document.getElementById('metaStatus');
   var stepNum1 = document.getElementById('stepNum1');
   var submitBtn = document.getElementById('submitBtn');
+
+  var igBtn = document.getElementById('igBtn');
+  var igStatus = document.getElementById('igStatus');
+  igBtn.addEventListener('click', function(){
+    var url = 'https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=1136636238081319&redirect_uri=' + encodeURIComponent('https://glow-ia.fr/ig-callback') + '&response_type=code&scope=' + encodeURIComponent('instagram_business_basic,instagram_business_manage_messages');
+    igStatus.className = 'meta-status'; igStatus.textContent = 'Connexion à Instagram dans la fenêtre qui vient de s\'ouvrir…';
+    window.open(url, 'glowia_ig', 'width=520,height=720');
+  });
+  window.addEventListener('message', function(event){
+    if (event.origin !== 'https://glow-ia.fr' || !event.data || event.data.type !== 'GLOWIA_IG') return;
+    if (!event.data.code) { igStatus.className = 'meta-status err'; igStatus.textContent = 'Connexion Instagram annulée ou refusée.'; return; }
+    igStatus.className = 'meta-status'; igStatus.textContent = 'Finalisation de la connexion Instagram…';
+    fetch('https://n8n-cpov.srv2127351.hstgr.cloud/webhook/ig-connect-glowia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: event.data.code }) })
+      .then(function(r){ return r.json(); }).then(function(d){
+        if (d.instagram_id && d.instagram_access_token) {
+          metaData = metaData || {};
+          metaData.instagram_id = d.instagram_id; metaData.instagram_username = d.instagram_username; metaData.instagram_access_token = d.instagram_access_token;
+          igStatus.className = 'meta-status ok'; igStatus.textContent = '✓ Instagram connecté (@' + (d.instagram_username || '') + ').';
+          submitBtn.disabled = false; submitBtn.textContent = 'Créer le salon';
+        } else { igStatus.className = 'meta-status err'; igStatus.textContent = 'Connexion Instagram incomplète, réessayez.'; }
+      }).catch(function(){ igStatus.className = 'meta-status err'; igStatus.textContent = 'Souci réseau pendant la connexion Instagram, réessayez.'; });
+  });
 
   document.getElementById('metaSkipBtn').addEventListener('click', function(){
     metaData = metaData || {};
