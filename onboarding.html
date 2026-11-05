@@ -1016,6 +1016,7 @@
   var submitBtn = document.getElementById('submitBtn');
 
   document.getElementById('metaSkipBtn').addEventListener('click', function(){
+    metaData = metaData || {};
     metaStatus.className = 'meta-status ok';
     metaStatus.textContent = "D'accord : WhatsApp et Instagram seront connectés plus tard avec GlowIA. Complétez le formulaire ci-dessous puis validez.";
     submitBtn.disabled = false;
