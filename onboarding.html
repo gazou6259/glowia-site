@@ -737,7 +737,7 @@
   })();
 
   window.fbAsyncInit = function() {
-    FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: true, version: 'v21.0' });
+    FB.init({ appId: META_APP_ID, autoLogAppEvents: true, xfbml: true, version: 'v23.0' });
   };
   (function(d, s, id){
     var js, fjs = d.getElementsByTagName(s)[0];
@@ -1010,6 +1010,15 @@
       .join('\n');
   }
 
+  var esSession = {};
+  window.addEventListener('message', function(event){
+    if (!/facebook\.com$/.test(new URL(event.origin).hostname)) return;
+    try {
+      var d = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      if (d && d.type === 'WA_EMBEDDED_SIGNUP') { esSession = { event: d.event, waba_id: (d.data||{}).waba_id, phone_number_id: (d.data||{}).phone_number_id }; }
+    } catch(e) {}
+  });
+
   var metaBtn = document.getElementById('metaBtn');
   var metaStatus = document.getElementById('metaStatus');
   var stepNum1 = document.getElementById('stepNum1');
@@ -1036,7 +1045,7 @@
         fetch(WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'exchange_meta_code', code: response.authResponse.code })
+          body: JSON.stringify({ action: 'exchange_meta_code', code: response.authResponse.code, es_event: esSession.event || '', waba_id: esSession.waba_id || '', phone_number_id: esSession.phone_number_id || '' })
         }).then(function(r){ return r.json(); }).then(function(data){
           metaBtn.disabled = false;
           metaBtn.textContent = 'Connecter WhatsApp & Instagram';
