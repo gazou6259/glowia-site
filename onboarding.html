@@ -308,6 +308,7 @@
       <button type="button" class="btn-meta" id="metaBtn">Connecter WhatsApp &amp; Instagram</button>
       <button type="button" class="btn-guide" id="metaGuideBtn">▶ Voir comment ça se passe, étape par étape (captures réelles)</button>
       <p class="meta-status" id="metaStatus"></p>
+      <button type="button" class="btn-guide" id="metaSkipBtn">Continuer sans connecter WhatsApp pour l'instant (GlowIA le fera avec vous plus tard)</button>
       <div class="connect-tip">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#A97C33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9.5" stroke="#A97C33" stroke-width="1.3"/></svg>
         <span><b>Avant de connecter :</b> utilisez un numéro WhatsApp pas encore utilisé, ou passez-le d'abord sur l'appli <b>WhatsApp Business</b> (pas WhatsApp classique) — ça évite un message de blocage. Pas encore sur WhatsApp Business ? <a href="aide-whatsapp.html" target="_blank">Voir comment transférer votre compte sans rien perdre →</a></span>
@@ -1013,6 +1014,13 @@
   var metaStatus = document.getElementById('metaStatus');
   var stepNum1 = document.getElementById('stepNum1');
   var submitBtn = document.getElementById('submitBtn');
+
+  document.getElementById('metaSkipBtn').addEventListener('click', function(){
+    metaStatus.className = 'meta-status ok';
+    metaStatus.textContent = "D'accord : WhatsApp et Instagram seront connectés plus tard avec GlowIA. Complétez le formulaire ci-dessous puis validez.";
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Créer le salon';
+  });
 
   metaBtn.addEventListener('click', function(){
     metaStatus.className = 'meta-status';
