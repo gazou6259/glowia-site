@@ -371,7 +371,7 @@
         <div class="field-hint" id="hint-style">Copiez-collez 4 ou 5 réponses que vous envoyez d'habitude à vos clientes, telles que vous les écrivez (bonjour, prix, créneau, confirmation…). L'assistant s'en inspire pour répondre avec votre ton : tutoiement ou vouvoiement, longueur, petites formules. <b>Ne mettez ni prénom ni numéro de cliente.</b> Laissez vide pour un ton poli et chaleureux, avec vouvoiement. Vous pourrez le modifier plus tard.</div>
       </div>
       <div class="field" id="smsSection">
-        <label>SMS sur votre numéro</label>
+        <label>SMS sur votre numéro (facultatif)</label>
         <p class="sms-note" style="margin:0 0 12px;">L'assistant répond aussi aux SMS de vos clientes, depuis le numéro qu'elles connaissent déjà. Le téléphone du salon doit être un téléphone pro, réservé au salon.</p>
         <div class="field">
           <label for="telSms">Numéro du téléphone pro</label>
@@ -1085,9 +1085,14 @@
     if (!sec) return;
     if (smsOn) {
       sec.classList.add('show');
-      document.getElementById('telSms').required = true;
-      document.getElementById('telDedie').required = true;
-      document.querySelectorAll('input[name="type_telephone"]').forEach(function(r){ r.required = true; });
+      // Facultatif : le choix du téléphone et la case deviennent obligatoires dès qu'un numéro est saisi
+      var tel = document.getElementById('telSms');
+      var syncReq = function(){
+        var on = tel.value.trim().length > 0;
+        document.getElementById('telDedie').required = on;
+        document.querySelectorAll('input[name="type_telephone"]').forEach(function(r){ r.required = on; });
+      };
+      tel.addEventListener('input', syncReq); syncReq();
     } else {
       sec.querySelectorAll('input').forEach(function(i){ i.disabled = true; });
     }
