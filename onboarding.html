@@ -1078,9 +1078,9 @@
   })();
 
 
-  // Option SMS : visible seulement avec le lien ?sms=1 (pilote)
+  // Option SMS sur le numéro de la gérante
   (function(){
-    var smsOn = new URLSearchParams(window.location.search).get('sms') === '1';
+    var smsOn = true; // option SMS visible pour toutes (décision de Jason, 05/11)
     var sec = document.getElementById('smsSection');
     if (!sec) return;
     if (smsOn) {
