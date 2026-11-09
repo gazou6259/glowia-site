@@ -322,6 +322,71 @@
   }
   .hours-preview{margin-top:14px;padding:12px 14px;background:rgba(110,29,49,.05);border-radius:10px;font-size:12.5px;color:var(--encre-doux);line-height:1.6;}
   .hours-preview strong{color:var(--laque);}
+
+  /* ===== Mes connexions ===== */
+  .cx-panel{position:relative;overflow:hidden;}
+  .cx-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .cx-head h2{margin-bottom:0;}
+  .cx-sum{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--encre-doux);}
+  .cx-ring{width:44px;height:44px;position:relative;flex-shrink:0;}
+  .cx-ring svg{transform:rotate(-90deg);}
+  .cx-ring circle{fill:none;stroke-width:4;}
+  .cx-ring .bg{stroke:rgba(110,29,49,.1);}
+  .cx-ring .fg{stroke:var(--laiton);stroke-linecap:round;transition:stroke-dashoffset 1s var(--ease);}
+  .cx-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-size:15px;color:var(--laque);font-weight:600;}
+  .cx-intro{font-size:13.5px;color:var(--encre-doux);line-height:1.6;margin:8px 0 18px;max-width:640px;}
+  .cx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  @media (max-width:680px){.cx-grid{grid-template-columns:1fr;}}
+  .cx-card{position:relative;background:#fff;border:1px solid rgba(110,29,49,.1);border-radius:14px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(10px);animation:rise .55s var(--ease) both;transition:transform .22s var(--ease),box-shadow .22s ease,border-color .22s ease;}
+  .cx-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(74,18,32,.08);border-color:rgba(110,29,49,.2);}
+  .cx-card.is-on{border-color:rgba(61,122,74,.28);}
+  .cx-card.is-pause{border-color:rgba(199,154,86,.45);background:linear-gradient(180deg,#fff, #fdf8ef);}
+  .cx-top{display:flex;align-items:center;gap:12px;}
+  .cx-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--ivoire);flex-shrink:0;transition:background .3s ease;}
+  .cx-card.is-on .cx-ico{background:rgba(110,29,49,.08);}
+  .cx-name{font-weight:600;font-size:15px;color:var(--encre);}
+  .cx-state{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--encre-doux);margin-top:2px;min-height:18px;}
+  .cx-dot{width:8px;height:8px;border-radius:50%;background:#cbbfb3;flex-shrink:0;position:relative;}
+  .is-on .cx-dot{background:var(--vert);}
+  .is-on .cx-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--vert);opacity:0;animation:cx-pulse 2.4s ease-out infinite;}
+  .is-pause .cx-dot{background:var(--laiton);}
+  @keyframes cx-pulse{0%{opacity:.55;transform:scale(.6);}100%{opacity:0;transform:scale(1.7);}}
+  .cx-desc{font-size:13px;color:var(--encre-doux);line-height:1.55;}
+  .cx-acct{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--laque);background:rgba(110,29,49,.05);border-radius:8px;padding:6px 9px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cx-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:auto;}
+  .cx-btn{background:var(--laque);color:var(--ivoire);border:none;border-radius:10px;padding:10px 16px;font-size:13.5px;font-weight:600;font-family:'Work Sans',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s var(--ease),background .15s ease;}
+  .cx-btn:hover{background:var(--laque-clair);transform:translateY(-1px);}
+  .cx-btn.ghost{background:none;color:var(--laque);border:1px solid rgba(110,29,49,.25);}
+  .cx-btn.ghost:hover{border-color:var(--laque);background:none;}
+  .cx-btn[disabled]{opacity:.6;cursor:wait;transform:none;}
+  .cx-link{background:none;border:none;color:var(--encre-doux);font-size:12.5px;text-decoration:underline;cursor:pointer;font-family:'Work Sans',sans-serif;padding:4px 0;}
+  .cx-link:hover{color:var(--laque);}
+  .cx-spin{width:14px;height:14px;border:2px solid rgba(247,239,226,.45);border-top-color:var(--ivoire);border-radius:50%;animation:spin-slow .8s linear infinite;}
+  .cx-switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13px;color:var(--encre);font-weight:500;}
+  .cx-switch input{position:absolute;opacity:0;width:1px;height:1px;}
+  .cx-track{width:42px;height:24px;border-radius:999px;background:#d9cfc3;position:relative;transition:background .25s ease;flex-shrink:0;}
+  .cx-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .3s var(--ease);}
+  .cx-switch input:checked + .cx-track{background:var(--vert);}
+  .cx-switch input:checked + .cx-track::after{transform:translateX(18px);}
+  .cx-switch input:focus-visible + .cx-track{outline:2px solid var(--laque);outline-offset:3px;}
+  .cx-soon{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--laiton-profond);background:rgba(199,154,86,.14);border-radius:999px;padding:4px 10px;}
+  .cx-confirm{display:none;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--encre);background:rgba(110,29,49,.05);border-radius:10px;padding:9px 11px;animation:rise .3s var(--ease) both;}
+  .cx-confirm.show{display:flex;}
+  .cx-confirm button{border:none;border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Work Sans',sans-serif;}
+  .cx-confirm .yes{background:var(--laque);color:var(--ivoire);}
+  .cx-confirm .no{background:#fff;color:var(--encre);border:1px solid #e3d7c6;}
+  .cx-check{position:absolute;top:14px;right:14px;width:22px;height:22px;opacity:0;}
+  .cx-check.play{animation:cx-pop 1.8s var(--ease) both;}
+  .cx-check path{stroke-dasharray:24;stroke-dashoffset:24;}
+  .cx-check.play path{animation:cx-draw .5s .15s var(--ease) forwards;}
+  @keyframes cx-pop{0%{opacity:0;transform:scale(.6);}15%{opacity:1;transform:scale(1.05);}25%{transform:scale(1);}80%{opacity:1;}100%{opacity:0;}}
+  @keyframes cx-draw{to{stroke-dashoffset:0;}}
+  .cx-skel{height:150px;border-radius:14px;background:linear-gradient(100deg,#f3ebe0 30%,#fbf6ee 50%,#f3ebe0 70%);background-size:300% 100%;animation:cx-shimmer 1.4s linear infinite;}
+  @keyframes cx-shimmer{from{background-position:100% 0;}to{background-position:0 0;}}
+  .cx-toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--laque-fonce);color:var(--ivoire);padding:12px 18px;border-radius:12px;font-size:13.5px;box-shadow:0 12px 30px rgba(74,18,32,.3);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .35s var(--ease);z-index:200;max-width:calc(100vw - 32px);}
+  .cx-toast.show{opacity:1;transform:translate(-50%,0);}
+  .cx-toast.err{background:#7a2b1f;}
+  .cx-note{font-size:12px;color:var(--encre-doux);margin-top:14px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -467,6 +532,21 @@
         </div>
         <button type="button" class="btn-install-native tuto-next" id="tutoNext" style="width:100%;">Suivant</button>
       </div>
+    </div>
+
+    <div class="panel anim cx-panel" id="cxPanel" style="animation-delay:.1s;">
+      <div class="cx-head">
+        <h2>Mes connexions</h2>
+        <div class="cx-sum">
+          <div class="cx-ring" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 44 44"><circle class="bg" cx="22" cy="22" r="18"/><circle class="fg" id="cxRing" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"/></svg><b id="cxCount">–</b></div>
+          <span id="cxSumTxt">Chargement…</span>
+        </div>
+      </div>
+      <p class="cx-intro">Reliez vos comptes pour que votre IA réponde à vos clientes et gère vos rendez-vous. Vous pouvez mettre un canal en pause ou le déconnecter à tout moment : c'est vous qui décidez.</p>
+      <div class="cx-grid" id="cxGrid">
+        <div class="cx-skel"></div><div class="cx-skel"></div><div class="cx-skel"></div>
+      </div>
+      <p class="cx-note">En pause, l'IA ne répond plus sur ce canal : vous gardez la main et vos messages restent dans vos applications habituelles. Rien n'est supprimé.</p>
     </div>
 
     <div class="kpi-hero-grid">
@@ -1135,6 +1215,7 @@
     renderPrestations();
     checkInstallBanner();
     loadReglagesIA();
+    loadConnexions();
   }
 
 
@@ -1185,6 +1266,150 @@
     if (!d) { b.textContent = 'Pas encore réglée'; return; }
     var dt = new Date(d); b.textContent = 'Mis à jour le ' + dt.toLocaleDateString('fr-FR') + ' à ' + dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   }
+
+  /* ===== Mes connexions ===== */
+  var CX_API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/connexions-glowia';
+  var IG_AUTH = 'https://www.instagram.com/oauth/authorize?force_reauth=true&client_id=1136636238081319&redirect_uri=' + encodeURIComponent('https://glow-ia.fr/ig-callback') + '&response_type=code&scope=' + encodeURIComponent('instagram_business_basic,instagram_business_manage_messages');
+  var cxEtat = null, cxPopup = null, cxFirst = true;
+  var CX_ICONS = {
+    instagram: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="#6E1D31" stroke-width="1.6"/><circle cx="12" cy="12" r="3.8" stroke="#6E1D31" stroke-width="1.6"/><circle cx="17" cy="7" r="1" fill="#C79A56"/></svg>',
+    whatsapp: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 11.5a8 8 0 01-11.8 7L4 20l1.5-4.1A8 8 0 1120 11.5z" stroke="#6E1D31" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 1.7 3.5 3.6 4.4" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    google: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" stroke="#6E1D31" stroke-width="1.6"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/><path d="M9 14.2l2 2 4-4" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    sms: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5" stroke="#6E1D31" stroke-width="1.6"/><path d="M10.5 18.5h3" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/><path d="M9.5 8h5M9.5 11h3" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round"/></svg>'
+  };
+  function cxEsc(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+  function cxToast(msg, err){
+    var t = document.getElementById('cxToast');
+    if (!t) { t = document.createElement('div'); t.id = 'cxToast'; t.className = 'cx-toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+    t.textContent = msg; t.classList.toggle('err', !!err); t.classList.add('show');
+    clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove('show'); }, 3800);
+  }
+  function cxPost(body){
+    body.token = getToken();
+    return fetch(CX_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
+      .then(function(r){ return r.json(); })
+      .then(function(res){ if (res && res.session) { cxToast('Votre session a expiré : reconnectez-vous.', true); } return res || {}; });
+  }
+  function cxCards(e){
+    var L = [];
+    var ig = e.instagram || {}, wa = e.whatsapp || {}, g = e.google || {}, sms = e.sms || {};
+    L.push({ id:'instagram', nom:'Instagram', on: ig.connecte, pause: ig.pause, compte: ig.compte ? '@' + ig.compte : '',
+      desc: ig.connecte ? "L'IA répond aux messages privés de vos clientes." : "Votre compte doit être professionnel et public. La connexion se fait en quelques secondes avec Instagram.",
+      toggle: 'Réponses de l’IA', connect: 'Connecter Instagram', canDisconnect: true });
+    L.push({ id:'google', nom:'Google Agenda', on: g.connecte, pause: g.pause, compte: g.compte || '',
+      desc: !g.connecte ? "L'IA consulte vos disponibilités réelles et y ajoute les rendez-vous qu'elle prend." : (g.mode === 'partage' ? "Votre agenda est relié par l'équipe GlowIA." : "L'IA lit vos disponibilités et ajoute les rendez-vous."),
+      toggle: 'Prise de rendez-vous', connect: 'Connecter Google Agenda', canDisconnect: g.mode === 'compte', upgrade: g.mode === 'partage' });
+    if (sms.present) L.push({ id:'sms', nom:'SMS du salon', on: true, pause: sms.pause, compte: sms.compte || '',
+      desc: "L'IA répond aux SMS reçus sur le numéro du salon, depuis votre téléphone.", toggle: 'Réponses de l’IA', canDisconnect: false });
+    L.push({ id:'whatsapp', nom:'WhatsApp', on: wa.connecte, pause: wa.pause, compte: wa.compte || '', soon: !wa.connecte,
+      desc: wa.connecte ? "L'IA répond aux messages WhatsApp de vos clientes." : "La connexion de WhatsApp depuis votre espace arrive bientôt. Nous vous prévenons dès qu'elle est ouverte.",
+      toggle: 'Réponses de l’IA', canDisconnect: true });
+    return L;
+  }
+  function cxRender(e, justDone){
+    cxEtat = e;
+    var grid = document.getElementById('cxGrid'); if (!grid) return;
+    var cards = cxCards(e), html = '', actifs = 0, total = 0;
+    cards.forEach(function(c, i){
+      if (!c.soon) total++;
+      if (c.on && !c.pause) actifs++;
+      var cls = c.on ? (c.pause ? 'is-pause' : 'is-on') : '';
+      var etat = c.soon ? '<span class="cx-soon">Bientôt</span>' : (!c.on ? 'Non connecté' : (c.pause ? 'En pause' : 'Actif'));
+      html += '<div class="cx-card ' + cls + '" data-cx="' + c.id + '" style="animation-delay:' + (cxFirst ? (0.08 * i + 0.1) : 0) + 's">';
+      html += '<svg class="cx-check' + (justDone === c.id ? ' play' : '') + '" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#3D7A4A"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      html += '<div class="cx-top"><div class="cx-ico">' + CX_ICONS[c.id] + '</div><div><div class="cx-name">' + c.nom + '</div><div class="cx-state">' + (c.soon ? '' : '<span class="cx-dot"></span>') + etat + '</div></div></div>';
+      if (c.on && c.compte) html += '<span class="cx-acct" title="' + cxEsc(c.compte) + '">' + cxEsc(c.compte) + '</span>';
+      html += '<p class="cx-desc">' + c.desc + '</p>';
+      html += '<div class="cx-actions">';
+      if (c.on) {
+        html += '<label class="cx-switch"><input type="checkbox" data-act="toggle" ' + (c.pause ? '' : 'checked') + '><span class="cx-track"></span>' + c.toggle + '</label>';
+        if (c.canDisconnect) html += '<button type="button" class="cx-link" data-act="ask">Déconnecter</button>';
+        if (c.upgrade) html += '<button type="button" class="cx-link" data-act="connect">Relier avec mon compte Google</button>';
+      } else if (!c.soon && c.connect) {
+        html += '<button type="button" class="cx-btn" data-act="connect">' + c.connect + '</button>';
+      }
+      html += '</div>';
+      if (c.on && c.canDisconnect) html += '<div class="cx-confirm"><span>Déconnecter ' + c.nom + ' ? L’IA ne répondra plus sur ce canal.</span><button type="button" class="yes" data-act="disconnect">Déconnecter</button><button type="button" class="no" data-act="cancel">Annuler</button></div>';
+      html += '</div>';
+    });
+    grid.innerHTML = html;
+    cxFirst = false;
+    var ring = document.getElementById('cxRing'), C = 113.1;
+    if (ring) ring.setAttribute('stroke-dashoffset', String(total ? C * (1 - actifs / total) : C));
+    document.getElementById('cxCount').textContent = actifs;
+    document.getElementById('cxSumTxt').textContent = actifs === 0 ? 'Aucun canal actif' : (actifs + (actifs > 1 ? ' canaux actifs' : ' canal actif') + ' sur ' + total);
+  }
+  function loadConnexions(justDone){
+    if (!document.getElementById('cxPanel') || !getToken()) return;
+    cxPost({ action:'etat' }).then(function(res){ if (res.success) cxRender(res, justDone); }).catch(function(){
+      document.getElementById('cxSumTxt').textContent = 'Connexion impossible pour le moment';
+    });
+  }
+  function cxBusy(card, on){ var b = card.querySelector('[data-act="connect"]'); if (!b) return; if (on) { b.disabled = true; b.dataset.txt = b.innerHTML; b.innerHTML = (b.classList.contains('cx-btn') ? '<span class="cx-spin"></span>' : '') + 'Connexion en cours…'; } else if (b.dataset.txt) { b.disabled = false; b.innerHTML = b.dataset.txt; } }
+  function cxOpenPopup(){ var w = 520, h = 720, l = Math.max(0, (screen.width - w) / 2), t = Math.max(0, (screen.height - h) / 2); return window.open('about:blank', 'glowia_cx', 'width=' + w + ',height=' + h + ',left=' + l + ',top=' + t); }
+  function cxWatch(){ clearInterval(cxWatch._t); cxWatch._t = setInterval(function(){ if (!cxPopup || cxPopup.closed) { clearInterval(cxWatch._t); setTimeout(function(){ if (!cxWatch.got) loadConnexions(); cxWatch.got = false; }, 2500); } }, 1000); }
+  function cxConnect(id, card){
+    cxBusy(card, true);
+    cxPopup = cxOpenPopup(); cxWatch.got = false; cxWatch();
+    if (id === 'instagram') { if (cxPopup) cxPopup.location.href = IG_AUTH; else location.href = IG_AUTH; return; }
+    if (id === 'google') {
+      cxPost({ action:'google_start' }).then(function(res){
+        if (!res.success || !res.url) { if (cxPopup) cxPopup.close(); cxBusy(card, false); cxToast(res.message || 'Impossible de lancer la connexion Google.', true); return; }
+        try { sessionStorage.setItem('glowia_g_state', new URL(res.url).searchParams.get('state') || ''); } catch (e) {}
+        if (cxPopup) cxPopup.location.href = res.url; else location.href = res.url;
+      }).catch(function(){ if (cxPopup) cxPopup.close(); cxBusy(card, false); cxToast('Souci de réseau, réessayez.', true); });
+    }
+  }
+  function cxFinish(id, body){
+    var card = document.querySelector('.cx-card[data-cx="' + id + '"]'); if (card) cxBusy(card, true);
+    cxPost(body).then(function(res){
+      if (res.success) { cxToast(res.message || 'Connecté.'); loadConnexions(id); }
+      else { if (card) cxBusy(card, false); cxToast(res.message || 'La connexion n’a pas abouti, réessayez.', true); }
+    }).catch(function(){ if (card) cxBusy(card, false); cxToast('Souci de réseau, réessayez.', true); });
+  }
+  window.addEventListener('message', function(ev){
+    if (ev.origin !== 'https://glow-ia.fr' || !ev.data || !document.getElementById('cxPanel')) return;
+    if (ev.data.type === 'GLOWIA_IG' || ev.data.type === 'GLOWIA_GOOGLE') cxWatch.got = true;
+    if (ev.data.type === 'GLOWIA_IG') {
+      if (!ev.data.code) { loadConnexions(); cxToast('Connexion Instagram annulée.', true); return; }
+      cxFinish('instagram', { action:'ig_code', code: ev.data.code });
+    }
+    if (ev.data.type === 'GLOWIA_GOOGLE') {
+      if (!ev.data.code) { loadConnexions(); cxToast('Connexion Google annulée.', true); return; }
+      cxFinish('google', { action:'google_code', code: ev.data.code, state: ev.data.state || sessionStorage.getItem('glowia_g_state') || '' });
+    }
+  });
+  (function(){
+    var grid = document.getElementById('cxGrid'); if (!grid) return;
+    grid.addEventListener('click', function(ev){
+      var b = ev.target.closest('[data-act]'); if (!b || b.tagName === 'INPUT') return;
+      var card = b.closest('.cx-card'), id = card.getAttribute('data-cx'), act = b.getAttribute('data-act');
+      var conf = card.querySelector('.cx-confirm');
+      if (act === 'connect') cxConnect(id, card);
+      else if (act === 'ask' && conf) conf.classList.add('show');
+      else if (act === 'cancel' && conf) conf.classList.remove('show');
+      else if (act === 'disconnect') {
+        b.disabled = true;
+        cxPost({ action:'deconnecter', canal: id }).then(function(res){
+          cxToast(res.success ? (card.querySelector('.cx-name').textContent + ' déconnecté.') : (res.message || 'Erreur, réessayez.'), !res.success); loadConnexions();
+        }).catch(function(){ b.disabled = false; cxToast('Souci de réseau, réessayez.', true); });
+      }
+    });
+    grid.addEventListener('change', function(ev){
+      var inp = ev.target; if (inp.getAttribute('data-act') !== 'toggle') return;
+      var card = inp.closest('.cx-card'), id = card.getAttribute('data-cx'), actif = inp.checked;
+      card.classList.toggle('is-on', actif); card.classList.toggle('is-pause', !actif);
+      card.querySelector('.cx-state').lastChild.textContent = actif ? 'Actif' : 'En pause';
+      inp.disabled = true;
+      cxPost({ action: actif ? 'reprendre' : 'pause', canal: id }).then(function(res){
+        inp.disabled = false;
+        if (!res.success) { inp.checked = !actif; cxToast(res.message || 'Erreur, réessayez.', true); loadConnexions(); return; }
+        var nom = card.querySelector('.cx-name').textContent;
+        cxToast(actif ? nom + ' : l’IA reprend.' : nom + ' en pause : vous gardez la main.');
+        loadConnexions();
+      }).catch(function(){ inp.disabled = false; inp.checked = !actif; cxToast('Souci de réseau, réessayez.', true); loadConnexions(); });
+    });
+  })();
   function loadReglagesIA(){
     var token = getToken(); if (!token || !document.getElementById('iaPanel')) return;
     fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'reglages_ia', op:'get', token: token }) })
