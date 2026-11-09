@@ -790,6 +790,8 @@
   var logoutBtn = document.getElementById('logoutBtn');
 
   function saveToken(t){ localStorage.setItem('glowia_token', t); }
+  // Lien d'accès envoyé par GlowIA (jeton dans l'ancre #acces=..., jamais transmis au serveur du site)
+  (function(){ var m = location.hash.match(/acces=([^&]+)/); if (m) { try { localStorage.setItem('glowia_token', decodeURIComponent(m[1])); } catch (e) {} history.replaceState(null, '', location.pathname); } })();
   function getToken(){ return localStorage.getItem('glowia_token'); }
   function clearToken(){ localStorage.removeItem('glowia_token'); }
 
