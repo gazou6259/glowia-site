@@ -215,6 +215,33 @@
   .panel .btn{width:auto;padding:11px 24px;margin-top:14px;}
   .save-msg{font-size:13.5px;color:var(--vert);margin-top:10px;min-height:1.2em;opacity:0;transform:translateY(6px);transition:opacity .3s ease,transform .3s var(--ease);}
   .save-msg.show{opacity:1;transform:none;}
+  .ia-intro{margin:0 0 16px;font-size:13.5px;color:var(--encre-doux);line-height:1.6;}
+  .ia-badge{font-size:12px;font-weight:600;color:var(--laque);background:var(--nacre);border-radius:999px;padding:5px 12px;}
+  .ia-sec{border:1px solid #eadfcd;border-radius:12px;padding:0 16px;margin-bottom:10px;background:var(--porcelaine);}
+  .ia-sec summary{cursor:pointer;list-style:none;padding:14px 0;font-weight:600;font-size:14.5px;color:var(--encre);}
+  .ia-sec summary::-webkit-details-marker{display:none;}
+  .ia-sec summary::after{content:'+';float:right;color:var(--laiton-profond);font-weight:700;}
+  .ia-sec[open] summary::after{content:'−';}
+  .ia-sec[open]{padding-bottom:14px;}
+  .ia-help{font-size:12.5px;color:var(--encre-doux);margin:0 0 10px;line-height:1.5;}
+  .ia-row{margin-bottom:12px;}
+  .ia-choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .ia-choices button{border:1px solid #e3d7c6;background:#fff;border-radius:999px;padding:8px 14px;font-size:13.5px;font-family:'Work Sans',sans-serif;cursor:pointer;color:var(--encre);}
+  .ia-choices button.on{background:var(--laque);border-color:var(--laque);color:var(--ivoire);}
+  .ia-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+  @media (max-width:640px){.ia-grid{grid-template-columns:1fr;}}
+  .ia-checks{display:grid;gap:8px;margin-bottom:10px;font-size:14px;}
+  .ia-checks input{accent-color:var(--laque);margin-right:8px;}
+  .ia-item{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:start;}
+  @media (max-width:640px){.ia-item{grid-template-columns:1fr;}}
+  .ia-item input,.ia-item textarea{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:10px 12px;font-size:14px;font-family:'Work Sans',sans-serif;min-height:auto;}
+  .ia-item .ia-del{border:none;background:none;color:var(--laque);font-size:20px;cursor:pointer;padding:6px 8px;}
+  .ia-corr{background:#fff;border:1px solid #eadfcd;border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13.5px;line-height:1.5;position:relative;padding-right:36px;}
+  .ia-corr .ia-del{position:absolute;top:6px;right:6px;border:none;background:none;color:var(--laque);font-size:20px;cursor:pointer;}
+  .ia-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:10px;}
+  .ia-link{border:none;background:none;color:var(--laque);text-decoration:underline;font-size:13.5px;cursor:pointer;font-family:'Work Sans',sans-serif;margin-top:14px;}
+  .ia-preview{white-space:pre-wrap;background:var(--porcelaine);border:1px solid #eadfcd;border-radius:10px;padding:14px;font-size:12.5px;line-height:1.55;color:var(--encre-doux);max-height:340px;overflow:auto;font-family:'Work Sans',sans-serif;}
+
   .loader{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-right:8px;animation:spin-slow 1.8s linear infinite;}
 
   .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
@@ -492,6 +519,117 @@
         <div class="chart-legend"><span class="dot"></span> Chiffre d'affaires</div>
       </div>
       <div id="chartWrap"></div>
+    </div>
+
+    <div class="panel anim ia-panel" id="iaPanel" style="animation-delay:.44s;">
+      <div class="panel-head">
+        <h2>Entraîner mon IA</h2>
+        <span class="ia-badge" id="iaMaj">Pas encore réglée</span>
+      </div>
+      <p class="ia-intro">Expliquez à votre IA comment vous travaillez. Tout ce que vous écrivez ici est appliqué à ses prochaines réponses, sur Instagram et par SMS. Vous pouvez revenir le modifier quand vous voulez.</p>
+
+      <details class="ia-sec" open>
+        <summary>1. Votre façon de parler</summary>
+        <div class="ia-row"><span class="field-label">Tu ou vous ?</span>
+          <div class="ia-choices" data-key="registre">
+            <button type="button" data-val="auto">Comme la cliente</button><button type="button" data-val="vous">Toujours vous</button><button type="button" data-val="tu">Toujours tu</button>
+          </div></div>
+        <div class="ia-row"><span class="field-label">Emojis</span>
+          <div class="ia-choices" data-key="emojis">
+            <button type="button" data-val="un">Un seul par message</button><button type="button" data-val="libres">Quelques-uns</button><button type="button" data-val="aucun">Aucun</button>
+          </div></div>
+        <div class="ia-row"><span class="field-label">Longueur des réponses</span>
+          <div class="ia-choices" data-key="longueur">
+            <button type="button" data-val="court">Courtes</button><button type="button" data-val="detaille">Un peu plus détaillées</button>
+          </div></div>
+      </details>
+
+      <details class="ia-sec">
+        <summary>2. Présentation de votre salon</summary>
+        <textarea data-key="presentation" placeholder="Ex : Onglerie à Loos, spécialisée dans la pose capsules et le nail art. Je suis aussi formatrice."></textarea>
+      </details>
+
+      <details class="ia-sec">
+        <summary>3. Infos pratiques</summary>
+        <div class="ia-grid">
+          <label class="field"><span class="field-label">Moyens de paiement</span><input data-key="paiement" placeholder="Ex : Espèces uniquement"></label>
+          <label class="field"><span class="field-label">Acompte</span><input data-key="acompte" placeholder="Ex : Pas d'acompte"></label>
+          <label class="field"><span class="field-label">En cas de retard</span><input data-key="retard" placeholder="Ex : Au-delà de 15 min, le rendez-vous peut être annulé"></label>
+          <label class="field"><span class="field-label">Annulation</span><input data-key="annulation" placeholder="Ex : Prévenir au moins 24 h avant"></label>
+          <label class="field"><span class="field-label">Accès et stationnement</span><input data-key="acces" placeholder="Ex : Parking gratuit devant le salon"></label>
+          <label class="field"><span class="field-label">Autre chose à savoir</span><input data-key="infos_autres" placeholder="Ex : Venir sans vernis"></label>
+        </div>
+      </details>
+
+      <details class="ia-sec">
+        <summary>4. Les questions à poser avant de réserver</summary>
+        <p class="ia-help">L'IA pose ces questions avant de proposer un horaire, seulement si la cliente n'y a pas déjà répondu.</p>
+        <div class="ia-checks" data-key="questions">
+          <label><input type="checkbox" value="pose_a_retirer"> Y a-t-il une pose à retirer ?</label>
+          <label><input type="checkbox" value="origine_pose"> La pose a-t-elle été faite chez moi ou ailleurs ?</label>
+          <label><input type="checkbox" value="options"> Couleur simple ou option (nail art, French…) ?</label>
+          <label><input type="checkbox" value="longueur"> Rallonger ou garder sa longueur ?</label>
+          <label><input type="checkbox" value="inspiration"> Proposer d'envoyer une photo d'inspiration</label>
+          <label><input type="checkbox" value="premiere_fois"> Est-ce sa première fois au salon ?</label>
+        </div>
+        <textarea data-key="questions_perso" placeholder="Vos autres questions, une par ligne"></textarea>
+      </details>
+
+      <details class="ia-sec">
+        <summary>5. Vos règles de prix</summary>
+        <p class="ia-help">Les cas que le tableau des prestations ne dit pas : suppléments, réductions, combinaisons.</p>
+        <textarea data-key="regles_prix" placeholder="Ex : Gainage + dépose d'une pose faite chez moi = 45 €. Gainage + dépose d'une pose faite ailleurs = 55 €."></textarea>
+      </details>
+
+      <details class="ia-sec">
+        <summary>6. Vos réponses types</summary>
+        <p class="ia-help">Les questions qu'on vous pose souvent, et ce que vous répondez.</p>
+        <div class="ia-list" data-list="faq"></div>
+        <button type="button" class="btn-add" data-add="faq">+ Ajouter une réponse type</button>
+      </details>
+
+      <details class="ia-sec">
+        <summary>7. Demandes particulières</summary>
+        <p class="ia-help">Ex : formation, carte cadeau, prestation à domicile… Ce que l'IA doit répondre, avec un lien si besoin.</p>
+        <div class="ia-list" data-list="speciales"></div>
+        <button type="button" class="btn-add" data-add="speciales">+ Ajouter une demande</button>
+      </details>
+
+      <details class="ia-sec">
+        <summary>8. Ce que vous préférez gérer vous-même</summary>
+        <p class="ia-help">Sur ces sujets, l'IA répond seulement qu'elle vous transmet le message. Un sujet par ligne.</p>
+        <textarea data-key="relais" placeholder="Ex : Ongle abîmé ou douloureux&#10;Réclamation ou remboursement"></textarea>
+      </details>
+
+      <details class="ia-sec">
+        <summary>9. Ce que l'IA ne doit jamais dire</summary>
+        <textarea data-key="interdits" placeholder="Une règle par ligne. Ex : Dire que je suis en route"></textarea>
+      </details>
+
+      <details class="ia-sec">
+        <summary>10. Les personnes à qui l'IA ne répond pas</summary>
+        <p class="ia-help">Vos proches, votre famille… Un compte Instagram (@pseudo) ou un numéro par ligne. Vous leur répondez vous-même.</p>
+        <textarea data-key="ignores" placeholder="@pseudo_instagram&#10;06 12 34 56 78"></textarea>
+      </details>
+
+      <details class="ia-sec" id="iaCorrSec">
+        <summary>11. Corriger une réponse de l'IA</summary>
+        <p class="ia-help">Une réponse ne vous a pas plu ? Montrez-lui ce qu'elle aurait dû dire. Elle s'en servira comme exemple.</p>
+        <div class="ia-grid">
+          <label class="field"><span class="field-label">La situation</span><input id="corrSituation" placeholder="Ex : Une cliente demande « demain à 12h15 c'est possible ? »"></label>
+          <label class="field"><span class="field-label">Ce que l'IA a répondu</span><input id="corrAvant" placeholder="Ex : Quelle prestation souhaitez-vous ?"></label>
+        </div>
+        <label class="field"><span class="field-label">Ce qu'elle aurait dû répondre</span><textarea id="corrApres" placeholder="Ex : C'est bien noté pour moi demain à 12h15 😊"></textarea></label>
+        <button type="button" class="btn-add" id="corrAddBtn">+ Ajouter cette correction</button>
+        <div class="ia-list" data-list="corrections"></div>
+      </details>
+
+      <div class="ia-actions">
+        <button type="button" class="btn" id="iaSaveBtn">Enregistrer mes réglages</button>
+        <button type="button" class="ia-link" id="iaPreviewBtn">Voir ce que l'IA retient</button>
+      </div>
+      <p class="save-msg" id="iaMsg"></p>
+      <pre class="ia-preview" id="iaPreview" style="display:none;"></pre>
     </div>
 
     <div class="panel anim" style="animation-delay:.46s;">
@@ -993,7 +1131,108 @@
     prestaData = (data.prestations || []).map(function(p){ return { service_name: p.service_name, duree_min: p.duration_min || 30, price_eur: p.price_eur, active: p.active }; });
     renderPrestations();
     checkInstallBanner();
+    loadReglagesIA();
   }
+
+
+  /* ---------- Entraîner mon IA ---------- */
+  var iaState = {};
+  var IA_DEFAUT = { registre:'auto', emojis:'un', longueur:'court', questions:[], faq:[], speciales:[], corrections:[] };
+  function iaEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+  function iaRenderList(name){
+    var wrap = document.querySelector('[data-list="' + name + '"]'); if (!wrap) return;
+    var arr = iaState[name] || [];
+    if (name === 'corrections') {
+      wrap.innerHTML = arr.map(function(c, i){
+        return '<div class="ia-corr"><button type="button" class="ia-del" data-del="corrections" data-i="' + i + '" title="Retirer">×</button>' +
+          (c.situation ? '<strong>Situation :</strong> ' + iaEsc(c.situation) + '<br>' : '') +
+          (c.avant ? '<strong>Au lieu de :</strong> « ' + iaEsc(c.avant) + ' »<br>' : '') +
+          '<strong>Répondre :</strong> « ' + iaEsc(c.apres) + ' »</div>';
+      }).join('');
+    } else {
+      var k1 = name === 'faq' ? 'q' : 'sujet', k2 = name === 'faq' ? 'r' : 'reponse';
+      var p1 = name === 'faq' ? 'La question (ex : Vous faites les pieds ?)' : 'Le sujet (ex : formation)';
+      var p2 = name === 'faq' ? 'Votre réponse' : 'Ce que l’IA doit répondre (avec un lien si besoin)';
+      wrap.innerHTML = arr.map(function(it, i){
+        return '<div class="ia-item"><input data-li="' + name + '" data-i="' + i + '" data-f="' + k1 + '" value="' + iaEsc(it[k1]) + '" placeholder="' + p1 + '">' +
+          '<textarea data-li="' + name + '" data-i="' + i + '" data-f="' + k2 + '" placeholder="' + p2 + '">' + iaEsc(it[k2]) + '</textarea>' +
+          '<button type="button" class="ia-del" data-del="' + name + '" data-i="' + i + '" title="Retirer">×</button></div>';
+      }).join('');
+    }
+  }
+  function iaFill(){
+    var p = document.getElementById('iaPanel'); if (!p) return;
+    Array.prototype.forEach.call(p.querySelectorAll('.ia-choices'), function(g){
+      var k = g.getAttribute('data-key');
+      Array.prototype.forEach.call(g.querySelectorAll('button'), function(b){ b.classList.toggle('on', b.getAttribute('data-val') === iaState[k]); });
+    });
+    Array.prototype.forEach.call(p.querySelectorAll('input[data-key], textarea[data-key]'), function(el){ el.value = iaState[el.getAttribute('data-key')] || ''; });
+    Array.prototype.forEach.call(p.querySelectorAll('.ia-checks input'), function(c){ c.checked = (iaState.questions || []).indexOf(c.value) >= 0; });
+    ['faq','speciales','corrections'].forEach(iaRenderList);
+  }
+  function iaCollect(){
+    var p = document.getElementById('iaPanel');
+    Array.prototype.forEach.call(p.querySelectorAll('input[data-key], textarea[data-key]'), function(el){ iaState[el.getAttribute('data-key')] = el.value.trim(); });
+    iaState.questions = Array.prototype.filter.call(p.querySelectorAll('.ia-checks input'), function(c){ return c.checked; }).map(function(c){ return c.value; });
+    ['faq','speciales'].forEach(function(n){ iaState[n] = (iaState[n] || []).filter(function(x){ return Object.keys(x).some(function(k){ return String(x[k] || '').trim(); }); }); });
+    return iaState;
+  }
+  function iaSetMaj(d){
+    var b = document.getElementById('iaMaj'); if (!b) return;
+    if (!d) { b.textContent = 'Pas encore réglée'; return; }
+    var dt = new Date(d); b.textContent = 'Mis à jour le ' + dt.toLocaleDateString('fr-FR') + ' à ' + dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+  }
+  function loadReglagesIA(){
+    var token = getToken(); if (!token || !document.getElementById('iaPanel')) return;
+    fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'reglages_ia', op:'get', token: token }) })
+      .then(function(r){ return r.json(); }).then(function(res){
+        if (!res.success) return;
+        iaState = Object.assign({}, IA_DEFAUT, res.reglages || {});
+        iaFill(); iaSetMaj(res.reglages && res.reglages.mis_a_jour);
+        document.getElementById('iaPreview').textContent = res.consignes || '';
+      }).catch(function(){});
+  }
+  (function(){
+    var p = document.getElementById('iaPanel'); if (!p) return;
+    iaState = Object.assign({}, IA_DEFAUT);
+    p.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b) return;
+      var g = b.closest('.ia-choices');
+      if (g) { iaState[g.getAttribute('data-key')] = b.getAttribute('data-val'); iaFill(); return; }
+      if (b.hasAttribute('data-add')) { iaCollect(); var n = b.getAttribute('data-add'); iaState[n] = (iaState[n] || []).concat([{}]); iaRenderList(n); return; }
+      if (b.hasAttribute('data-del')) { iaCollect(); var dn = b.getAttribute('data-del'); iaState[dn].splice(parseInt(b.getAttribute('data-i'), 10), 1); iaRenderList(dn); return; }
+    });
+    p.addEventListener('input', function(e){
+      var el = e.target; if (!el.hasAttribute('data-li')) return;
+      var n = el.getAttribute('data-li'), i = parseInt(el.getAttribute('data-i'), 10);
+      iaState[n][i][el.getAttribute('data-f')] = el.value;
+    });
+    document.getElementById('corrAddBtn').addEventListener('click', function(){
+      var ap = document.getElementById('corrApres').value.trim();
+      var msg = document.getElementById('iaMsg');
+      if (!ap) { msg.textContent = 'Écrivez ce que l’IA aurait dû répondre.'; msg.classList.add('show'); return; }
+      iaCollect();
+      iaState.corrections = (iaState.corrections || []).concat([{ situation: document.getElementById('corrSituation').value.trim(), avant: document.getElementById('corrAvant').value.trim(), apres: ap, date: new Date().toISOString() }]);
+      ['corrSituation','corrAvant','corrApres'].forEach(function(id){ document.getElementById(id).value = ''; });
+      iaRenderList('corrections');
+      msg.textContent = 'Correction ajoutée. Pensez à enregistrer.'; msg.classList.add('show');
+    });
+    document.getElementById('iaSaveBtn').addEventListener('click', function(){
+      var msg = document.getElementById('iaMsg'), btn = this;
+      msg.textContent = 'Enregistrement…'; msg.classList.add('show'); btn.disabled = true;
+      fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'reglages_ia', op:'save', token: getToken(), reglages: iaCollect() }) })
+        .then(function(r){ return r.json(); }).then(function(res){
+          btn.disabled = false;
+          if (res.success) { msg.textContent = 'Enregistré ✓ Votre IA applique ces réglages dès maintenant.'; iaSetMaj(new Date().toISOString()); document.getElementById('iaPreview').textContent = res.consignes || ''; }
+          else { msg.textContent = res.error || 'Erreur, réessayez.'; }
+        }).catch(function(){ btn.disabled = false; msg.textContent = 'Un souci réseau est survenu.'; });
+    });
+    document.getElementById('iaPreviewBtn').addEventListener('click', function(){
+      var pre = document.getElementById('iaPreview');
+      pre.style.display = pre.style.display === 'none' ? 'block' : 'none';
+      this.textContent = pre.style.display === 'none' ? 'Voir ce que l’IA retient' : 'Masquer';
+    });
+  })();
 
   function loadDashboard(){
     var token = getToken();
