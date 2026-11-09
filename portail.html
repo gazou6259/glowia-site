@@ -827,6 +827,34 @@
   var DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
   var hoursState = DAYS.map(function(){ return { closed: true, shifts: [{start:'09:00', end:'19:00'}] }; });
 
+  // Lit les horaires enregistrés (« Lundi : 9h-20h. … Dimanche : fermé. » ou « Lundi au samedi : 9h00 - 19h00 ») pour préremplir l'éditeur
+  function parseHoursText(txt){
+    var t = String(txt || '').toLowerCase().replace(/\s+/g, ' ');
+    if (!t.trim()) return null;
+    var noms = DAYS.map(function(d){ return d.toLowerCase(); });
+    var hm = function(x){ var m = String(x).match(/(\d{1,2})\s*(?:h|:)\s*(\d{0,2})/); if (!m) return null; return ('0' + m[1]).slice(-2) + ':' + ((m[2] || '00') + '0').slice(0, 2); };
+    var res = DAYS.map(function(){ return null; });
+    t.split(/[.;\n]/).forEach(function(part){
+      var i = part.indexOf(':'); if (i < 0) return;
+      var gauche = part.slice(0, i), droite = part.slice(i + 1);
+      var jours = [];
+      var r = gauche.match(/(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s*(?:au|à|-)\s*(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)/);
+      if (r) { var a = noms.indexOf(r[1]), b = noms.indexOf(r[2]); var k = a; do { jours.push(k); k = (k + 1) % 7; } while (k !== (b + 1) % 7 && jours.length < 7); }
+      else noms.forEach(function(n, k){ if (gauche.indexOf(n) >= 0) jours.push(k); });
+      if (!jours.length) return;
+      var etat;
+      if (/ferm/.test(droite)) etat = { closed: true, shifts: [{start:'09:00', end:'19:00'}] };
+      else {
+        var shifts = [];
+        (droite.match(/\d{1,2}\s*(?:h|:)\s*\d{0,2}\s*(?:-|–|à)\s*\d{1,2}\s*(?:h|:)\s*\d{0,2}/g) || []).forEach(function(pl){ var x = pl.split(/-|–|à/); var a1 = hm(x[0]), b1 = hm(x[1]); if (a1 && b1) shifts.push({ start: a1, end: b1 }); });
+        if (!shifts.length) return;
+        etat = { closed: false, shifts: shifts };
+      }
+      jours.forEach(function(k){ res[k] = JSON.parse(JSON.stringify(etat)); });
+    });
+    if (!res.some(Boolean)) return null;
+    return res.map(function(x){ return x || { closed: true, shifts: [{start:'09:00', end:'19:00'}] }; });
+  }
   function formatTime(t){
     var parts = t.split(':'); var h = parseInt(parts[0],10), m = parts[1];
     return m === '00' ? h + 'h' : h + 'h' + m;
@@ -1137,6 +1165,7 @@
     dashView.style.display = 'block';
     logoutBtn.style.display = 'inline-block';
     document.getElementById('dashSalonName').textContent = data.nom_salon || 'Votre salon';
+    var hp = parseHoursText(data.horaires_ouverture); if (hp) { hoursState = hp; renderHoursEditor(); updateHoursPreview(); }
     var rdv = parseInt(data.total_rdv, 10);
     var rev = parseInt(data.revenue, 10) || 0;
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
