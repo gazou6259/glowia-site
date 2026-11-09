@@ -546,7 +546,7 @@
 
       <details class="ia-sec">
         <summary>2. Présentation de votre salon</summary>
-        <textarea data-key="presentation" placeholder="Ex : Onglerie à Loos, spécialisée dans la pose capsules et le nail art. Je suis aussi formatrice."></textarea>
+        <textarea data-key="presentation" placeholder="Ex : Salon de coiffure à Lille, spécialisé dans les colorations et les balayages. Ou : institut à Roubaix, soins du visage et épilation. Ou : onglerie à Loos, pose capsules et nail art."></textarea>
       </details>
 
       <details class="ia-sec">
@@ -557,7 +557,7 @@
           <label class="field"><span class="field-label">En cas de retard</span><input data-key="retard" placeholder="Ex : Au-delà de 15 min, le rendez-vous peut être annulé"></label>
           <label class="field"><span class="field-label">Annulation</span><input data-key="annulation" placeholder="Ex : Prévenir au moins 24 h avant"></label>
           <label class="field"><span class="field-label">Accès et stationnement</span><input data-key="acces" placeholder="Ex : Parking gratuit devant le salon"></label>
-          <label class="field"><span class="field-label">Autre chose à savoir</span><input data-key="infos_autres" placeholder="Ex : Venir sans vernis"></label>
+          <label class="field"><span class="field-label">Autre chose à savoir</span><input data-key="infos_autres" placeholder="Ex : Venir cheveux lavés, ou sans maquillage, ou sans vernis"></label>
         </div>
       </details>
 
@@ -565,11 +565,14 @@
         <summary>4. Les questions à poser avant de réserver</summary>
         <p class="ia-help">L'IA pose ces questions avant de proposer un horaire, seulement si la cliente n'y a pas déjà répondu.</p>
         <div class="ia-checks" data-key="questions">
-          <label><input type="checkbox" value="pose_a_retirer"> Y a-t-il une pose à retirer ?</label>
-          <label><input type="checkbox" value="origine_pose"> La pose a-t-elle été faite chez moi ou ailleurs ?</label>
-          <label><input type="checkbox" value="options"> Couleur simple ou option (nail art, French…) ?</label>
-          <label><input type="checkbox" value="longueur"> Rallonger ou garder sa longueur ?</label>
+          <label><input type="checkbox" value="prestation_precise"> Faire préciser la prestation si la demande est vague</label>
+          <label><input type="checkbox" value="pose_a_retirer"> Y a-t-il quelque chose à retirer ou reprendre avant ? (pose, extensions, couleur…)</label>
+          <label><input type="checkbox" value="origine_pose"> Cela a-t-il été fait chez moi ou ailleurs ?</label>
+          <label><input type="checkbox" value="options"> Une option ou un supplément ? (décor, soin, brushing…)</label>
+          <label><input type="checkbox" value="longueur"> Longueur ou état actuel (cheveux, ongles, cils…)</label>
           <label><input type="checkbox" value="inspiration"> Proposer d'envoyer une photo d'inspiration</label>
+          <label><input type="checkbox" value="sensibilite"> Une sensibilité ou allergie aux produits ?</label>
+          <label><input type="checkbox" value="nb_personnes"> Pour combien de personnes ?</label>
           <label><input type="checkbox" value="premiere_fois"> Est-ce sa première fois au salon ?</label>
         </div>
         <textarea data-key="questions_perso" placeholder="Vos autres questions, une par ligne"></textarea>
@@ -578,7 +581,7 @@
       <details class="ia-sec">
         <summary>5. Vos règles de prix</summary>
         <p class="ia-help">Les cas que le tableau des prestations ne dit pas : suppléments, réductions, combinaisons.</p>
-        <textarea data-key="regles_prix" placeholder="Ex : Gainage + dépose d'une pose faite chez moi = 45 €. Gainage + dépose d'une pose faite ailleurs = 55 €."></textarea>
+        <textarea data-key="regles_prix" placeholder="Ex : Cheveux longs = +10 € sur la coloration. Forfait épilation jambes + maillot = 45 €. Dépose d'une pose faite ailleurs = +10 €."></textarea>
       </details>
 
       <details class="ia-sec">
@@ -598,7 +601,7 @@
       <details class="ia-sec">
         <summary>8. Ce que vous préférez gérer vous-même</summary>
         <p class="ia-help">Sur ces sujets, l'IA répond seulement qu'elle vous transmet le message. Un sujet par ligne.</p>
-        <textarea data-key="relais" placeholder="Ex : Ongle abîmé ou douloureux&#10;Réclamation ou remboursement"></textarea>
+        <textarea data-key="relais" placeholder="Ex : Réaction ou irritation après une prestation&#10;Réclamation ou remboursement&#10;Demande de devis mariage"></textarea>
       </details>
 
       <details class="ia-sec">

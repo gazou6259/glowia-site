@@ -5,11 +5,14 @@ function compileReglages(r) {
   const t = (v) => String(v == null ? '' : v).trim();
   const L = [];
   const QUESTIONS = {
-    pose_a_retirer: "Demander s'il y a une pose actuelle à retirer.",
-    origine_pose: "Si oui, demander si cette pose a été faite au salon ou dans un autre institut (le prix n'est pas le même).",
-    options: "Demander si elle souhaite une couleur simple ou une option (nail art, French, baby boomer…).",
-    longueur: "Demander si elle veut rallonger ses ongles ou garder sa longueur.",
+    prestation_precise: "Si la demande est vague (« un soin », « une coupe », « les ongles »), faire préciser la prestation exacte.",
+    pose_a_retirer: "Demander s'il y a quelque chose à retirer ou à reprendre avant (pose d'ongles, extensions de cils ou de cheveux, ancienne couleur…).",
+    origine_pose: "Si oui, demander si cela a été fait au salon ou ailleurs (le prix ou la durée peuvent changer).",
+    options: "Demander si elle souhaite une option ou un supplément (décor, soin, brushing, couleur…).",
+    longueur: "Demander la longueur ou l'état actuel (cheveux, ongles, cils…) quand cela change la durée ou le prix.",
     inspiration: "Proposer d'envoyer une photo d'inspiration si elle a une idée précise.",
+    sensibilite: "Demander si elle a une sensibilité ou une allergie connue aux produits (coloration, épilation, cils, soins).",
+    nb_personnes: "Demander pour combien de personnes est le rendez-vous si ce n'est pas clair (mariage, mère et fille…).",
     premiere_fois: "Demander si c'est sa première fois au salon."
   };
 
