@@ -386,7 +386,24 @@
   .cx-toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--laque-fonce);color:var(--ivoire);padding:12px 18px;border-radius:12px;font-size:13.5px;box-shadow:0 12px 30px rgba(74,18,32,.3);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .35s var(--ease);z-index:200;max-width:calc(100vw - 32px);}
   .cx-toast.show{opacity:1;transform:translate(-50%,0);}
   .cx-toast.err{background:#7a2b1f;}
-  .cx-note{font-size:12px;color:var(--encre-doux);margin-top:14px;line-height:1.5;}
+.wa-ov{position:fixed;inset:0;background:rgba(43,14,22,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:150;}
+  .wa-ov.show{display:flex;animation:rise .25s var(--ease) both;}
+  .wa-box{position:relative;background:#fff;border-radius:18px;max-width:520px;width:100%;max-height:calc(100vh - 32px);overflow:auto;padding:26px 24px 20px;box-shadow:0 24px 60px rgba(43,14,22,.3);}
+  .wa-box h3{font-family:'Fraunces',Georgia,serif;font-size:21px;color:var(--laque);margin:10px 0 4px;}
+  .wa-ico{width:46px;height:46px;border-radius:13px;background:rgba(110,29,49,.08);display:flex;align-items:center;justify-content:center;}
+  .wa-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:26px;line-height:1;color:var(--encre-doux);cursor:pointer;}
+  .wa-sub{font-size:13.5px;color:var(--encre-doux);line-height:1.55;margin:0 0 14px;}
+  .wa-h{font-size:12.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--laiton-profond);margin:16px 0 8px;}
+  .wa-chk{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;color:var(--encre);padding:9px 10px;border-radius:10px;background:var(--ivoire);margin-bottom:7px;cursor:pointer;}
+  .wa-chk input{margin-top:3px;accent-color:var(--laque);width:17px;height:17px;flex-shrink:0;}
+  .wa-more{background:none;border:none;padding:0;color:var(--laque);text-decoration:underline;font-size:12.5px;cursor:pointer;font-family:'Work Sans',sans-serif;}
+  .wa-help{display:none;font-size:13px;line-height:1.55;color:var(--encre);background:rgba(199,154,86,.12);border-radius:10px;padding:10px 12px;margin:-2px 0 9px;}
+  .wa-help.show{display:block;}
+  .wa-steps{margin:0 0 4px 18px;padding:0;font-size:13.5px;line-height:1.6;color:var(--encre);}
+  .wa-steps li{margin-bottom:4px;}
+  .wa-act{display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap;}
+  .wa-foot{font-size:12px;color:var(--encre-doux);margin:14px 0 0;}
+    .cx-note{font-size:12px;color:var(--encre-doux);margin-top:14px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -1332,9 +1349,9 @@
       toggle: 'Prise de rendez-vous', connect: 'Connecter Google Agenda', canDisconnect: g.mode === 'compte', upgrade: g.mode === 'partage' });
     if (sms.present) L.push({ id:'sms', nom:'SMS du salon', on: true, pause: sms.pause, compte: sms.compte || '',
       desc: "L'IA répond aux SMS reçus sur le numéro du salon, depuis votre téléphone.", toggle: 'Réponses de l’IA', canDisconnect: false });
-    L.push({ id:'whatsapp', nom:'WhatsApp', on: wa.connecte, pause: wa.pause, compte: wa.compte || '', soon: !wa.connecte,
-      desc: wa.connecte ? "L'IA répond aux messages WhatsApp de vos clientes." : "La connexion de WhatsApp depuis votre espace arrive bientôt. Nous vous prévenons dès qu'elle est ouverte.",
-      toggle: 'Réponses de l’IA', canDisconnect: true });
+    L.push({ id:'whatsapp', nom:'WhatsApp', on: wa.connecte, pause: wa.pause, compte: wa.compte || '',
+      desc: wa.connecte ? (wa.mode === 'coexistence' ? "L'IA répond à vos clientes. Quand vous répondez vous-même depuis votre appli WhatsApp Business, l'IA se tait sur cette conversation." : "L'IA répond aux messages WhatsApp de vos clientes.") : "Vous gardez votre numéro, votre appli WhatsApp Business et vos conversations. Environ 3 minutes, téléphone en main.",
+      toggle: 'Réponses de l’IA', connect: 'Connecter WhatsApp', canDisconnect: true });
     return L;
   }
   function cxRender(e, justDone){
@@ -1380,6 +1397,7 @@
   function cxOpenPopup(){ var w = 520, h = 720, l = Math.max(0, (screen.width - w) / 2), t = Math.max(0, (screen.height - h) / 2); return window.open('about:blank', 'glowia_cx', 'width=' + w + ',height=' + h + ',left=' + l + ',top=' + t); }
   function cxWatch(){ clearInterval(cxWatch._t); cxWatch._t = setInterval(function(){ if (!cxPopup || cxPopup.closed) { clearInterval(cxWatch._t); setTimeout(function(){ if (!cxWatch.got) loadConnexions(); cxWatch.got = false; }, 2500); } }, 1000); }
   function cxConnect(id, card){
+    if (id === 'whatsapp') { waGuide(card); return; }
     cxBusy(card, true);
     cxPopup = cxOpenPopup(); cxWatch.got = false; cxWatch();
     if (id === 'instagram') { if (cxPopup) cxPopup.location.href = IG_AUTH; else location.href = IG_AUTH; return; }
@@ -1441,6 +1459,84 @@
       }).catch(function(){ inp.disabled = false; inp.checked = !actif; cxToast('Souci de réseau, réessayez.', true); loadConnexions(); });
     });
   })();
+  /* ===== Connexion WhatsApp (fenêtre Meta, en gardant l'appli WhatsApp Business) ===== */
+  var WA_APP_ID = '1144959613784009', WA_CONFIG_ID = '1433568058658082';
+  var waSession = {}, waSdk = null;
+  function waLoadSdk(){
+    if (waSdk) return waSdk;
+    waSdk = new Promise(function(resolve, reject){
+      if (window.FB) { resolve(); return; }
+      window.fbAsyncInit = function(){ FB.init({ appId: WA_APP_ID, autoLogAppEvents: true, xfbml: false, version: 'v23.0' }); resolve(); };
+      var js = document.createElement('script'); js.async = true; js.defer = true; js.crossOrigin = 'anonymous';
+      js.src = 'https://connect.facebook.net/fr_FR/sdk.js';
+      js.onerror = function(){ waSdk = null; reject(); };
+      document.head.appendChild(js);
+    });
+    return waSdk;
+  }
+  window.addEventListener('message', function(ev){
+    var host = ''; try { host = new URL(ev.origin).hostname; } catch (e) { return; }
+    if (!/(^|\.)facebook\.com$/.test(host)) return;
+    try {
+      var d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
+      if (d && d.type === 'WA_EMBEDDED_SIGNUP') waSession = { event: d.event || '', waba_id: (d.data || {}).waba_id || '', phone_number_id: (d.data || {}).phone_number_id || '', step: (d.data || {}).current_step || '' };
+    } catch (e) {}
+  });
+  function waGuide(card){
+    waLoadSdk().catch(function(){});
+    var m = document.getElementById('waGuide');
+    if (!m) {
+      m = document.createElement('div'); m.id = 'waGuide'; m.className = 'wa-ov'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'waTitle');
+      m.innerHTML = '<div class="wa-box">'
+        + '<button type="button" class="wa-x" data-wa="close" aria-label="Fermer">×</button>'
+        + '<div class="wa-ico">' + CX_ICONS.whatsapp + '</div>'
+        + '<h3 id="waTitle">Connecter votre WhatsApp</h3>'
+        + '<p class="wa-sub">Environ 3 minutes. Vous gardez votre numéro, votre appli et toutes vos conversations.</p>'
+        + '<p class="wa-h">Avant de commencer, vérifiez ces 3 points :</p>'
+        + '<label class="wa-chk"><input type="checkbox"><span><b>Votre numéro est sur l’appli « WhatsApp Business »</b> (logo avec un B), pas sur WhatsApp classique. <button type="button" class="wa-more" data-wa="help">Je suis sur WhatsApp classique</button></span></label>'
+        + '<div class="wa-help" id="waHelp">Installez <b>WhatsApp Business</b> depuis l’App Store ou le Play Store, ouvrez-la et choisissez votre numéro actuel : l’appli propose de reprendre vos conversations. C’est gratuit et prend 2 minutes. Revenez ensuite ici.</div>'
+        + '<label class="wa-chk"><input type="checkbox"><span><b>Votre téléphone est dans votre main</b>, appli WhatsApp Business à jour : Meta va vous demander de scanner un code.</span></label>'
+        + '<label class="wa-chk"><input type="checkbox"><span><b>Vous pouvez vous connecter à Facebook</b> avec votre compte personnel : Meta l’exige pour relier une entreprise. Rien n’est publié sur votre profil.</span></label>'
+        + '<p class="wa-h">Dans la fenêtre Meta :</p>'
+        + '<ol class="wa-steps"><li>Connectez-vous et suivez les écrans (nom du salon, catégorie « Beauté »).</li><li>Au choix du numéro, prenez <b>« Connecter votre appli WhatsApp Business existante »</b>.</li><li>Scannez le code avec votre téléphone quand WhatsApp Business vous le demande, puis acceptez de partager l’historique.</li><li>Allez jusqu’au dernier écran et touchez « Terminer » : on s’occupe du reste.</li></ol>'
+        + '<div class="wa-act"><button type="button" class="cx-btn" data-wa="go" disabled>C’est parti</button><button type="button" class="cx-link" data-wa="close">Plus tard</button></div>'
+        + '<p class="wa-foot">Un souci ? Écrivez à contact@glow-ia.fr, on vous aide à finir la connexion.</p>'
+        + '</div>';
+      document.body.appendChild(m);
+      m.addEventListener('change', function(){ var all = m.querySelectorAll('.wa-chk input'), ok = true; for (var i = 0; i < all.length; i++) if (!all[i].checked) ok = false; m.querySelector('[data-wa="go"]').disabled = !ok; });
+      m.addEventListener('click', function(ev){
+        var b = ev.target.closest('[data-wa]');
+        if (ev.target === m) { m.classList.remove('show'); return; }
+        if (!b) return;
+        var a = b.getAttribute('data-wa');
+        if (a === 'close') m.classList.remove('show');
+        else if (a === 'help') { ev.preventDefault(); document.getElementById('waHelp').classList.toggle('show'); }
+        else if (a === 'go') { m.classList.remove('show'); waLaunch(m._card); }
+      });
+      document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') m.classList.remove('show'); });
+    }
+    m._card = card;
+    m.classList.add('show');
+    setTimeout(function(){ var f = m.querySelector('.wa-chk input'); if (f) f.focus(); }, 50);
+  }
+  function waLaunch(card){
+    waSession = {};
+    cxBusy(card, true);
+    waLoadSdk().then(function(){
+      FB.login(function(response){
+        var code = response && response.authResponse && response.authResponse.code;
+        if (!code) {
+          cxBusy(card, false);
+          var where = waSession.step ? ' (arrêt à l’étape « ' + waSession.step + ' »)' : '';
+          cxToast('Connexion WhatsApp interrompue' + where + '. Vous pouvez recommencer quand vous voulez.', true);
+          return;
+        }
+        setTimeout(function(){
+          cxFinish('whatsapp', { action: 'wa_code', code: code, waba_id: waSession.waba_id || '', phone_number_id: waSession.phone_number_id || '', es_event: waSession.event || '' });
+        }, waSession.event ? 0 : 1500);
+      }, { config_id: WA_CONFIG_ID, response_type: 'code', override_default_response_type: true, extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' } });
+    }).catch(function(){ cxBusy(card, false); cxToast('La fenêtre Meta n’a pas pu s’ouvrir. Désactivez le bloqueur de publicités et réessayez.', true); });
+  }
   function loadReglagesIA(){
     var token = getToken(); if (!token || !document.getElementById('iaPanel')) return;
     fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'reglages_ia', op:'get', token: token }) })
