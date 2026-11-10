@@ -324,6 +324,32 @@
   .hours-preview strong{color:var(--laque);}
 
   /* ===== Mes connexions ===== */
+
+  /* ---------- Mise en route ---------- */
+  .mr-panel{border-color:rgba(199,154,86,.45);background:linear-gradient(180deg,#FFFDF8,var(--porcelaine));}
+  .mr-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .mr-head h2{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:22px;color:var(--laque);}
+  .mr-head p{font-size:14px;color:var(--encre-doux);margin-top:4px;}
+  .mr-pct{font-family:'Fraunces',Georgia,serif;font-size:20px;color:var(--laque);}
+  .mr-bar{height:8px;border-radius:99px;background:rgba(110,29,49,.08);overflow:hidden;margin:12px 0 18px;}
+  .mr-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--laiton),var(--laque));border-radius:99px;transition:width .6s var(--ease);}
+  .mr-list{list-style:none;display:grid;gap:8px;}
+  .mr-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgba(110,29,49,.1);border-radius:12px;padding:12px 14px;}
+  .mr-item.done{background:rgba(61,122,74,.06);border-color:rgba(61,122,74,.25);}
+  .mr-num{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:rgba(110,29,49,.08);color:var(--laque);}
+  .mr-item.done .mr-num{background:var(--vert);color:#fff;}
+  .mr-txt{flex:1;min-width:0;}
+  .mr-txt b{display:block;font-size:14.5px;color:var(--encre);}
+  .mr-txt span{display:block;font-size:12.5px;color:var(--encre-doux);margin-top:2px;line-height:1.4;}
+  .mr-item.done .mr-txt b{color:var(--vert);}
+  .mr-go{flex-shrink:0;background:var(--laque);color:#fff;border:none;border-radius:999px;padding:9px 15px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .mr-go:hover{background:var(--laque-clair);}
+  .mr-item.done .mr-go{display:none;}
+  .mr-opt{font-size:11px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;margin-left:6px;}
+  @media (max-width:560px){ .mr-item{flex-wrap:wrap;align-items:flex-start;} .mr-txt{flex:1 1 calc(100% - 40px);} .mr-go{margin-left:38px;} }
+  .flash{animation:flash 1.6s ease;}
+  @keyframes flash{0%,100%{box-shadow:none;}30%{box-shadow:0 0 0 4px rgba(199,154,86,.55);}}
+  .install-fab{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid rgba(110,29,49,.25);color:var(--laque);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;}
   .cx-panel{position:relative;overflow:hidden;}
   .cx-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
   .cx-head h2{margin-bottom:0;}
@@ -506,6 +532,7 @@
         <p class="plan-msg" id="planMsg"></p>
       </div>
       <div class="cancel-info" id="cancelInfo" style="display:none;"></div>
+      <button type="button" class="install-fab" id="installFab" style="display:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v7m0 0l-3-3m3 3l3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Installer l'application</button>
     </div>
 
     <div class="install-banner" id="installBanner" style="display:none;">
@@ -549,6 +576,15 @@
         </div>
         <button type="button" class="btn-install-native tuto-next" id="tutoNext" style="width:100%;">Suivant</button>
       </div>
+    </div>
+
+    <div class="panel anim mr-panel" id="mrPanel" style="display:none;animation-delay:.08s;">
+      <div class="mr-head">
+        <div><h2>Mise en route</h2><p id="mrSub">Quelques étapes, dans l'ordre, et l'assistant est prêt.</p></div>
+        <div class="mr-pct" id="mrPct">0 %</div>
+      </div>
+      <div class="mr-bar"><i id="mrBar"></i></div>
+      <ol class="mr-list" id="mrList"></ol>
     </div>
 
     <div class="panel anim cx-panel" id="cxPanel" style="animation-delay:.1s;">
@@ -970,6 +1006,7 @@
       body: JSON.stringify({ action:'update_horaires', token: getToken(), horaires: composeHoursText() })
     }).then(function(r){ return r.json(); }).then(function(res){
       msg.textContent = res.success ? 'Enregistré ✓' : (res.error || 'Erreur');
+      if (res.success && mrData) { mrData.horaires_ouverture = composeHoursText(); mrRender(); }
     }).catch(function(){ msg.textContent = 'Un souci réseau est survenu.'; });
   });
   renderHoursEditor();
@@ -1105,47 +1142,71 @@
       body: JSON.stringify({ action:'update_prestations', token: getToken(), prestations: clean })
     }).then(function(r){ return r.json(); }).then(function(res){
       msg.textContent = res.success ? 'Enregistré ✓' : (res.error || 'Erreur');
+      if (res.success) mrRender();
     }).catch(function(){ msg.textContent = 'Un souci réseau est survenu.'; });
   });
 
+  /* ---------- Installer l'application (écran d'accueil) ---------- */
   var deferredInstallPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e){
-    e.preventDefault();
-    deferredInstallPrompt = e;
-  });
+  var IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var IS_MOBILE = IS_IOS || /Android|Mobi/i.test(navigator.userAgent);
+  function isStandalone(){ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; }
+  function appInstalled(){ if (isStandalone()) return true; try { return localStorage.getItem('glowia_installed') === '1'; } catch (e) { return false; } }
+  function markInstalled(){ try { localStorage.setItem('glowia_installed', '1'); localStorage.setItem('glowia_install_dismissed', '1'); } catch (e) {} document.getElementById('installBanner').style.display = 'none'; refreshInstallUi(); mrRender(); }
+  window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferredInstallPrompt = e; refreshInstallUi(); });
+  window.addEventListener('appinstalled', markInstalled);
+  if ('serviceWorker' in navigator) { window.addEventListener('load', function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); }); }
 
-  function checkInstallBanner(){
-    var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (isStandalone) return;
-    if (localStorage.getItem('glowia_install_dismissed')) return;
-    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    var banner = document.getElementById('installBanner');
-
-    if (isIOS) {
-      document.getElementById('installIOSBtnWrap').style.display = 'block';
-      document.getElementById('installIOSBtn').addEventListener('click', function(){
-        document.getElementById('tutoOverlay').classList.add('open');
-      });
-    } else if (deferredInstallPrompt) {
-      document.getElementById('installAndroidBtn').style.display = 'block';
-      document.getElementById('installNativeBtn').addEventListener('click', function(){
-        deferredInstallPrompt.prompt();
-        deferredInstallPrompt.userChoice.then(function(){
-          deferredInstallPrompt = null;
-          banner.style.display = 'none';
-          localStorage.setItem('glowia_install_dismissed', '1');
-        });
-      });
-    } else {
-      return; // not iOS and no native prompt available (already installed, or unsupported browser) - don't show anything
-    }
-
-    banner.style.display = 'flex';
-    document.getElementById('installDismiss').addEventListener('click', function(){
-      banner.style.display = 'none';
-      localStorage.setItem('glowia_install_dismissed', '1');
-    });
+  var TUTO = {
+    ios: [
+      ['Appuyez sur « Partager »', 'Dans Safari, appuyez sur le carré avec une flèche vers le haut. Sur les iPhone récents, il se trouve dans le menu « ••• » en bas à droite.'],
+      ['« Sur l’écran d’accueil »', 'Faites défiler les options, appuyez sur « Sur l’écran d’accueil », puis sur « Ajouter ». L’icône GlowIA apparaît avec vos applications.']
+    ],
+    android: [
+      ['Ouvrez le menu', 'Dans Chrome, appuyez sur les trois points ⋮ en haut à droite de l’écran.'],
+      ['« Installer l’application »', 'Appuyez sur « Installer l’application » (ou « Ajouter à l’écran d’accueil »), puis confirmez. L’icône GlowIA apparaît avec vos applications.']
+    ]
+  };
+  function openInstallGuide(){
+    var t = TUTO[IS_IOS ? 'ios' : 'android'];
+    var steps = document.querySelectorAll('#tutoOverlay .tuto-step');
+    for (var i = 0; i < steps.length && i < t.length; i++) { steps[i].querySelector('h3').textContent = t[i][0]; steps[i].querySelector('p').textContent = t[i][1]; }
+    document.getElementById('tutoOverlay').classList.add('open');
   }
+  function installApp(){
+    if (appInstalled()) { cxToast('L’application est déjà sur votre écran d’accueil.'); return; }
+    if (deferredInstallPrompt) {
+      var ev = deferredInstallPrompt; deferredInstallPrompt = null;
+      ev.prompt();
+      ev.userChoice.then(function(c){ if (c && c.outcome === 'accepted') markInstalled(); else refreshInstallUi(); });
+      return;
+    }
+    if (!IS_MOBILE) { cxToast('Ouvrez glow-ia.fr/portail sur votre téléphone pour y installer l’application.'); return; }
+    openInstallGuide();
+  }
+  function refreshInstallUi(){
+    var fab = document.getElementById('installFab');
+    var bannerOn = document.getElementById('installBanner').style.display === 'flex';
+    var show = !bannerOn && !appInstalled() && (IS_MOBILE || !!deferredInstallPrompt);
+    if (fab) fab.style.display = show ? 'inline-flex' : 'none';
+  }
+  function checkInstallBanner(){
+    refreshInstallUi();
+    var banner = document.getElementById('installBanner');
+    if (appInstalled() || !IS_MOBILE) return;
+    try { if (localStorage.getItem('glowia_install_dismissed')) return; } catch (e) {}
+    document.getElementById(IS_IOS ? 'installIOSBtnWrap' : 'installAndroidBtn').style.display = 'block';
+    banner.style.display = 'flex';
+    refreshInstallUi();
+  }
+  document.getElementById('installFab').addEventListener('click', installApp);
+  document.getElementById('installNativeBtn').addEventListener('click', installApp);
+  document.getElementById('installIOSBtn').addEventListener('click', installApp);
+  document.getElementById('installDismiss').addEventListener('click', function(){
+    document.getElementById('installBanner').style.display = 'none';
+    try { localStorage.setItem('glowia_install_dismissed', '1'); } catch (e) {}
+    refreshInstallUi();
+  });
 
   (function(){
     var overlay = document.getElementById('tutoOverlay');
@@ -1159,23 +1220,59 @@
       dots.forEach(function(d){ d.classList.toggle('active', parseInt(d.getAttribute('data-goto'),10) === n); });
       nextBtn.textContent = (n === steps.length) ? "C'est fait !" : 'Suivant';
     }
-    dots.forEach(function(d){
-      d.addEventListener('click', function(){ goTo(parseInt(d.getAttribute('data-goto'),10)); });
-    });
+    dots.forEach(function(d){ d.addEventListener('click', function(){ goTo(parseInt(d.getAttribute('data-goto'),10)); }); });
     nextBtn.addEventListener('click', function(){
       if (current < steps.length) { goTo(current + 1); }
-      else {
-        overlay.classList.remove('open');
-        document.getElementById('installBanner').style.display = 'none';
-        localStorage.setItem('glowia_install_dismissed', '1');
-        goTo(1);
-      }
+      else { overlay.classList.remove('open'); goTo(1); markInstalled(); }
     });
-    document.getElementById('tutoClose').addEventListener('click', function(){
-      overlay.classList.remove('open');
-      goTo(1);
-    });
+    document.getElementById('tutoClose').addEventListener('click', function(){ overlay.classList.remove('open'); goTo(1); });
   })();
+
+  /* ---------- Mise en route ---------- */
+  var mrData = null;
+  function mrScroll(el){ if (!el) return; el.scrollIntoView({ behavior:'smooth', block:'start' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  function mrCard(id){ return document.querySelector('.cx-card[data-cx="' + id + '"]') || document.getElementById('cxPanel'); }
+  function mrRender(){
+    var panel = document.getElementById('mrPanel');
+    if (!panel || !mrData) return;
+    var e = cxEtat || {}, ig = e.instagram || {}, wa = e.whatsapp || {}, g = e.google || {}, sms = e.sms || {};
+    var premium = String(mrData.formule || '').toLowerCase() === 'premium';
+    var items = [
+      { id:'horaires', t:'Vos horaires', d:'L’assistant ne propose des rendez-vous que pendant vos heures d’ouverture.', done: !!String(mrData.horaires_ouverture || '').trim(), go:'Renseigner', act:function(){ mrScroll(document.getElementById('hoursEditor').closest('.panel')); } },
+      { id:'prestations', t:'Vos prestations', d:'Nom, durée et prix : l’assistant s’en sert pour répondre et réserver le bon créneau.', done: (prestaData || []).some(function(p){ return p.service_name; }), go:'Ajouter', act:function(){ mrScroll(document.getElementById('prestaList').closest('.panel')); } },
+      { id:'google', t:'Votre agenda Google', d:'À faire avant d’ouvrir un canal : l’assistant y lit vos disponibilités et y note les rendez-vous.', done: !!g.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('google')); } },
+      { id:'instagram', t:'Instagram', d:'L’assistant répond aux messages privés de vos clientes.', done: !!ig.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('instagram')); } },
+      { id:'whatsapp', t:'WhatsApp', opt:true, d:'Vous gardez votre numéro et votre appli WhatsApp Business.', done: !!wa.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('whatsapp')); } }
+    ];
+    if (premium) items.push({ id:'sms', t:'SMS du salon', opt:true, d: sms.present ? 'Les SMS reçus sur le numéro du salon sont reliés.' : 'Rappels de la veille, demandes d’avis et réponses aux SMS : nous les installons avec vous sur le téléphone du salon.', done: !!sms.present, go:'Être rappelée', act:function(){ location.href = 'mailto:contact@glow-ia.fr?subject=' + encodeURIComponent('Installer les SMS – ' + (mrData.nom_salon || '')); } });
+    items.push({ id:'appli', t:'L’application sur votre téléphone', opt:true, d:'Votre espace s’ouvre d’un geste, comme une application.', done: appInstalled(), go:'Installer', act: installApp });
+
+    var done = items.filter(function(i){ return i.done; }).length;
+    var pct = Math.round(100 * done / items.length);
+    var html = '';
+    items.forEach(function(it, i){
+      html += '<li class="mr-item' + (it.done ? ' done' : '') + '"><span class="mr-num">' + (it.done ? '✓' : (i + 1)) + '</span>'
+        + '<span class="mr-txt"><b>' + it.t + (it.opt && !it.done ? '<span class="mr-opt">Facultatif</span>' : '') + '</b><span>' + it.d + '</span></span>'
+        + '<button type="button" class="mr-go" data-mr="' + it.id + '">' + it.go + '</button></li>';
+    });
+    var list = document.getElementById('mrList');
+    list.innerHTML = html;
+    Array.prototype.forEach.call(list.querySelectorAll('[data-mr]'), function(b){
+      var it = items.filter(function(x){ return x.id === b.getAttribute('data-mr'); })[0];
+      b.addEventListener('click', it.act);
+    });
+    document.getElementById('mrPct').textContent = pct + ' %';
+    document.getElementById('mrBar').style.width = pct + '%';
+    var essentiels = items.filter(function(i){ return !i.opt; });
+    var essOk = essentiels.every(function(i){ return i.done; });
+    document.getElementById('mrSub').textContent = essOk ? 'L’essentiel est en place : l’assistant répond à vos clientes. Les étapes facultatives restent disponibles.' : 'Quelques étapes, dans l’ordre, et l’assistant est prêt.';
+    panel.style.display = (done === items.length) ? 'none' : 'block';
+  }
+  function mrBienvenue(){
+    if (location.hash !== '#bienvenue') return;
+    history.replaceState(null, '', location.pathname);
+    setTimeout(function(){ cxToast('Bienvenue ! Votre espace est créé. Un e-mail récapitulatif vient de vous être envoyé.'); mrScroll(document.getElementById('mrPanel')); }, 600);
+  }
 
   function showDashboard(data){
     loginView.style.display = 'none';
@@ -1261,6 +1358,7 @@
     if (data.monthly) { renderChart(data.monthly); }
     prestaData = (data.prestations || []).map(function(p){ return { service_name: p.service_name, duree_min: p.duration_min || 30, price_eur: p.price_eur, active: p.active }; });
     renderPrestations();
+    mrData = data; mrRender(); mrBienvenue();
     checkInstallBanner();
     loadReglagesIA();
     loadConnexions();
@@ -1385,6 +1483,7 @@
     var ring = document.getElementById('cxRing'), C = 113.1;
     if (ring) ring.setAttribute('stroke-dashoffset', String(total ? C * (1 - actifs / total) : C));
     document.getElementById('cxCount').textContent = actifs;
+    mrRender();
     document.getElementById('cxSumTxt').textContent = actifs === 0 ? 'Aucun canal actif' : (actifs + (actifs > 1 ? ' canaux actifs' : ' canal actif') + ' sur ' + total);
   }
   function loadConnexions(justDone){
