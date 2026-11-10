@@ -3,6 +3,5 @@ Allow: /
 Disallow: /onboarding.html
 Disallow: /portail.html
 Disallow: /sante.html
-Disallow: /assets/ig/
 
 Sitemap: https://glow-ia.fr/sitemap.xml
