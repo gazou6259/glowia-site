@@ -725,7 +725,7 @@
       }
       verified = { formule: res.formule, stripe_customer_id: res.stripe_customer_id, stripe_subscription_id: res.stripe_subscription_id, session_id: sessionId, email: res.email };
       planBadge.className = 'plan-badge ok';
-      planBadge.textContent = '✓ Formule ' + res.formule + ' — paiement confirmé';
+      planBadge.textContent = res.essai ? ('✓ Formule ' + res.formule + ' — 14 jours gratuits, carte enregistrée') : ('✓ Formule ' + res.formule + ' — paiement confirmé');
       if (res.email) {
         var emailLogin = document.querySelector('input[name="email_login"]');
         var emailContact = document.querySelector('input[name="email_contact"]');
