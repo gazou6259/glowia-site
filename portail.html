@@ -1534,7 +1534,7 @@
         setTimeout(function(){
           cxFinish('whatsapp', { action: 'wa_code', code: code, waba_id: waSession.waba_id || '', phone_number_id: waSession.phone_number_id || '', es_event: waSession.event || '' });
         }, waSession.event ? 0 : 1500);
-      }, { config_id: WA_CONFIG_ID, response_type: 'code', override_default_response_type: true, extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' } });
+      }, { config_id: WA_CONFIG_ID, response_type: 'code', override_default_response_type: true, extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3', version: 'v4' } });
     }).catch(function(){ cxBusy(card, false); cxToast('La fenêtre Meta n’a pas pu s’ouvrir. Désactivez le bloqueur de publicités et réessayez.', true); });
   }
   function loadReglagesIA(){
