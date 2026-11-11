@@ -1236,13 +1236,14 @@
   function mrRender(){
     var panel = document.getElementById('mrPanel');
     if (!panel || !mrData) return;
-    var e = cxEtat || {}, ig = e.instagram || {}, wa = e.whatsapp || {}, g = e.google || {}, sms = e.sms || {};
+    var e = cxEtat || {}, ig = e.instagram || {}, wa = e.whatsapp || {}, g = e.google || {}, sms = e.sms || {}, tg = e.telegram || {};
     var premium = String(mrData.formule || '').toLowerCase() === 'premium';
     var items = [
       { id:'horaires', t:'Vos horaires', d:'L’assistant ne propose des rendez-vous que pendant vos heures d’ouverture.', done: !!String(mrData.horaires_ouverture || '').trim(), go:'Renseigner', act:function(){ mrScroll(document.getElementById('hoursEditor').closest('.panel')); } },
       { id:'prestations', t:'Vos prestations', d:'Nom, durée et prix : l’assistant s’en sert pour répondre et réserver le bon créneau.', done: (prestaData || []).some(function(p){ return p.service_name; }), go:'Ajouter', act:function(){ mrScroll(document.getElementById('prestaList').closest('.panel')); } },
       { id:'google', t:'Votre agenda Google', d:'À faire avant d’ouvrir un canal : l’assistant y lit vos disponibilités et y note les rendez-vous.', done: !!g.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('google')); } },
       { id:'instagram', t:'Instagram', d:'L’assistant répond aux messages privés de vos clientes.', done: !!ig.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('instagram')); } },
+      { id:'telegram', t:'Vos alertes sur Telegram', d:'Vous êtes prévenue quand une cliente veut vous parler ou quand l’IA vous transmet une demande.', done: !!tg.connecte, go:'Activer', act:function(){ mrScroll(mrCard('telegram')); } },
       { id:'whatsapp', t:'WhatsApp', opt:true, d:'Vous gardez votre numéro et votre appli WhatsApp Business.', done: !!wa.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('whatsapp')); } }
     ];
     if (premium) items.push({ id:'sms', t:'SMS du salon', opt:true, d: sms.present ? 'Les SMS reçus sur le numéro du salon sont reliés.' : 'Rappels de la veille, demandes d’avis et réponses aux SMS : nous les installons avec vous sur le téléphone du salon.', done: !!sms.present, go:'Être rappelée', act:function(){ location.href = 'mailto:contact@glow-ia.fr?subject=' + encodeURIComponent('Installer les SMS – ' + (mrData.nom_salon || '')); } });
@@ -1422,7 +1423,8 @@
     instagram: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="#6E1D31" stroke-width="1.6"/><circle cx="12" cy="12" r="3.8" stroke="#6E1D31" stroke-width="1.6"/><circle cx="17" cy="7" r="1" fill="#C79A56"/></svg>',
     whatsapp: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 11.5a8 8 0 01-11.8 7L4 20l1.5-4.1A8 8 0 1120 11.5z" stroke="#6E1D31" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 1.7 3.5 3.6 4.4" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round"/></svg>',
     google: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" stroke="#6E1D31" stroke-width="1.6"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/><path d="M9 14.2l2 2 4-4" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    sms: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5" stroke="#6E1D31" stroke-width="1.6"/><path d="M10.5 18.5h3" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/><path d="M9.5 8h5M9.5 11h3" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round"/></svg>'
+    sms: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5" stroke="#6E1D31" stroke-width="1.6"/><path d="M10.5 18.5h3" stroke="#6E1D31" stroke-width="1.6" stroke-linecap="round"/><path d="M9.5 8h5M9.5 11h3" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    telegram: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20.5 4L3.5 10.6l5.6 2.1 2.1 6.3 3.2-3.9 4.4 3.4L20.5 4z" stroke="#6E1D31" stroke-width="1.6" stroke-linejoin="round"/><path d="M9.1 12.7l7.4-5" stroke="#C79A56" stroke-width="1.6" stroke-linecap="round"/></svg>'
   };
   function cxEsc(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
   function cxToast(msg, err){
@@ -1451,6 +1453,10 @@
     L.push({ id:'whatsapp', nom:'WhatsApp', on: wa.connecte, pause: wa.pause, compte: wa.compte || '',
       desc: wa.connecte ? (wa.mode === 'coexistence' ? "L'IA répond à vos clientes. Quand vous répondez vous-même depuis votre appli WhatsApp Business, l'IA se tait sur cette conversation." : "L'IA répond aux messages WhatsApp de vos clientes.") : "Vous gardez votre numéro, votre appli WhatsApp Business et vos conversations. Environ 3 minutes, téléphone en main.",
       toggle: 'Réponses de l’IA', connect: 'Connecter WhatsApp', canDisconnect: true });
+    var tg = e.telegram || {};
+    L.push({ id:'telegram', nom:'Alertes Telegram', on: tg.connecte, pause: false, noToggle: true, compte: tg.connecte ? 'Alertes activées' : '',
+      desc: tg.connecte ? "Vous êtes prévenue quand une cliente veut vous parler ou quand l'IA vous transmet une demande. Vous pouvez aussi y dicter un rendez-vous." : "Soyez prévenue sur votre téléphone quand une cliente veut vous parler. Il faut l'appli Telegram (gratuite) : appuyez sur le bouton, puis sur « Démarrer » dans Telegram.",
+      connect: 'Recevoir mes alertes sur Telegram', canDisconnect: true });
     return L;
   }
   function cxRender(e, justDone){
@@ -1458,8 +1464,8 @@
     var grid = document.getElementById('cxGrid'); if (!grid) return;
     var cards = cxCards(e), html = '', actifs = 0, total = 0;
     cards.forEach(function(c, i){
-      if (!c.soon) total++;
-      if (c.on && !c.pause) actifs++;
+      if (!c.soon && !c.noToggle) total++;
+      if (c.on && !c.pause && !c.noToggle) actifs++;
       var cls = c.on ? (c.pause ? 'is-pause' : 'is-on') : '';
       var etat = c.soon ? '<span class="cx-soon">Bientôt</span>' : (!c.on ? 'Non connecté' : (c.pause ? 'En pause' : 'Actif'));
       html += '<div class="cx-card ' + cls + '" data-cx="' + c.id + '" style="animation-delay:' + (cxFirst ? (0.08 * i + 0.1) : 0) + 's">';
@@ -1469,14 +1475,14 @@
       html += '<p class="cx-desc">' + c.desc + '</p>';
       html += '<div class="cx-actions">';
       if (c.on) {
-        html += '<label class="cx-switch"><input type="checkbox" data-act="toggle" ' + (c.pause ? '' : 'checked') + '><span class="cx-track"></span>' + c.toggle + '</label>';
+        if (!c.noToggle) html += '<label class="cx-switch"><input type="checkbox" data-act="toggle" ' + (c.pause ? '' : 'checked') + '><span class="cx-track"></span>' + c.toggle + '</label>';
         if (c.canDisconnect) html += '<button type="button" class="cx-link" data-act="ask">Déconnecter</button>';
         if (c.upgrade) html += '<button type="button" class="cx-link" data-act="connect">Relier avec mon compte Google</button>';
       } else if (!c.soon && c.connect) {
         html += '<button type="button" class="cx-btn" data-act="connect">' + c.connect + '</button>';
       }
       html += '</div>';
-      if (c.on && c.canDisconnect) html += '<div class="cx-confirm"><span>Déconnecter ' + c.nom + ' ? L’IA ne répondra plus sur ce canal.</span><button type="button" class="yes" data-act="disconnect">Déconnecter</button><button type="button" class="no" data-act="cancel">Annuler</button></div>';
+      if (c.on && c.canDisconnect) html += '<div class="cx-confirm"><span>' + (c.id === 'telegram' ? 'Couper les alertes Telegram ? Vous ne serez plus prévenue.' : 'Déconnecter ' + c.nom + ' ? L’IA ne répondra plus sur ce canal.') + '</span><button type="button" class="yes" data-act="disconnect">Déconnecter</button><button type="button" class="no" data-act="cancel">Annuler</button></div>';
       html += '</div>';
     });
     grid.innerHTML = html;
@@ -1498,6 +1504,7 @@
   function cxWatch(){ clearInterval(cxWatch._t); cxWatch._t = setInterval(function(){ if (!cxPopup || cxPopup.closed) { clearInterval(cxWatch._t); setTimeout(function(){ if (!cxWatch.got) loadConnexions(); cxWatch.got = false; }, 2500); } }, 1000); }
   function cxConnect(id, card){
     if (id === 'whatsapp') { waGuide(card); return; }
+    if (id === 'telegram') { tgConnect(card); return; }
     cxBusy(card, true);
     cxPopup = cxOpenPopup(); cxWatch.got = false; cxWatch();
     if (id === 'instagram') { if (cxPopup) cxPopup.location.href = IG_AUTH; else location.href = IG_AUTH; return; }
@@ -1508,6 +1515,25 @@
         if (cxPopup) cxPopup.location.href = res.url; else location.href = res.url;
       }).catch(function(){ if (cxPopup) cxPopup.close(); cxBusy(card, false); cxToast('Souci de réseau, réessayez.', true); });
     }
+  }
+  function tgConnect(card){
+    // Fenêtre ouverte tout de suite (sinon bloquée), puis envoyée vers Telegram avec un code à usage unique
+    cxBusy(card, true);
+    var w = window.open('about:blank', '_blank');
+    cxPost({ action:'telegram_lien' }).then(function(res){
+      if (!res.success || !res.lien) { if (w) w.close(); cxBusy(card, false); cxToast(res.message || 'Impossible de préparer le lien Telegram.', true); return; }
+      if (w) w.location.href = res.lien; else location.href = res.lien;
+      cxToast('Dans Telegram, appuyez sur « Démarrer ».');
+      var n = 0;
+      clearInterval(tgConnect._t);
+      tgConnect._t = setInterval(function(){
+        n++;
+        cxPost({ action:'etat' }).then(function(r){
+          if (r.success && r.telegram && r.telegram.connecte) { clearInterval(tgConnect._t); cxToast('Alertes Telegram activées.'); cxRender(r, 'telegram'); }
+        }).catch(function(){});
+        if (n >= 45) { clearInterval(tgConnect._t); cxBusy(card, false); }
+      }, 4000);
+    }).catch(function(){ if (w) w.close(); cxBusy(card, false); cxToast('Souci de réseau, réessayez.', true); });
   }
   function cxFinish(id, body){
     var card = document.querySelector('.cx-card[data-cx="' + id + '"]'); if (card) cxBusy(card, true);
@@ -1540,7 +1566,7 @@
       else if (act === 'disconnect') {
         b.disabled = true;
         cxPost({ action:'deconnecter', canal: id }).then(function(res){
-          cxToast(res.success ? (card.querySelector('.cx-name').textContent + ' déconnecté.') : (res.message || 'Erreur, réessayez.'), !res.success); loadConnexions();
+          cxToast(res.success ? (id === 'telegram' ? 'Alertes Telegram coupées.' : card.querySelector('.cx-name').textContent + ' déconnecté.') : (res.message || 'Erreur, réessayez.'), !res.success); loadConnexions();
         }).catch(function(){ b.disabled = false; cxToast('Souci de réseau, réessayez.', true); });
       }
     });
