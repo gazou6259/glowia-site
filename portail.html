@@ -1245,7 +1245,7 @@
       { id:'prestations', t:'Vos prestations', d:'Nom, durée et prix : l’assistant s’en sert pour répondre et réserver le bon créneau.', done: (prestaData || []).some(function(p){ return p.service_name; }), go:'Ajouter', act:function(){ mrScroll(document.getElementById('prestaList').closest('.panel')); } },
       { id:'google', t:'Votre agenda Google', d:'À faire avant d’ouvrir un canal : l’assistant y lit vos disponibilités et y note les rendez-vous.', done: !!g.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('google')); } },
       { id:'instagram', t:'Instagram', d:'L’assistant répond aux messages privés de vos clientes.', done: !!ig.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('instagram')); } },
-      { id:'telegram', t:'Vos alertes sur Telegram', d:'Vous êtes prévenue quand une cliente veut vous parler ou quand l’IA vous transmet une demande.', done: !!tg.connecte, go:'Activer', act:function(){ mrScroll(mrCard('telegram')); } },
+      { id:'telegram', t:'Vos alertes sur Telegram', d:'Vous êtes prévenue quand une cliente veut vous parler ou quand l’IA vous transmet une demande. Il faut l’appli Telegram, gratuite.', done: !!tg.connecte, go:'Activer', act:function(){ mrScroll(mrCard('telegram')); } },
       { id:'whatsapp', t:'WhatsApp', opt:true, d:'Vous gardez votre numéro et votre appli WhatsApp Business.', done: !!wa.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('whatsapp')); } }
     ];
     if (premium) items.push({ id:'sms', t:'SMS du salon', opt:true, d: sms.present ? 'Les SMS reçus sur le numéro du salon sont reliés.' : 'Rappels de la veille, demandes d’avis et réponses aux SMS : nous les installons avec vous sur le téléphone du salon.', done: !!sms.present, go:'Être rappelée', act:function(){ location.href = 'mailto:contact@glow-ia.fr?subject=' + encodeURIComponent('Installer les SMS – ' + (mrData.nom_salon || '')); } });
@@ -1456,8 +1456,9 @@
       desc: wa.connecte ? (wa.mode === 'coexistence' ? "L'IA répond à vos clientes. Quand vous répondez vous-même depuis votre appli WhatsApp Business, l'IA se tait sur cette conversation." : "L'IA répond aux messages WhatsApp de vos clientes.") : "Vous gardez votre numéro, votre appli WhatsApp Business et vos conversations. Environ 3 minutes, téléphone en main.",
       toggle: 'Réponses de l’IA', connect: 'Connecter WhatsApp', canDisconnect: true });
     var tg = e.telegram || {};
+    var TG_APP = IS_IOS ? 'https://apps.apple.com/fr/app/telegram-messenger/id686449807' : (/Android/i.test(navigator.userAgent) ? 'https://play.google.com/store/apps/details?id=org.telegram.messenger' : 'https://telegram.org/apps');
     L.push({ id:'telegram', nom:'Alertes Telegram', on: tg.connecte, pause: false, noToggle: true, compte: tg.connecte ? 'Alertes activées' : '',
-      desc: tg.connecte ? "Vous êtes prévenue quand une cliente veut vous parler ou quand l'IA vous transmet une demande. Vous pouvez aussi y dicter un rendez-vous." : "Soyez prévenue sur votre téléphone quand une cliente veut vous parler. Il faut l'appli Telegram (gratuite) : appuyez sur le bouton, puis sur « Démarrer » dans Telegram.",
+      desc: tg.connecte ? "Vous êtes prévenue quand une cliente veut vous parler ou quand l'IA vous transmet une demande. Vous pouvez aussi y dicter un rendez-vous." : "Soyez prévenue sur votre téléphone quand une cliente veut vous parler. Il faut l'appli Telegram (gratuite) : <a class=\"cx-link\" href=\"" + TG_APP + "\" target=\"_blank\" rel=\"noopener\">télécharger Telegram</a> si vous ne l'avez pas encore, puis appuyez sur le bouton ci-dessous et sur « Démarrer » dans Telegram.",
       connect: 'Recevoir mes alertes sur Telegram', canDisconnect: true });
     return L;
   }
