@@ -367,6 +367,8 @@
   .cx-card{position:relative;background:#fff;border:1px solid rgba(110,29,49,.1);border-radius:14px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateY(10px);animation:rise .55s var(--ease) both;transition:transform .22s var(--ease),box-shadow .22s ease,border-color .22s ease;}
   .cx-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(74,18,32,.08);border-color:rgba(110,29,49,.2);}
   .cx-card.is-on{border-color:rgba(61,122,74,.28);}
+  .tg-planb{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--encre-doux,#5b4a4f);background:#fdf8ef;border:1px solid rgba(199,154,86,.4);border-radius:10px;padding:10px 12px;}
+  .tg-planb code{font-size:13px;background:#fff;border:1px solid rgba(110,29,49,.15);border-radius:6px;padding:6px 8px;word-break:break-all;user-select:all;}
   .cx-card.is-pause{border-color:rgba(199,154,86,.45);background:linear-gradient(180deg,#fff, #fdf8ef);}
   .cx-top{display:flex;align-items:center;gap:12px;}
   .cx-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--ivoire);flex-shrink:0;transition:background .3s ease;}
@@ -1524,6 +1526,18 @@
       if (!res.success || !res.lien) { if (w) w.close(); cxBusy(card, false); cxToast(res.message || 'Impossible de préparer le lien Telegram.', true); return; }
       if (w) w.location.href = res.lien; else location.href = res.lien;
       cxToast('Dans Telegram, appuyez sur « Démarrer ».');
+      // Plan B : si Telegram ouvre la conversation sans envoyer le message, la gérante l'envoie elle-même
+      var cmd = '/start ' + String(res.lien).split('start=')[1];
+      var box = card.querySelector('.tg-planb');
+      if (!box) { box = document.createElement('div'); box.className = 'tg-planb'; card.appendChild(box); }
+      box.innerHTML = '<span>Rien ne se passe dans Telegram ? Appuyez sur « Démarrer » en bas de la conversation, ou envoyez ce message au bot :</span>'
+        + '<code>' + cxEsc(cmd) + '</code><button type="button" class="cx-link tg-copy">Copier le message</button>'
+        + ' <a class="cx-link" href="' + cxEsc(res.lien) + '" target="_blank" rel="noopener">Rouvrir Telegram</a>';
+      box.querySelector('.tg-copy').addEventListener('click', function(){
+        var done = function(){ cxToast('Message copié : collez-le dans la conversation avec le bot.'); };
+        if (navigator.clipboard) navigator.clipboard.writeText(cmd).then(done, function(){ prompt('Copiez ce message :', cmd); });
+        else prompt('Copiez ce message :', cmd);
+      });
       var n = 0;
       clearInterval(tgConnect._t);
       tgConnect._t = setInterval(function(){
