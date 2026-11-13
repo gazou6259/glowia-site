@@ -657,6 +657,28 @@
       <div id="chartWrap"></div>
     </div>
 
+    <div class="panel anim" id="styPanel" style="animation-delay:.43s;">
+      <div class="panel-head">
+        <h2>Votre façon d'écrire</h2>
+        <span class="ia-badge" id="styBadge">Pas encore apprise</span>
+      </div>
+      <p class="ia-intro">Votre assistant apprend à écrire comme vous en lisant vos vrais messages à vos clientes : vos anciens messages Instagram, puis les réponses que vous écrivez vous-même. Il ne retient que la façon d'écrire (ton, formules, emojis), jamais vos prix, vos rendez-vous ni les noms de vos clientes. Les réglages de « Entraîner mon IA » passent toujours avant.</p>
+      <p class="ia-help" id="styVide" style="display:none;">Pas encore assez de messages pour apprendre votre façon d'écrire. Dès que votre Instagram est connecté, l'analyse se fait toute seule pendant la nuit. Vous pouvez aussi écrire votre style vous-même ci-dessous.</p>
+      <div id="styExempleBloc" style="display:none;margin:0 0 14px;">
+        <span class="field-label">Exemple de réponse dans votre style</span>
+        <div id="styExemple" style="margin-top:6px;padding:12px 14px;border-radius:12px;background:var(--nacre);font-size:14px;line-height:1.55;"></div>
+      </div>
+      <span class="field-label">Ce que votre assistant suit (vous pouvez le corriger)</span>
+      <textarea id="styTexte" rows="12" style="margin-top:6px;" placeholder="Ex : Ton chaleureux et simple. Messages courts. Je dis « Coucou » aux clientes que je connais et « Bonjour » aux nouvelles. Un emoji en fin de message."></textarea>
+      <div class="ia-actions">
+        <button type="button" class="btn" id="styValider">C'est bien moi</button>
+        <button type="button" class="btn-add" id="styEnregistrer">Enregistrer mes corrections</button>
+        <button type="button" class="btn-add" id="styRelire">Relire mes messages</button>
+        <button type="button" class="btn-cancel-plan" id="styCouper">Ne pas utiliser</button>
+      </div>
+      <p class="ia-help" id="styInfo" style="margin-top:10px;"></p>
+    </div>
+
     <div class="panel anim ia-panel" id="iaPanel" style="animation-delay:.44s;">
       <div class="panel-head">
         <h2>Entraîner mon IA</h2>
@@ -1366,6 +1388,7 @@
     checkInstallBanner();
     loadReglagesIA();
     loadConnexions();
+    styLoad();
   }
 
 
@@ -1416,6 +1439,61 @@
     if (!d) { b.textContent = 'Pas encore réglée'; return; }
     var dt = new Date(d); b.textContent = 'Mis à jour le ' + dt.toLocaleDateString('fr-FR') + ' à ' + dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   }
+
+  /* ===== Votre façon d'écrire (ton automatique) ===== */
+  var STY_API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/style-auto-glowia';
+  var styEtat = null;
+  function styDate(d){ try { return new Date(d).toLocaleDateString('fr-FR'); } catch(e){ return ''; } }
+  function styRender(e){
+    styEtat = e || {};
+    var badge = document.getElementById('styBadge'), info = document.getElementById('styInfo');
+    var src = styEtat.source || '', has = !!String(styEtat.style || '').trim();
+    document.getElementById('styTexte').value = styEtat.style || '';
+    var ex = String(styEtat.exemple || '').trim();
+    document.getElementById('styExempleBloc').style.display = (ex && src === 'auto') ? '' : 'none';
+    document.getElementById('styExemple').textContent = ex;
+    document.getElementById('styVide').style.display = (!has && src !== 'off') ? '' : 'none';
+    document.getElementById('styValider').style.display = (has && src === 'auto' && !styEtat.valide_le) ? '' : 'none';
+    document.getElementById('styCouper').style.display = (src === 'off') ? 'none' : '';
+    if (src === 'off') { badge.textContent = 'Désactivé'; info.textContent = 'Votre assistant suit seulement vos réglages ci-dessous. Cliquez sur « Relire mes messages » pour le réactiver.'; }
+    else if (src === 'manuel') { badge.textContent = 'Écrit par vous'; info.textContent = 'Votre assistant suit ce texte. Il ne sera plus modifié automatiquement, sauf si vous cliquez sur « Relire mes messages ».'; }
+    else if (src === 'auto' && has) { badge.textContent = styEtat.valide_le ? 'Validé par vous' : 'Appris automatiquement'; info.textContent = 'Appris le ' + styDate(styEtat.maj) + (styEtat.nb ? ' sur ' + styEtat.nb + ' de vos messages' : '') + '. Mis à jour chaque semaine avec les réponses que vous écrivez vous-même.'; }
+    else { badge.textContent = 'Pas encore appris'; info.textContent = ''; }
+  }
+  function styLoad(){
+    if (!document.getElementById('styPanel') || !getToken()) return;
+    cxPost({ action:'style_etat' }).then(function(res){ if (res && res.success) styRender(res); }).catch(function(){});
+  }
+  function styAction(body, btn){
+    if (btn) btn.disabled = true;
+    cxPost(body).then(function(res){
+      if (btn) btn.disabled = false;
+      cxToast(res.message || (res.success ? 'Enregistré.' : 'Une erreur est survenue, réessayez.'), !res.success);
+      if (res.success) styLoad();
+    }).catch(function(){ if (btn) btn.disabled = false; cxToast('Une erreur est survenue, réessayez.', true); });
+  }
+  (function(){
+    if (!document.getElementById('styPanel')) return;
+    document.getElementById('styValider').addEventListener('click', function(){ styAction({ action:'style_valider' }, this); });
+    document.getElementById('styEnregistrer').addEventListener('click', function(){
+      var t = document.getElementById('styTexte').value.trim();
+      if (t.length < 20) { cxToast('Écrivez au moins une phrase sur votre façon d’écrire.', true); return; }
+      styAction({ action:'style_corriger', texte: t }, this);
+    });
+    document.getElementById('styCouper').addEventListener('click', function(){
+      if (!confirm('Votre assistant n’imitera plus votre façon d’écrire. Continuer ?')) return;
+      styAction({ action:'style_desactiver' }, this);
+    });
+    document.getElementById('styRelire').addEventListener('click', function(){
+      var b = this; b.disabled = true;
+      fetch(STY_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: getToken() }) })
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+          cxToast(res.message || 'Analyse lancée.', !res.success);
+          setTimeout(function(){ b.disabled = false; styLoad(); }, 45000);
+        }).catch(function(){ b.disabled = false; cxToast('Une erreur est survenue, réessayez.', true); });
+    });
+  })();
 
   /* ===== Mes connexions ===== */
   var CX_API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/connexions-glowia';
