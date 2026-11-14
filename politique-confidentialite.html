@@ -76,7 +76,8 @@
 - Identifiant du compte WhatsApp ou Instagram utilisé pour contacter le salon
 - Contenu des messages échangés avec l'assistant GlowIA
 - Photos éventuellement envoyées (ex. état des ongles) pour recommandation de prestation
-- Historique des rendez-vous (dates, prestations, montants)</p>
+- Historique des rendez-vous (dates, prestations, montants)
+- Fiche de la cliente : prénom, pseudo, numéro s'il a été donné, et quelques notes courtes tirées des conversations (prestations habituelles, préférences d'horaires, tutoiement ou vouvoiement, particularité de ses ongles ou sensibilité à un produit si la cliente l'a elle-même signalée)</p>
 <p><strong>Données techniques</strong>
 - Journaux de connexion à l'espace salon
 - Données d'usage du site glow-ia.fr (statistiques de navigation anonymisées)</p>
@@ -86,6 +87,7 @@
 <li>Gérer l'abonnement et la facturation</li>
 <li>Fournir le tableau de bord statistique de l'espace salon</li>
 <li>Adapter le ton de l'assistant à celui du salon : GlowIA lit les messages écrits par la gérante à ses clientes (anciens messages Instagram, puis réponses que la gérante écrit elle-même sur Instagram ou WhatsApp) et en tire un portrait de sa façon d'écrire. Les prix, numéros et liens sont retirés avant l'analyse, faite par OpenAI (sous-traitant listé ci-dessous) ; le portrait et les réponses écrites par la gérante depuis l'installation sont conservés dans le compte du salon pour le mettre à jour, et la gérante peut le corriger ou le désactiver à tout moment depuis son espace.</li>
+<li>Tenir le carnet des clientes du salon : GlowIA relit les conversations de chaque cliente avec le salon et en tire quelques notes courtes pour que l'assistant la serve comme une habituée. Seuls la cliente et ce qu'elle a écrit au salon sont concernés : aucune note sur sa santé en dehors d'une sensibilité qu'elle a elle-même signalée pour sa prestation, ni sur sa vie privée, sa famille, ses opinions ou ses moyens ; aucun prix, numéro, lien ou nom d'une autre personne. La lecture est faite par OpenAI (sous-traitant listé ci-dessous). La gérante voit toutes les fiches dans son espace (onglet « Mes clientes ») et peut en supprimer une à tout moment : GlowIA ne prend alors plus de notes sur cette personne.</li>
 <li>Assurer le support client</li>
 <li>Améliorer le service (analyse agrégée et anonymisée des usages)</li>
 </ul>
@@ -166,6 +168,7 @@
 <ul>
 <li>Données du compte salon : pendant toute la durée de l'abonnement, puis 5 ans à compter de la résiliation (obligations comptables et légales)</li>
 <li>Données des clientes du salon (messages, rendez-vous) : pendant la durée de la relation commerciale entre la cliente et le salon, puis 3 ans à compter du dernier contact, conformément aux recommandations de la CNIL sur la prospection commerciale. Le salon, responsable de traitement de ces données, peut fixer une durée différente et en informer ses propres clientes.</li>
+<li>Fiches des clientes : mises à jour au fil des conversations et conservées selon la même durée que les messages ; une fiche supprimée par la gérante est vidée aussitôt.</li>
 <li>Journaux techniques : 12 mois maximum</li>
 </ul>
 <h2>6. Quels sont vos droits ?</h2>

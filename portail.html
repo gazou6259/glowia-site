@@ -359,6 +359,25 @@
   .tab-btn[aria-selected="true"]{color:var(--ivoire);}
   .tab-btn:not([aria-selected="true"]):hover{background:rgba(110,29,49,.06);}
   .tab-off{display:none !important;}
+  /* ===== Carnet des clientes (14/11) ===== */
+  .cl-nb{font-size:13px;font-weight:600;color:var(--encre-doux);}
+  .cl-intro{margin:0 0 16px;font-size:13.5px;line-height:1.65;color:var(--encre-doux);}
+  .cl-cherche{width:100%;padding:12px 14px;border:1px solid rgba(110,29,49,.18);border-radius:10px;font:inherit;font-size:14.5px;background:#fff;margin-bottom:14px;}
+  .cl-cherche:focus{outline:none;border-color:var(--laque);box-shadow:0 0 0 3px rgba(110,29,49,.1);}
+  .cl-liste{display:grid;gap:12px;}
+  .cl-carte{border:1px solid rgba(110,29,49,.12);border-radius:14px;background:#fff;padding:16px 18px;}
+  .cl-tete{display:flex;align-items:center;gap:12px;}
+  .cl-ini{width:38px;height:38px;border-radius:50%;background:var(--nacre);color:var(--laque);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',Georgia,serif;font-size:17px;flex-shrink:0;}
+  .cl-nom{font-weight:600;color:var(--laque);font-size:15px;line-height:1.3;}
+  .cl-sous{font-size:12.5px;color:var(--encre-doux);}
+  .cl-ouvrir{margin-left:auto;background:none;border:1px solid rgba(110,29,49,.18);border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:600;color:var(--laque);cursor:pointer;white-space:nowrap;}
+  .cl-notes{margin:12px 0 0;padding:0 0 0 18px;font-size:13.5px;line-height:1.6;color:var(--encre);}
+  .cl-notes li{margin:2px 0;}
+  .cl-pied{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:var(--encre-doux);}
+  .cl-suppr{margin-left:auto;background:none;border:none;padding:4px 0;font:inherit;font-size:12.5px;font-weight:600;color:#9b2c2c;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .cl-suppr.confirmer{background:#9b2c2c;color:#fff;text-decoration:none;border-radius:8px;padding:6px 12px;}
+  .cl-vide{font-size:14px;color:var(--encre-doux);margin:6px 0;}
+  .cl-carte.ferme .cl-notes,.cl-carte.ferme .cl-pied{display:none;}
   #dashView [data-tab], .cx-card{scroll-margin-top:calc(var(--hdr,81px) + 84px);}
   #dashView.tabs-ready .anim{animation:none;}
   #dashView.tabs-ready .tab-in{animation:tabIn .28s var(--ease) both;animation-delay:0s !important;}
@@ -578,6 +597,7 @@
         <button type="button" class="tab-btn" role="tab" data-go="accueil" aria-selected="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1v-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Accueil</span></button>
         <button type="button" class="tab-btn" role="tab" data-go="assistant" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.4 8.4 0 01-12.9 7L3 20l1.5-4.6A8.5 8.5 0 1121 11.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>Mon assistant</span></button>
         <button type="button" class="tab-btn" role="tab" data-go="connexions" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><path d="M10 14a4.5 4.5 0 006.4 0l3.2-3.2a4.5 4.5 0 00-6.4-6.4L12 5.6M14 10a4.5 4.5 0 00-6.4 0l-3.2 3.2a4.5 4.5 0 006.4 6.4L12 18.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Connexions</span></button>
+        <button type="button" class="tab-btn" role="tab" data-go="clientes" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M15.5 4.8a3.2 3.2 0 010 6.2M18 14.9c1.6.7 2.6 2.4 3 5.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Mes clientes</span></button>
         <button type="button" class="tab-btn" role="tab" data-go="salon" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5l1.5-5h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0M5.5 12v8h13v-8M10 20v-4.5h4V20" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Mon salon</span></button>
       </div>
     </nav>
@@ -824,6 +844,17 @@
       </div>
       <p class="save-msg" id="iaMsg"></p>
       <pre class="ia-preview" id="iaPreview" style="display:none;"></pre>
+    </div>
+
+    <div class="panel anim" data-tab="clientes" id="clPanel" style="animation-delay:.46s;">
+      <div class="panel-head">
+        <h2>Le carnet de vos clientes</h2>
+        <span class="cl-nb" id="clNb"></span>
+      </div>
+      <p class="cl-intro">GlowIA relit vos conversations et note, pour chaque cliente, ce qui aide à bien la servir : ses prestations habituelles, ses préférences, ce qu'elle a signalé sur ses ongles. Votre assistant s'en sert pour lui répondre comme à une habituée, sans jamais lui réciter ces notes. Vous pouvez supprimer une fiche à tout moment : GlowIA ne prendra plus de notes sur cette personne.</p>
+      <input type="search" id="clCherche" class="cl-cherche" placeholder="Rechercher un prénom, un pseudo, une note…" autocomplete="off">
+      <div id="clListe" class="cl-liste"><p class="cl-vide">Chargement du carnet…</p></div>
+      <p class="save-msg" id="clMsg"></p>
     </div>
 
     <div class="panel anim" data-tab="salon" style="animation-delay:.46s;">
@@ -1537,6 +1568,81 @@
     var obs = new MutationObserver(function(){ placerIndicateur(); });
     obs.observe(view, { attributes:true, attributeFilter:['style'] });
     setTimeout(function(){ view.classList.add('tabs-ready'); hauteurEntete(); placerIndicateur(); }, 1600);
+  })();
+
+  /* ===== Carnet des clientes ===== */
+  (function(){
+    var CL_API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/fiches-portail-glowia';
+    var liste = document.getElementById('clListe'); if (!liste) return;
+    var champ = document.getElementById('clCherche'), nb = document.getElementById('clNb'), msg = document.getElementById('clMsg');
+    var fiches = [], charge = false, enCours = false;
+    function esc(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+    function sansAccent(t){ return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    function quand(d){ if (!d) return ''; var x = new Date(d); if (isNaN(x)) return ''; return 'Mise à jour le ' + x.toLocaleDateString('fr-FR', { day:'numeric', month:'long' }); }
+    function appel(corps){
+      return fetch(CL_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(Object.assign({ token: getToken() }, corps)) })
+        .then(function(r){ return r.json().catch(function(){ return { success:false }; }); });
+    }
+    function afficher(){
+      var q = sansAccent(champ.value.trim());
+      var vues = fiches.filter(function(f){ return !q || sansAccent([f.prenom, f.pseudo, f.telephone, (f.notes || []).join(' ')].join(' ')).indexOf(q) >= 0; });
+      nb.textContent = fiches.length ? fiches.length + (fiches.length > 1 ? ' fiches' : ' fiche') : '';
+      if (!fiches.length) { liste.innerHTML = '<p class="cl-vide">Aucune fiche pour le moment. GlowIA les remplit au fil de vos conversations ; revenez d\'ici une heure.</p>'; return; }
+      if (!vues.length) { liste.innerHTML = '<p class="cl-vide">Aucune cliente ne correspond à cette recherche.</p>'; return; }
+      liste.innerHTML = vues.map(function(f){
+        var nom = f.prenom || (f.pseudo ? '@' + f.pseudo : 'Cliente sans prénom');
+        var sous = [f.prenom && f.pseudo ? '@' + f.pseudo : '', f.telephone, f.canal].filter(Boolean).join(' · ');
+        var ini = (f.prenom || f.pseudo || '?').replace(/^@/, '').charAt(0).toUpperCase();
+        return '<div class="cl-carte ferme" data-cle="' + esc(f.cle) + '">'
+          + '<div class="cl-tete"><span class="cl-ini">' + esc(ini) + '</span><div><div class="cl-nom">' + esc(nom) + '</div><div class="cl-sous">' + esc(sous) + '</div></div>'
+          + '<button type="button" class="cl-ouvrir" aria-expanded="false">Voir la fiche</button></div>'
+          + '<ul class="cl-notes">' + (f.notes || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>'
+          + '<div class="cl-pied"><span>' + esc(quand(f.maj)) + '</span><button type="button" class="cl-suppr">Supprimer la fiche</button></div>'
+          + '</div>';
+      }).join('');
+    }
+    function charger(){
+      if (enCours) return; enCours = true;
+      appel({ action:'liste' }).then(function(r){
+        enCours = false;
+        if (r && r.session) { liste.innerHTML = '<p class="cl-vide">Votre session a expiré. Reconnectez-vous pour voir le carnet.</p>'; return; }
+        if (!r || !r.success) { liste.innerHTML = '<p class="cl-vide">Le carnet n\'a pas pu être chargé. Réessayez dans un instant.</p>'; return; }
+        fiches = r.fiches || []; charge = true; afficher();
+      }).catch(function(){ enCours = false; liste.innerHTML = '<p class="cl-vide">Le carnet n\'a pas pu être chargé. Vérifiez votre connexion.</p>'; });
+    }
+    champ.addEventListener('input', afficher);
+    liste.addEventListener('click', function(e){
+      var carte = e.target.closest('.cl-carte'); if (!carte) return;
+      if (e.target.closest('.cl-ouvrir')) {
+        var ferme = carte.classList.toggle('ferme');
+        var b = carte.querySelector('.cl-ouvrir'); b.textContent = ferme ? 'Voir la fiche' : 'Masquer'; b.setAttribute('aria-expanded', ferme ? 'false' : 'true');
+        return;
+      }
+      var s = e.target.closest('.cl-suppr'); if (!s) return;
+      if (!s.classList.contains('confirmer')) {
+        s.classList.add('confirmer'); s.textContent = 'Confirmer la suppression';
+        setTimeout(function(){ if (s.isConnected && !s.disabled) { s.classList.remove('confirmer'); s.textContent = 'Supprimer la fiche'; } }, 5000);
+        return;
+      }
+      s.disabled = true; s.textContent = 'Suppression…';
+      var cle = carte.getAttribute('data-cle');
+      appel({ action:'supprimer', cle: cle }).then(function(r){
+        if (r && r.success) {
+          fiches = fiches.filter(function(f){ return f.cle !== cle; }); afficher();
+          msg.textContent = 'Fiche supprimée. GlowIA ne prendra plus de notes sur cette personne.'; msg.style.color = 'var(--laque)';
+        } else {
+          s.disabled = false; s.classList.remove('confirmer'); s.textContent = 'Supprimer la fiche';
+          msg.textContent = (r && r.message) || 'La suppression n\'a pas abouti. Réessayez.'; msg.style.color = '#9b2c2c';
+        }
+        setTimeout(function(){ msg.textContent = ''; }, 6000);
+      }).catch(function(){ s.disabled = false; s.classList.remove('confirmer'); s.textContent = 'Supprimer la fiche'; });
+    });
+    // Chargé à la première ouverture de l'onglet (ou tout de suite s'il est déjà ouvert)
+    var btn = document.querySelector('.tab-btn[data-go="clientes"]');
+    if (btn) btn.addEventListener('click', function(){ if (!charge) charger(); });
+    var panel = document.getElementById('clPanel');
+    function siVisible(){ if (!charge && getToken() && panel && !panel.classList.contains('tab-off') && document.getElementById('dashView').style.display !== 'none') charger(); }
+    setTimeout(siVisible, 800); setTimeout(siVisible, 2500);
   })();
 
   /* ===== Votre façon d'écrire (ton automatique) ===== */
