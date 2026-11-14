@@ -348,7 +348,37 @@
   .mr-item.done .mr-go{display:none;}
   .mr-opt{font-size:11px;font-weight:600;color:var(--laiton-profond);text-transform:uppercase;letter-spacing:.04em;margin-left:6px;}
   @media (max-width:560px){ .mr-item{flex-wrap:wrap;align-items:flex-start;} .mr-txt{flex:1 1 calc(100% - 40px);} .mr-go{margin-left:38px;} }
+
+  /* ===== Onglets de l'espace (14/11) ===== */
+  .tabs{position:sticky;top:var(--hdr,81px);z-index:9;margin:10px -24px 0;padding:10px 24px;background:rgba(247,239,226,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(110,29,49,.08);}
+  .tabs-in{position:relative;display:flex;gap:4px;padding:4px;background:rgba(110,29,49,.06);border-radius:14px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none;}
+  .tabs-in::-webkit-scrollbar{display:none;}
+  .tab-ind{position:absolute;top:4px;bottom:4px;left:0;width:0;border-radius:10px;background:var(--laque);box-shadow:0 4px 14px rgba(110,29,49,.25);transition:transform .32s var(--ease),width .32s var(--ease);z-index:0;}
+  .tab-btn{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;background:none;border:none;padding:10px 16px;border-radius:10px;font:inherit;font-size:14px;font-weight:600;color:var(--laque);cursor:pointer;white-space:nowrap;transition:color .25s ease;-webkit-tap-highlight-color:transparent;}
+  .tab-btn svg{width:17px;height:17px;flex-shrink:0;}
+  .tab-btn[aria-selected="true"]{color:var(--ivoire);}
+  .tab-btn:not([aria-selected="true"]):hover{background:rgba(110,29,49,.06);}
+  .tab-off{display:none !important;}
+  #dashView [data-tab], .cx-card{scroll-margin-top:calc(var(--hdr,81px) + 84px);}
+  #dashView.tabs-ready .anim{animation:none;}
+  #dashView.tabs-ready .tab-in{animation:tabIn .28s var(--ease) both;animation-delay:0s !important;}
+  @keyframes tabIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .tab-pane-first{margin-top:24px;}
+  .tab-pane-first.panel,.tab-pane-first.kpi-hero-grid{margin-top:24px;}
+  @media (max-width:700px){
+    .tabs{position:fixed;top:auto;bottom:0;left:0;right:0;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:rgba(253,249,241,.96);border-top:1px solid rgba(110,29,49,.12);border-bottom:none;box-shadow:0 -6px 24px rgba(74,18,32,.08);z-index:100;}
+    .tabs-in{width:100%;background:none;padding:0;gap:0;overflow:visible;}
+    .tab-ind{top:0;bottom:auto;height:3px;border-radius:0 0 3px 3px;box-shadow:none;}
+    .tab-btn{flex:1 1 0;flex-direction:column;gap:3px;padding:8px 2px 4px;font-size:11px;font-weight:600;color:var(--encre-doux);border-radius:0;}
+    .tab-btn svg{width:22px;height:22px;}
+    .tab-btn[aria-selected="true"]{color:var(--laque);}
+    .tab-btn:not([aria-selected="true"]):hover{background:none;}
+    #dashView{padding-bottom:110px;}
+    #dashView [data-tab], .cx-card{scroll-margin-top:calc(var(--hdr,81px) + 16px);}
+    .cx-toast{bottom:calc(84px + env(safe-area-inset-bottom));}
+  }
   .flash{animation:flash 1.6s ease;}
+  .ia-style-note{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:12px 16px;border-radius:12px;background:rgba(199,154,86,.12);font-size:13.5px;color:var(--encre-doux);}
   @keyframes flash{0%,100%{box-shadow:none;}30%{box-shadow:0 0 0 4px rgba(199,154,86,.55);}}
   .install-fab{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid rgba(110,29,49,.25);color:var(--laque);border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px;}
   .cx-panel{position:relative;overflow:hidden;}
@@ -538,6 +568,17 @@
       <button type="button" class="install-fab" id="installFab" style="display:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v7m0 0l-3-3m3 3l3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Installer l'application</button>
     </div>
 
+
+    <nav class="tabs" id="dashTabs" aria-label="Sections de votre espace">
+      <div class="tabs-in" role="tablist">
+        <span class="tab-ind" id="tabInd" aria-hidden="true"></span>
+        <button type="button" class="tab-btn" role="tab" data-go="accueil" aria-selected="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1v-9.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Accueil</span></button>
+        <button type="button" class="tab-btn" role="tab" data-go="assistant" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.4 8.4 0 01-12.9 7L3 20l1.5-4.6A8.5 8.5 0 1121 11.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>Mon assistant</span></button>
+        <button type="button" class="tab-btn" role="tab" data-go="connexions" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><path d="M10 14a4.5 4.5 0 006.4 0l3.2-3.2a4.5 4.5 0 00-6.4-6.4L12 5.6M14 10a4.5 4.5 0 00-6.4 0l-3.2 3.2a4.5 4.5 0 006.4 6.4L12 18.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Connexions</span></button>
+        <button type="button" class="tab-btn" role="tab" data-go="salon" aria-selected="false"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5l1.5-5h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0M5.5 12v8h13v-8M10 20v-4.5h4V20" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Mon salon</span></button>
+      </div>
+    </nav>
+
     <div class="install-banner" id="installBanner" style="display:none;">
       <div class="install-banner-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="3" stroke="#6E1D31" stroke-width="1.7"/><path d="M9 6h6M11 18h2" stroke="#6E1D31" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -581,7 +622,7 @@
       </div>
     </div>
 
-    <div class="panel anim mr-panel" id="mrPanel" style="display:none;animation-delay:.08s;">
+    <div class="panel anim mr-panel" data-tab="accueil" id="mrPanel" style="display:none;animation-delay:.08s;">
       <div class="mr-head">
         <div><h2>Mise en route</h2><p id="mrSub">Quelques étapes, dans l'ordre, et l'assistant est prêt.</p><a class="mr-tuto" href="/tutoriel" target="_blank" rel="noopener">▶ Voir le tutoriel de votre espace (4 min)</a></div>
         <div class="mr-pct" id="mrPct">0 %</div>
@@ -590,7 +631,7 @@
       <ol class="mr-list" id="mrList"></ol>
     </div>
 
-    <div class="panel anim cx-panel" id="cxPanel" style="animation-delay:.1s;">
+    <div class="panel anim cx-panel" data-tab="connexions" id="cxPanel" style="animation-delay:.1s;">
       <div class="cx-head">
         <h2>Mes connexions</h2>
         <div class="cx-sum">
@@ -605,7 +646,7 @@
       <p class="cx-note">En pause, l'IA ne répond plus sur ce canal : vous gardez la main et vos messages restent dans vos applications habituelles. Rien n'est supprimé.</p>
     </div>
 
-    <div class="kpi-hero-grid">
+    <div class="kpi-hero-grid" data-tab="accueil">
       <div class="kpi-hero anim" style="animation-delay:.15s;">
         <div class="kpi-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M8 2v4M16 2v4M3.5 9h17M5 5h14a1.5 1.5 0 011.5 1.5v13A1.5 1.5 0 0119 21H5a1.5 1.5 0 01-1.5-1.5v-13A1.5 1.5 0 015 5z" stroke="#F7EFE2" stroke-width="1.6" stroke-linecap="round"/></svg></div>
         <div class="val serif" id="statRdv">—</div>
@@ -620,7 +661,7 @@
       </div>
     </div>
 
-    <div class="kpi-sec-grid">
+    <div class="kpi-sec-grid" data-tab="accueil">
       <div class="kpi-sec anim" style="animation-delay:.26s;">
         <div class="kpi-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-4.5 7.4 8.5 8.5 0 01-8.9-.4L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="#6E1D31" stroke-width="1.5"/></svg></div>
         <div class="val serif" id="statMessages">—</div>
@@ -644,12 +685,12 @@
       </div>
     </div>
 
-    <div class="kpi-premium anim" id="kpiPremium" style="display:none;animation-delay:.42s;">
+    <div class="kpi-premium anim" data-tab="accueil" id="kpiPremium" style="display:none;animation-delay:.42s;">
       <div class="val serif" id="statRelances">—</div>
       <div class="txt"><strong>Clientes relancées automatiquement</strong>Grâce à votre formule Premium, ces clientes inactives ont été recontactées sans action de votre part.</div>
     </div>
 
-    <div class="panel anim" style="animation-delay:.46s;">
+    <div class="panel anim" data-tab="accueil" style="animation-delay:.46s;">
       <div class="panel-head">
         <h2>Évolution sur 6 mois</h2>
         <div class="chart-legend"><span class="dot"></span> Chiffre d'affaires</div>
@@ -657,12 +698,12 @@
       <div id="chartWrap"></div>
     </div>
 
-    <div class="panel anim" id="styPanel" style="animation-delay:.43s;">
+    <div class="panel anim" data-tab="assistant" id="styPanel" style="animation-delay:.43s;">
       <div class="panel-head">
         <h2>Votre façon d'écrire</h2>
         <span class="ia-badge" id="styBadge">Pas encore apprise</span>
       </div>
-      <p class="ia-intro">Votre assistant apprend à écrire comme vous en lisant vos vrais messages à vos clientes : vos anciens messages Instagram, puis les réponses que vous écrivez vous-même. Il ne retient que la façon d'écrire (ton, formules, emojis), jamais vos prix, vos rendez-vous ni les noms de vos clientes. Les réglages de « Entraîner mon IA » passent toujours avant.</p>
+      <p class="ia-intro">Votre assistant apprend à écrire comme vous en lisant vos vrais messages à vos clientes : vos anciens messages Instagram, puis les réponses que vous écrivez vous-même. Il ne retient que la façon d'écrire (ton, formules, emojis), jamais vos prix, vos rendez-vous ni les noms de vos clientes. Ce que vous écrivez dans « Entraîner mon IA » (infos, prix, règles) passe toujours avant.</p>
       <p class="ia-help" id="styVide" style="display:none;">Pas encore assez de messages pour apprendre votre façon d'écrire. Dès que votre Instagram est connecté, l'analyse se fait toute seule pendant la nuit. Vous pouvez aussi écrire votre style vous-même ci-dessous.</p>
       <div id="styExempleBloc" style="display:none;margin:0 0 14px;">
         <span class="field-label">Exemple de réponse dans votre style</span>
@@ -679,36 +720,25 @@
       <p class="ia-help" id="styInfo" style="margin-top:10px;"></p>
     </div>
 
-    <div class="panel anim ia-panel" id="iaPanel" style="animation-delay:.44s;">
+    <div class="panel anim ia-panel" data-tab="assistant" id="iaPanel" style="animation-delay:.44s;">
       <div class="panel-head">
         <h2>Entraîner mon IA</h2>
         <span class="ia-badge" id="iaMaj">Pas encore réglée</span>
       </div>
-      <p class="ia-intro">Expliquez à votre IA comment vous travaillez. Tout ce que vous écrivez ici est appliqué à ses prochaines réponses, sur Instagram et par SMS. Vous pouvez revenir le modifier quand vous voulez.</p>
+      <p class="ia-intro">Dites à votre IA ce qu'elle ne peut pas deviner : vos infos pratiques, les questions à poser avant de réserver, vos règles de prix, ce que vous préférez gérer vous-même. Tout est appliqué à ses prochaines réponses, sur Instagram, WhatsApp et par SMS. Touchez une partie pour l'ouvrir.</p>
+
+      <div class="ia-style-note">
+        <span>Votre façon de parler (tu ou vous, emojis, longueur) est apprise sur vos vrais messages.</span>
+        <button type="button" class="ia-link" id="iaVersStyle">Voir « Votre façon d'écrire »</button>
+      </div>
 
       <details class="ia-sec" open>
-        <summary>1. Votre façon de parler</summary>
-        <div class="ia-row"><span class="field-label">Tu ou vous ?</span>
-          <div class="ia-choices" data-key="registre">
-            <button type="button" data-val="auto">Comme la cliente</button><button type="button" data-val="vous">Toujours vous</button><button type="button" data-val="tu">Toujours tu</button>
-          </div></div>
-        <div class="ia-row"><span class="field-label">Emojis</span>
-          <div class="ia-choices" data-key="emojis">
-            <button type="button" data-val="un">Un seul par message</button><button type="button" data-val="libres">Quelques-uns</button><button type="button" data-val="aucun">Aucun</button>
-          </div></div>
-        <div class="ia-row"><span class="field-label">Longueur des réponses</span>
-          <div class="ia-choices" data-key="longueur">
-            <button type="button" data-val="court">Courtes</button><button type="button" data-val="detaille">Un peu plus détaillées</button>
-          </div></div>
-      </details>
-
-      <details class="ia-sec">
-        <summary>2. Présentation de votre salon</summary>
+        <summary>1. Présentation de votre salon</summary>
         <textarea data-key="presentation" placeholder="Ex : Salon de coiffure à Lille, spécialisé dans les colorations et les balayages. Ou : institut à Roubaix, soins du visage et épilation. Ou : onglerie à Loos, pose capsules et nail art."></textarea>
       </details>
 
       <details class="ia-sec">
-        <summary>3. Infos pratiques</summary>
+        <summary>2. Infos pratiques</summary>
         <div class="ia-grid">
           <label class="field"><span class="field-label">Moyens de paiement</span><input data-key="paiement" placeholder="Ex : Espèces uniquement"></label>
           <label class="field"><span class="field-label">Acompte</span><input data-key="acompte" placeholder="Ex : Pas d'acompte"></label>
@@ -720,7 +750,7 @@
       </details>
 
       <details class="ia-sec">
-        <summary>4. Les questions à poser avant de réserver</summary>
+        <summary>3. Les questions à poser avant de réserver</summary>
         <p class="ia-help">L'IA pose ces questions avant de proposer un horaire, seulement si la cliente n'y a pas déjà répondu.</p>
         <div class="ia-checks" data-key="questions">
           <label><input type="checkbox" value="prestation_precise"> Faire préciser la prestation si la demande est vague</label>
@@ -737,44 +767,44 @@
       </details>
 
       <details class="ia-sec">
-        <summary>5. Vos règles de prix</summary>
+        <summary>4. Vos règles de prix</summary>
         <p class="ia-help">Les cas que le tableau des prestations ne dit pas : suppléments, réductions, combinaisons.</p>
         <textarea data-key="regles_prix" placeholder="Ex : Cheveux longs = +10 € sur la coloration. Forfait épilation jambes + maillot = 45 €. Dépose d'une pose faite ailleurs = +10 €."></textarea>
       </details>
 
       <details class="ia-sec">
-        <summary>6. Vos réponses types</summary>
+        <summary>5. Vos réponses types</summary>
         <p class="ia-help">Les questions qu'on vous pose souvent, et ce que vous répondez.</p>
         <div class="ia-list" data-list="faq"></div>
         <button type="button" class="btn-add" data-add="faq">+ Ajouter une réponse type</button>
       </details>
 
       <details class="ia-sec">
-        <summary>7. Demandes particulières</summary>
+        <summary>6. Demandes particulières</summary>
         <p class="ia-help">Ex : formation, carte cadeau, prestation à domicile… Ce que l'IA doit répondre, avec un lien si besoin.</p>
         <div class="ia-list" data-list="speciales"></div>
         <button type="button" class="btn-add" data-add="speciales">+ Ajouter une demande</button>
       </details>
 
       <details class="ia-sec">
-        <summary>8. Ce que vous préférez gérer vous-même</summary>
+        <summary>7. Ce que vous préférez gérer vous-même</summary>
         <p class="ia-help">Sur ces sujets, l'IA répond seulement qu'elle vous transmet le message. Un sujet par ligne.</p>
         <textarea data-key="relais" placeholder="Ex : Réaction ou irritation après une prestation&#10;Réclamation ou remboursement&#10;Demande de devis mariage"></textarea>
       </details>
 
       <details class="ia-sec">
-        <summary>9. Ce que l'IA ne doit jamais dire</summary>
+        <summary>8. Ce que l'IA ne doit jamais dire</summary>
         <textarea data-key="interdits" placeholder="Une règle par ligne. Ex : Dire que je suis en route"></textarea>
       </details>
 
       <details class="ia-sec">
-        <summary>10. Les personnes à qui l'IA ne répond pas</summary>
+        <summary>9. Les personnes à qui l'IA ne répond pas</summary>
         <p class="ia-help">Vos proches, votre famille… Un compte Instagram (@pseudo) ou un numéro par ligne. Vous leur répondez vous-même.</p>
         <textarea data-key="ignores" placeholder="@pseudo_instagram&#10;06 12 34 56 78"></textarea>
       </details>
 
       <details class="ia-sec" id="iaCorrSec">
-        <summary>11. Corriger une réponse de l'IA</summary>
+        <summary>10. Corriger une réponse de l'IA</summary>
         <p class="ia-help">Une réponse ne vous a pas plu ? Montrez-lui ce qu'elle aurait dû dire. Elle s'en servira comme exemple.</p>
         <div class="ia-grid">
           <label class="field"><span class="field-label">La situation</span><input id="corrSituation" placeholder="Ex : Une cliente demande « demain à 12h15 c'est possible ? »"></label>
@@ -793,7 +823,7 @@
       <pre class="ia-preview" id="iaPreview" style="display:none;"></pre>
     </div>
 
-    <div class="panel anim" style="animation-delay:.46s;">
+    <div class="panel anim" data-tab="salon" style="animation-delay:.46s;">
       <h2>Profil du salon</h2>
       <p style="margin:0 0 20px;font-size:13.5px;color:var(--encre-doux);">Ces informations sont communiquées automatiquement par l'IA à vos clientes.</p>
 
@@ -831,7 +861,7 @@
       <p class="save-msg" id="saveProfilMsg"></p>
     </div>
 
-    <div class="panel anim" style="animation-delay:.5s;">
+    <div class="panel anim" data-tab="salon" style="animation-delay:.5s;">
       <h2>Vos horaires d'ouverture</h2>
       <div id="hoursEditor" class="hours-list"></div>
       <div class="hours-preview" id="hoursPreview"></div>
@@ -839,7 +869,7 @@
       <p class="save-msg" id="saveMsg"></p>
     </div>
 
-    <div class="panel anim" style="animation-delay:.47s;">
+    <div class="panel anim" data-tab="salon" style="animation-delay:.47s;">
       <div class="panel-head">
         <h2>Vos prestations et tarifs</h2>
         <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
@@ -850,7 +880,7 @@
       <p class="save-msg" id="prestaMsg"></p>
     </div>
 
-    <div class="panel anim" style="animation-delay:.55s;">
+    <div class="panel anim" data-tab="salon" style="animation-delay:.55s;">
       <h2>Vos informations</h2>
       <p style="font-size:14.5px;color:var(--encre-doux);line-height:1.8;">
         <strong>Email de contact :</strong> <span id="infoEmail">—</span><br>
@@ -1255,7 +1285,7 @@
 
   /* ---------- Mise en route ---------- */
   var mrData = null;
-  function mrScroll(el){ if (!el) return; el.scrollIntoView({ behavior:'smooth', block:'start' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  function mrScroll(el){ if (!el) return; if (window.tabGoFor) tabGoFor(el); requestAnimationFrame(function(){ el.scrollIntoView({ behavior:'smooth', block:'start' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }); }
   function mrCard(id){ return document.querySelector('.cx-card[data-cx="' + id + '"]') || document.getElementById('cxPanel'); }
   function mrRender(){
     var panel = document.getElementById('mrPanel');
@@ -1394,7 +1424,7 @@
 
   /* ---------- Entraîner mon IA ---------- */
   var iaState = {};
-  var IA_DEFAUT = { registre:'auto', emojis:'un', longueur:'court', questions:[], faq:[], speciales:[], corrections:[] };
+  var IA_DEFAUT = { questions:[], faq:[], speciales:[], corrections:[] };
   function iaEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   function iaRenderList(name){
     var wrap = document.querySelector('[data-list="' + name + '"]'); if (!wrap) return;
@@ -1432,6 +1462,8 @@
     Array.prototype.forEach.call(p.querySelectorAll('input[data-key], textarea[data-key]'), function(el){ iaState[el.getAttribute('data-key')] = el.value.trim(); });
     iaState.questions = Array.prototype.filter.call(p.querySelectorAll('.ia-checks input'), function(c){ return c.checked; }).map(function(c){ return c.value; });
     ['faq','speciales'].forEach(function(n){ iaState[n] = (iaState[n] || []).filter(function(x){ return Object.keys(x).some(function(k){ return String(x[k] || '').trim(); }); }); });
+    // Le style est géré par « Votre façon d'écrire » : on ne renvoie plus ces anciens réglages
+    delete iaState.registre; delete iaState.emojis; delete iaState.longueur;
     return iaState;
   }
   function iaSetMaj(d){
@@ -1439,6 +1471,70 @@
     if (!d) { b.textContent = 'Pas encore réglée'; return; }
     var dt = new Date(d); b.textContent = 'Mis à jour le ' + dt.toLocaleDateString('fr-FR') + ' à ' + dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   }
+
+
+  /* ===== Onglets de l'espace ===== */
+  (function(){
+    var nav = document.getElementById('dashTabs'); if (!nav) return;
+    var btns = Array.prototype.slice.call(nav.querySelectorAll('.tab-btn'));
+    var ind = document.getElementById('tabInd');
+    var view = document.getElementById('dashView');
+    var actuel = 'accueil';
+    function lire(){ try { return sessionStorage.getItem('glowia_tab'); } catch(e){ return null; } }
+    function garder(t){ try { sessionStorage.setItem('glowia_tab', t); } catch(e){} }
+    function hauteurEntete(){ var h = document.querySelector('header'); if (h) document.documentElement.style.setProperty('--hdr', h.offsetHeight + 'px'); }
+    function placerIndicateur(){
+      var b = nav.querySelector('.tab-btn[aria-selected="true"]'); if (!b || !ind) return;
+      ind.style.width = b.offsetWidth + 'px';
+      ind.style.transform = 'translateX(' + b.offsetLeft + 'px)';
+    }
+    function montrer(t, opts){
+      opts = opts || {};
+      if (!btns.some(function(b){ return b.getAttribute('data-go') === t; })) t = 'accueil';
+      var change = t !== actuel;
+      actuel = t;
+      btns.forEach(function(b){ var on = b.getAttribute('data-go') === t; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
+      var premier = true;
+      Array.prototype.forEach.call(view.querySelectorAll('[data-tab]'), function(el){
+        var on = el.getAttribute('data-tab') === t;
+        el.classList.toggle('tab-off', !on);
+        el.classList.remove('tab-in', 'tab-pane-first');
+        if (on) {
+          if (premier && getComputedStyle(el).display !== 'none') { el.classList.add('tab-pane-first'); premier = false; }
+          if (change && view.classList.contains('tabs-ready')) { void el.offsetWidth; el.classList.add('tab-in'); }
+        }
+      });
+      placerIndicateur();
+      if (!opts.silencieux) garder(t);
+      if (change && opts.defiler !== false) {
+        var ancre = document.querySelector('.dash-head');
+        var haut = ancre ? ancre.getBoundingClientRect().bottom + window.pageYOffset - 8 : 0;
+        if (window.matchMedia('(max-width:700px)').matches) haut = 0;
+        if (window.pageYOffset > haut) window.scrollTo({ top: haut, behavior: 'smooth' });
+      }
+    }
+    window.tabGoFor = function(el){
+      var p = el && el.closest ? el.closest('[data-tab]') : null;
+      if (p) montrer(p.getAttribute('data-tab'), { defiler:false });
+    };
+    btns.forEach(function(b, i){
+      b.addEventListener('click', function(){ view.classList.add('tabs-ready'); montrer(b.getAttribute('data-go')); });
+      b.addEventListener('keydown', function(e){
+        var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
+        if (j < 0 && e.key !== 'ArrowLeft') return;
+        j = (j + btns.length) % btns.length; e.preventDefault(); btns[j].focus(); btns[j].click();
+      });
+    });
+    var lien = document.getElementById('iaVersStyle');
+    if (lien) lien.addEventListener('click', function(){ var sp = document.getElementById('styPanel'); if (sp) { sp.scrollIntoView({ behavior:'smooth', block:'start' }); sp.classList.remove('flash'); void sp.offsetWidth; sp.classList.add('flash'); } });
+    window.addEventListener('resize', function(){ hauteurEntete(); placerIndicateur(); });
+    hauteurEntete();
+    montrer(lire() || 'accueil', { silencieux:true, defiler:false });
+    // Les blocs de l'accueil peuvent apparaître après le chargement (Mise en route) : on recalcule l'espacement
+    var obs = new MutationObserver(function(){ placerIndicateur(); });
+    obs.observe(view, { attributes:true, attributeFilter:['style'] });
+    setTimeout(function(){ view.classList.add('tabs-ready'); hauteurEntete(); placerIndicateur(); }, 1600);
+  })();
 
   /* ===== Votre façon d'écrire (ton automatique) ===== */
   var STY_API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/style-auto-glowia';
