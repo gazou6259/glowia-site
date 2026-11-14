@@ -377,7 +377,16 @@
   .cl-suppr{margin-left:auto;background:none;border:none;padding:4px 0;font:inherit;font-size:12.5px;font-weight:600;color:#9b2c2c;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
   .cl-suppr.confirmer{background:#9b2c2c;color:#fff;text-decoration:none;border-radius:8px;padding:6px 12px;}
   .cl-vide{font-size:14px;color:var(--encre-doux);margin:6px 0;}
-  .cl-carte.ferme .cl-notes,.cl-carte.ferme .cl-pied{display:none;}
+  .cl-carte.ferme .cl-notes,.cl-carte.ferme .cl-pied,.cl-carte.ferme .cl-vous{display:none;}
+  .cl-vous{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(110,29,49,.15);}
+  .cl-vous label{display:block;font-size:12.5px;font-weight:600;color:var(--laque);margin-bottom:6px;}
+  .cl-vous textarea{width:100%;min-height:64px;padding:10px 12px;border:1px solid rgba(110,29,49,.18);border-radius:10px;font:inherit;font-size:13.5px;line-height:1.5;resize:vertical;background:#fffdf9;}
+  .cl-vous textarea:focus{outline:none;border-color:var(--laque);box-shadow:0 0 0 3px rgba(110,29,49,.1);}
+  .cl-vous-pied{display:flex;align-items:center;gap:10px;margin-top:8px;}
+  .cl-vous-pied button{background:var(--laque);color:var(--ivoire);border:none;border-radius:8px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .cl-vous-pied button:disabled{opacity:.5;cursor:default;}
+  .cl-vous-pied span{font-size:12px;color:var(--encre-doux);}
+  .cl-badge{display:inline-block;margin-left:6px;font-size:11px;font-weight:600;color:var(--laiton-profond);}
   #dashView [data-tab], .cx-card{scroll-margin-top:calc(var(--hdr,81px) + 84px);}
   #dashView.tabs-ready .anim{animation:none;}
   #dashView.tabs-ready .tab-in{animation:tabIn .28s var(--ease) both;animation-delay:0s !important;}
@@ -851,7 +860,7 @@
         <h2>Le carnet de vos clientes</h2>
         <span class="cl-nb" id="clNb"></span>
       </div>
-      <p class="cl-intro">GlowIA relit vos conversations et note, pour chaque cliente, ce qui aide à bien la servir : ses prestations habituelles, ses préférences, ce qu'elle a signalé sur ses ongles. Votre assistant s'en sert pour lui répondre comme à une habituée, sans jamais lui réciter ces notes. Vous pouvez supprimer une fiche à tout moment : GlowIA ne prendra plus de notes sur cette personne.</p>
+      <p class="cl-intro">GlowIA relit vos conversations et note, pour chaque cliente, ce qui aide à bien la servir : ses prestations habituelles, ses préférences, ce qu'elle a signalé sur ses ongles. Vous pouvez ajouter vos propres notes sur chaque fiche : votre assistant les suit en priorité. Il s'en sert pour répondre comme à une habituée, sans jamais réciter ces notes. Vous pouvez supprimer une fiche à tout moment : GlowIA ne prendra plus de notes sur cette personne.</p>
       <input type="search" id="clCherche" class="cl-cherche" placeholder="Rechercher un prénom, un pseudo, une note…" autocomplete="off">
       <div id="clListe" class="cl-liste"><p class="cl-vide">Chargement du carnet…</p></div>
       <p class="save-msg" id="clMsg"></p>
@@ -1585,7 +1594,7 @@
     }
     function afficher(){
       var q = sansAccent(champ.value.trim());
-      var vues = fiches.filter(function(f){ return !q || sansAccent([f.prenom, f.pseudo, f.telephone, (f.notes || []).join(' ')].join(' ')).indexOf(q) >= 0; });
+      var vues = fiches.filter(function(f){ return !q || sansAccent([f.prenom, f.pseudo, f.telephone, (f.notes || []).join(' '), f.notes_gerante].join(' ')).indexOf(q) >= 0; });
       nb.textContent = fiches.length ? fiches.length + (fiches.length > 1 ? ' fiches' : ' fiche') : '';
       if (!fiches.length) { liste.innerHTML = '<p class="cl-vide">Aucune fiche pour le moment. GlowIA les remplit au fil de vos conversations ; revenez d\'ici une heure.</p>'; return; }
       if (!vues.length) { liste.innerHTML = '<p class="cl-vide">Aucune cliente ne correspond à cette recherche.</p>'; return; }
@@ -1594,9 +1603,12 @@
         var sous = [f.prenom && f.pseudo ? '@' + f.pseudo : '', f.telephone, f.canal].filter(Boolean).join(' · ');
         var ini = (f.prenom || f.pseudo || '?').replace(/^@/, '').charAt(0).toUpperCase();
         return '<div class="cl-carte ferme" data-cle="' + esc(f.cle) + '">'
-          + '<div class="cl-tete"><span class="cl-ini">' + esc(ini) + '</span><div><div class="cl-nom">' + esc(nom) + '</div><div class="cl-sous">' + esc(sous) + '</div></div>'
+          + '<div class="cl-tete"><span class="cl-ini">' + esc(ini) + '</span><div><div class="cl-nom">' + esc(nom) + (f.notes_gerante ? '<span class="cl-badge">· vos notes</span>' : '') + '</div><div class="cl-sous">' + esc(sous) + '</div></div>'
           + '<button type="button" class="cl-ouvrir" aria-expanded="false">Voir la fiche</button></div>'
-          + '<ul class="cl-notes">' + (f.notes || []).map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>'
+          + '<ul class="cl-notes">' + ((f.notes || []).length ? f.notes.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') : '<li style="list-style:none;margin-left:-18px;color:var(--encre-doux);">GlowIA n\'a encore rien noté sur cette cliente.</li>') + '</ul>'
+          + '<div class="cl-vous"><label for="clv-' + esc(f.cle) + '">Vos notes (votre assistant les suit en priorité)</label>'
+          + '<textarea id="clv-' + esc(f.cle) + '" maxlength="800" placeholder="Ex. : préfère le samedi matin ; toujours lui proposer une couleur nude">' + esc(f.notes_gerante || '') + '</textarea>'
+          + '<div class="cl-vous-pied"><button type="button" class="cl-vous-ok">Enregistrer mes notes</button><span></span></div></div>'
           + '<div class="cl-pied"><span>' + esc(quand(f.maj)) + '</span><button type="button" class="cl-suppr">Supprimer la fiche</button></div>'
           + '</div>';
       }).join('');
@@ -1616,6 +1628,24 @@
       if (e.target.closest('.cl-ouvrir')) {
         var ferme = carte.classList.toggle('ferme');
         var b = carte.querySelector('.cl-ouvrir'); b.textContent = ferme ? 'Voir la fiche' : 'Masquer'; b.setAttribute('aria-expanded', ferme ? 'false' : 'true');
+        return;
+      }
+      var ok = e.target.closest('.cl-vous-ok');
+      if (ok) {
+        var zone = carte.querySelector('textarea'), etat = carte.querySelector('.cl-vous-pied span');
+        var cleN = carte.getAttribute('data-cle'), texte = zone.value.trim();
+        ok.disabled = true; etat.textContent = 'Enregistrement…';
+        appel({ action:'noter', cle: cleN, notes_gerante: texte }).then(function(r){
+          ok.disabled = false;
+          if (r && r.success) {
+            etat.textContent = 'Enregistré ✓';
+            fiches.forEach(function(f){ if (f.cle === cleN) f.notes_gerante = texte; });
+            var nomEl = carte.querySelector('.cl-nom'), badge = nomEl.querySelector('.cl-badge');
+            if (texte && !badge) nomEl.insertAdjacentHTML('beforeend', '<span class="cl-badge">· vos notes</span>');
+            if (!texte && badge) badge.remove();
+          } else { etat.textContent = (r && r.message) || 'Non enregistré, réessayez.'; }
+          setTimeout(function(){ etat.textContent = ''; }, 4000);
+        }).catch(function(){ ok.disabled = false; etat.textContent = 'Non enregistré, vérifiez votre connexion.'; });
         return;
       }
       var s = e.target.closest('.cl-suppr'); if (!s) return;
