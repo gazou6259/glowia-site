@@ -300,6 +300,89 @@ footer a{color:var(--gris)}
 @keyframes reflet{0%,80%{left:-60%}100%{left:130%}}
 details p{animation:entre .35s ease}
 @media(prefers-reduced-motion:reduce){.titre-anim .l>span,.entre,.carnet.page,.tel.arrive{transform:none!important;opacity:1!important}.notif-arrive,.monte-groupe>*,.tampon{opacity:1!important;transform:none!important}.barre-prix s::after{transform:scaleX(1)}}
+/* ===== Bandes diagonales ===== */
+.bandes{position:relative;height:150px;overflow:hidden;margin:-10px 0 0}
+.bande{position:absolute;left:-5%;width:110%;padding:14px 0;white-space:nowrap;overflow:hidden}
+.bande-a{top:24px;background:var(--prune);color:#FBF3EE;transform:rotate(-3deg);z-index:2;box-shadow:0 18px 40px -24px rgba(46,26,34,.6)}
+.bande-b{top:64px;background:var(--rose);color:var(--prune);transform:rotate(2.2deg)}
+.piste{display:inline-flex;align-items:center;gap:28px;will-change:transform}
+.piste span{font-family:var(--serif);font-size:30px;font-style:italic;letter-spacing:-.01em}
+.bande-b .piste span{font-style:normal;font-family:var(--sans);font-weight:600;font-size:18px;letter-spacing:.02em}
+.piste i{width:10px;height:10px;border-radius:50%;background:var(--or);flex:none}
+.bande-b .piste i{background:var(--prune)}
+@media(max-width:600px){.bandes{height:120px}.piste span{font-size:22px}.bande-b .piste span{font-size:15px}}
+
+/* ===== Radar ===== */
+.radar-section{padding:72px 0 96px;overflow:hidden}
+.point.droite .bulle-r{left:auto;right:-6px;transform:none}.point.gauche .bulle-r{left:-6px;transform:none}
+.radar-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:56px;align-items:center}
+.radar-legende{list-style:none;padding:0;margin:26px 0 0;display:flex;gap:22px;flex-wrap:wrap;font-size:15px}
+.radar-legende li{display:flex;align-items:center;gap:8px}
+.pt{width:12px;height:12px;border-radius:50%;display:inline-block}
+.pt.ig{background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF)}.pt.wa{background:#25D366}.pt.sms{background:#3478F6}
+.radar-note{margin-top:18px;font-size:13px;color:var(--gris)}
+.radar{position:relative;aspect-ratio:1;max-width:520px;width:100%;margin-left:auto;border-radius:50%;background:radial-gradient(circle,#FBF7F3 0%,#F3E4DE 70%,transparent 71%)}
+.onde{position:absolute;inset:0;margin:auto;border-radius:50%;border:1px solid rgba(91,42,60,.14)}
+.o1{width:33%;height:33%}.o2{width:66%;height:66%}.o3{width:99%;height:99%}
+.balayage{position:absolute;inset:.5%;border-radius:50%;background:conic-gradient(from 0deg,rgba(184,138,114,.0) 0deg,rgba(184,138,114,.0) 300deg,rgba(184,138,114,.35) 360deg);animation:balaie 4.5s linear infinite;mask:radial-gradient(circle,transparent 15%,#000 16%)}
+@keyframes balaie{to{transform:rotate(360deg)}}
+.radar-salon{position:absolute;left:50%;top:50%;width:108px;height:108px;margin:-54px 0 0 -54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7A3D53,var(--prune));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#FBF3EE;font:600 11.5px var(--sans);box-shadow:0 20px 40px -18px rgba(91,42,60,.8),inset 0 1px 0 rgba(255,255,255,.25);z-index:3}
+.radar-salon.recoit{animation:recoit .45s ease}
+@keyframes recoit{50%{transform:scale(1.1);box-shadow:0 0 0 14px rgba(232,196,192,.35)}}
+.points{position:absolute;inset:0}
+.point{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;z-index:2;box-shadow:0 0 0 0 rgba(255,255,255,.6)}
+.point::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid currentColor;opacity:.5;animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{from{transform:scale(.5);opacity:.6}to{transform:scale(1.8);opacity:0}}
+.point.ig{background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF);color:#DD2A7B}.point.wa{background:#25D366;color:#25D366}.point.sms{background:#3478F6;color:#3478F6}
+.point .bulle-r{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;border-radius:10px;padding:5px 9px;font:500 11.5px var(--sans);color:var(--encre);white-space:nowrap;box-shadow:0 8px 20px -10px rgba(46,26,34,.45)}
+@media(max-width:900px){.radar-grid{grid-template-columns:1fr}.radar{margin:0 auto}}
+
+/* ===== Cartes empilées ===== */
+.empile{padding:96px 0 60px}
+.pile{position:relative}
+.carte-canal{position:sticky;top:110px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;min-height:300px;border-radius:28px;padding:38px;margin-bottom:28px;box-shadow:0 30px 60px -36px rgba(46,26,34,.55);transform-origin:center top;overflow:hidden}
+.carte-canal.c1{background:#FBF7F3;border:1px solid var(--ligne)}
+.carte-canal.c2{background:var(--rose-2);top:130px}
+.carte-canal.c3{background:var(--prune);color:#F3DEDA;top:150px}
+.carte-canal.c3 h3{color:#fff}.carte-canal.c3 p{color:#E8C4C0}.carte-canal.c3 .cond{background:rgba(255,255,255,.08);color:#F3DEDA}
+.cc-num{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1.5px solid currentColor;font:600 16px var(--sans);margin-bottom:16px;opacity:.7}
+.carte-canal h3{font-size:clamp(30px,4vw,46px);margin-bottom:12px}
+.carte-canal p{color:var(--gris);font-size:17px;max-width:30em}
+.cc-visuel{background:#fff;border-radius:22px;padding:18px;display:grid;gap:10px;box-shadow:inset 0 0 0 1px var(--ligne)}
+.cc-visuel.wa{background:#EFE7DC}.cc-visuel.sms{background:#F2F2F7}
+.mini-bulle{max-width:85%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.4}
+.mini-bulle.c{background:#fff;border:1px solid var(--ligne);border-bottom-left-radius:5px;justify-self:start}
+.mini-bulle.s{background:var(--prune);color:#fff;border-bottom-right-radius:5px;justify-self:end}
+.cc-visuel.wa .mini-bulle.s{background:#D9FDD3;color:var(--encre)}.cc-visuel.sms .mini-bulle.s{background:#3478F6}
+@media(max-width:800px){.carte-canal{grid-template-columns:1fr;padding:26px;top:84px}.carte-canal.c2{top:96px}.carte-canal.c3{top:108px}}
+
+/* ===== Simulation ===== */
+.simu{background:linear-gradient(180deg,var(--papier) 0%,#F3E4DE 100%)}
+.simu-grid{display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start}
+.simu-tel{background:#fff;border-radius:36px;padding:12px;box-shadow:0 30px 60px -30px rgba(46,26,34,.55)}
+.simu-ecran{height:440px;border-radius:26px;background:var(--papier-2);padding:14px 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;overflow:hidden}
+.simu-ecran .bulle{opacity:1;transform:none;animation:entre .35s ease both}
+.simu-ecran .canal-tag{font:600 10px var(--sans);opacity:.6;display:block;margin-bottom:2px}
+.simu-horloge{font-family:var(--serif);font-size:64px;color:var(--prune);line-height:1;font-variant-numeric:tabular-nums}
+.simu-horloge small{display:block;font-family:var(--sans);font-size:14px;color:var(--gris);margin-top:6px}
+#simuCurseur{width:100%;margin:26px 0 6px;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--prune) var(--v,0%),var(--ligne) var(--v,0%));outline-offset:6px}
+#simuCurseur::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--prune);box-shadow:0 6px 16px -6px rgba(46,26,34,.6);cursor:grab}
+#simuCurseur::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--prune);cursor:grab}
+.simu-graduations{display:flex;justify-content:space-between;font-size:12px;color:var(--gris)}
+.simu-compteurs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:28px 0 20px}
+.simu-compteurs div{background:#fff;border-radius:18px;padding:16px;box-shadow:inset 0 0 0 1px var(--ligne)}
+.simu-compteurs b{display:block;font-family:var(--serif);font-size:40px;color:var(--prune);line-height:1;font-variant-numeric:tabular-nums}
+.simu-compteurs b.saute{animation:saute .35s ease}
+@keyframes saute{50%{transform:translateY(-4px);color:var(--or)}}
+.simu-compteurs span{font-size:13.5px;color:var(--gris)}
+.simu-carnet{display:grid;gap:6px;min-height:40px}
+.simu-carnet .ligne-rdv{display:flex;gap:12px;align-items:center;background:#fff;border-left:3px solid var(--rose);border-radius:8px;padding:9px 12px;font-family:var(--serif);font-style:italic;animation:ecrireLigne .6s ease both}
+.simu-carnet .ligne-rdv b{font-family:var(--sans);font-style:normal;font-size:13px;color:var(--prune);min-width:110px}
+@keyframes ecrireLigne{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.simu-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap}
+.simu-note{font-size:13px;color:var(--gris)}
+@media(max-width:900px){.simu-grid{grid-template-columns:1fr}.simu-tel{max-width:320px;margin:0 auto;order:2}.simu-ecran{height:340px}.simu-horloge{font-size:48px}.simu-compteurs b{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.balayage,.point::after{animation:none}}
 @media(prefers-reduced-motion:reduce){.fil-temps li{opacity:1;transform:none}*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bulle{opacity:1;transform:none}.creneau.nouveau .t{clip-path:none}}
 </style>
 </head>
@@ -357,6 +440,32 @@ details p{animation:entre .35s ease}
   </div>
 </section>
 
+<div class="bandes" aria-hidden="true">
+  <div class="bande bande-a"><div class="piste"><span>Instagram</span><i></i><span>WhatsApp</span><i></i><span>SMS sur votre numéro</span><i></i><span>Rendez-vous dans votre agenda</span><i></i><span>Rappel la veille</span><i></i><span>Avis Google</span><i></i><span>Vous gardez la main</span><i></i></div></div>
+  <div class="bande bande-b"><div class="piste"><span>Onglerie</span><i></i><span>Coiffure</span><i></i><span>Institut</span><i></i><span>Métropole lilloise</span><i></i><span>Installé chez vous</span><i></i><span>Sans engagement</span><i></i></div></div>
+</div>
+
+<section class="radar-section" id="radar">
+  <div class="wrap radar-grid">
+    <div class="radar-texte">
+      <h2>Toutes vos demandes arrivent au même endroit</h2>
+      <p class="lead" style="margin-top:16px">Un message Instagram pendant une pose, un SMS à 22&nbsp;h, un WhatsApp le dimanche : chaque demande est captée, reçoit une réponse et finit dans votre agenda, au bon créneau.</p>
+      <ul class="radar-legende">
+        <li><span class="pt ig"></span>Instagram</li>
+        <li><span class="pt wa"></span>WhatsApp</li>
+        <li><span class="pt sms"></span>SMS</li>
+      </ul>
+      <p class="radar-note">Illustration du fonctionnement</p>
+    </div>
+    <div class="radar" id="radarScene" aria-hidden="true">
+      <div class="onde o1"></div><div class="onde o2"></div><div class="onde o3"></div>
+      <div class="balayage"></div>
+      <div class="radar-salon" id="radarSalon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M8 2v4M16 2v4M3.5 9h17M5 5h14a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 19 21H5a1.5 1.5 0 0 1-1.5-1.5v-13A1.5 1.5 0 0 1 5 5z" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 14.5l2.3 2.3 4.7-5" stroke="#F6D7A8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Votre agenda</span></div>
+      <div class="points" id="radarPoints"></div>
+    </div>
+  </div>
+</section>
+
 <section class="soiree" id="soiree">
   <span class="lune" aria-hidden="true"></span>
   <div class="wrap">
@@ -398,19 +507,55 @@ details p{animation:entre .35s ease}
   </div>
 </section>
 
-<section id="canaux" style="padding-top:0">
+<section class="simu" id="simulation">
+  <div class="wrap">
+    <div class="titre">
+      <h2>Une soirée, en accéléré</h2>
+      <p>Faites glisser le curseur : de la fermeture à minuit, voyez ce que l'assistant fait pendant que vous rangez le salon.</p>
+    </div>
+    <div class="simu-grid">
+      <div class="simu-tel">
+        <div class="simu-ecran" id="simuFil" aria-live="polite"></div>
+      </div>
+      <div class="simu-droite">
+        <div class="simu-horloge"><span id="simuHeure">19:00</span><small>vendredi soir</small></div>
+        <input type="range" id="simuCurseur" min="0" max="300" value="0" step="1" aria-label="Heure de la soirée">
+        <div class="simu-graduations"><span>19 h</span><span>20 h</span><span>21 h</span><span>22 h</span><span>23 h</span><span>minuit</span></div>
+        <div class="simu-compteurs">
+          <div><b id="simuMsg">0</b><span>messages reçus</span></div>
+          <div><b id="simuRep">0</b><span>réponses envoyées</span></div>
+          <div><b id="simuRdv">0</b><span>rendez-vous notés</span></div>
+        </div>
+        <div class="simu-carnet" id="simuCarnet"></div>
+        <div class="simu-actions"><button type="button" class="btn btn-ligne" id="simuJouer">Lancer la soirée</button><span class="simu-note">Simulation, chiffres d'exemple</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="empile" id="canaux">
   <div class="wrap">
     <div class="titre">
       <h2>Là où vos clientes vous écrivent déjà</h2>
       <p>Elles ne téléchargent rien et ne changent rien à leurs habitudes. Les rendez-vous arrivent dans votre agenda Google habituel.</p>
     </div>
-    <div class="canaux-grid monte-groupe">
-      <div class="canal"><h3>Instagram</h3><p>Réponse aux messages privés de votre compte professionnel, prise, déplacement et annulation de rendez-vous.</p></div>
-      <div class="canal"><h3>WhatsApp</h3><p>Vous gardez votre appli WhatsApp Business et vos conversations. Quand vous répondez vous-même, l'assistant s'efface.</p></div>
-      <div class="canal"><h3>SMS sur votre numéro</h3><p>L'assistant répond aux SMS depuis le numéro que vos clientes connaissent déjà.</p><p class="cond">Formule Premium. Il faut un iPhone réservé au salon, séparé de votre téléphone personnel. Android : bientôt.</p></div>
+    <div class="pile">
+      <article class="carte-canal c1">
+        <div class="cc-texte"><span class="cc-num">1</span><h3>Instagram</h3><p>Réponse aux messages privés de votre compte professionnel, prise, déplacement et annulation de rendez-vous. Vous voyez tout dans votre appli, comme avant.</p></div>
+        <div class="cc-visuel"><div class="mini-bulle c">Tu as de la place samedi ?</div><div class="mini-bulle s">Samedi 28, j'ai 10 h ou 14 h. Lequel te va ?</div></div>
+      </article>
+      <article class="carte-canal c2">
+        <div class="cc-texte"><span class="cc-num">2</span><h3>WhatsApp</h3><p>Vous gardez votre appli WhatsApp Business et vos conversations. Quand vous répondez vous-même, l'assistant s'efface.</p></div>
+        <div class="cc-visuel wa"><div class="mini-bulle c">Bonjour, un remplissage mardi ?</div><div class="mini-bulle s">Mardi 24 à 18 h, c'est possible. Je vous le réserve ?</div></div>
+      </article>
+      <article class="carte-canal c3">
+        <div class="cc-texte"><span class="cc-num">3</span><h3>SMS sur votre numéro</h3><p>L'assistant répond aux SMS depuis le numéro que vos clientes connaissent déjà.</p><p class="cond">Formule Premium. Il faut un iPhone réservé au salon, séparé de votre téléphone personnel. Android : bientôt.</p></div>
+        <div class="cc-visuel sms"><div class="mini-bulle c">Bonsoir, il reste une place demain ?</div><div class="mini-bulle s">Demain, je peux vous proposer 11 h 30. Je vous le réserve ?</div></div>
+      </article>
     </div>
   </div>
 </section>
+
 
 <section class="tarifs" id="tarifs">
   <div class="wrap">
@@ -519,6 +664,8 @@ details p{animation:entre .35s ease}
 </footer>
 <div class="barre-mobile" id="barreMobile"><a href="#demo" class="btn btn-prune">Réservez votre démo</a></div>
 
+<script src="/assets/js/gsap.min.js"></script>
+<script src="/assets/js/ScrollTrigger.min.js"></script>
 <script>
 (function(){
   var calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -636,6 +783,95 @@ details p{animation:entre .35s ease}
     var obs = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('vu'); obs.unobserve(e.target); } }); }, { threshold: .3 });
     aVoir.forEach(function(el){ obs.observe(el); });
   } else aVoir.forEach(function(el){ el.classList.add('vu'); });
+  /* ===== Bandes : défilement continu, accéléré par la vitesse de défilement de la page ===== */
+  (function(){
+    var pistes = document.querySelectorAll('.piste');
+    pistes.forEach(function(p){ p.innerHTML = p.innerHTML + p.innerHTML + p.innerHTML; });
+    var x = [0, 0], dir = [-1, 1], vitesse = 0.6, boost = 0, dernier = window.scrollY;
+    window.addEventListener('scroll', function(){ var d = window.scrollY - dernier; dernier = window.scrollY; boost = Math.min(14, Math.abs(d) * 0.35); }, { passive: true });
+    function tour(){
+      pistes.forEach(function(p, i){ var w = p.scrollWidth / 3; x[i] += dir[i] * (vitesse + boost); if (x[i] <= -w) x[i] += w; if (x[i] >= 0) x[i] -= w; p.style.transform = 'translateX(' + x[i] + 'px)'; });
+      boost *= 0.92; if (!calme) requestAnimationFrame(tour);
+    }
+    if (pistes.length) { pistes.forEach(function(p, i){ x[i] = -p.scrollWidth / 3; }); if (calme) tour(); else requestAnimationFrame(tour); }
+  })();
+
+  /* ===== Radar : des demandes de tous les canaux qui convergent vers l'agenda ===== */
+  (function(){
+    var zone = document.getElementById('radarPoints'), salon = document.getElementById('radarSalon');
+    if (!zone) return;
+    var DEMANDES = [['ig','Une place samedi ?'],['sms','Il vous reste demain ?'],['wa','Remplissage mardi ?'],['ig','Capsules la semaine pro ?'],['sms','Bonsoir, un semi ?'],['wa','Vous êtes ouverte lundi ?'],['ig','Dispo ce midi ?'],['sms','Pose gel vendredi ?']];
+    var actif = false, idx = 0;
+    function lancer(){
+      if (!actif) return;
+      var d = DEMANDES[idx++ % DEMANDES.length], a = Math.random() * Math.PI * 2, r = 0.36 + Math.random() * 0.12;
+      var el = document.createElement('div'); el.className = 'point ' + d[0];
+      el.style.left = (50 + Math.cos(a) * r * 100) + '%'; el.style.top = (50 + Math.sin(a) * r * 100) + '%';
+      var b = document.createElement('span'); b.className = 'bulle-r'; b.textContent = d[1]; el.appendChild(b); el.classList.add(Math.cos(a) > 0 ? 'droite' : 'gauche');
+      zone.appendChild(el);
+      if (window.gsap) {
+        gsap.fromTo(el, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: .5, ease: 'back.out(2)' });
+        gsap.to(b, { opacity: 0, duration: .3, delay: 1.3 });
+        gsap.to(el, { left: '50%', top: '50%', scale: .3, duration: 1.1, delay: 1.5, ease: 'power3.in', onComplete: function(){ el.remove(); salon.classList.remove('recoit'); void salon.offsetWidth; salon.classList.add('recoit'); } });
+      } else { setTimeout(function(){ el.remove(); }, 2600); }
+      setTimeout(lancer, 900 + Math.random() * 700);
+    }
+    if (calme) { DEMANDES.slice(0, 4).forEach(function(d, i){ var el = document.createElement('div'); el.className = 'point ' + d[0]; var a = i * Math.PI / 2 + .5; el.style.left = (50 + Math.cos(a) * 40) + '%'; el.style.top = (50 + Math.sin(a) * 40) + '%'; zone.appendChild(el); }); return; }
+    new IntersectionObserver(function(es){ es.forEach(function(e){ var avant = actif; actif = e.isIntersecting; if (actif && !avant) lancer(); }); }, { threshold: .25 }).observe(document.getElementById('radarScene'));
+  })();
+
+  /* ===== Cartes empilées : la carte du dessous recule quand la suivante arrive ===== */
+  (function(){
+    if (!window.gsap || !window.ScrollTrigger || calme) return;
+    gsap.registerPlugin(ScrollTrigger);
+    var cartes = gsap.utils.toArray('.carte-canal');
+    cartes.forEach(function(c, i){
+      if (i === cartes.length - 1) return;
+      gsap.to(c, { scale: .93 - (cartes.length - i - 2) * .03, filter: 'brightness(.94)', ease: 'none', scrollTrigger: { trigger: cartes[i + 1], start: 'top 85%', end: 'top 25%', scrub: true } });
+    });
+    gsap.utils.toArray('.cc-visuel').forEach(function(v){ gsap.from(v.children, { y: 24, opacity: 0, stagger: .25, duration: .6, ease: 'power2.out', scrollTrigger: { trigger: v, start: 'top 80%' } }); });
+    gsap.to('.radar', { rotate: 8, ease: 'none', scrollTrigger: { trigger: '#radar', start: 'top bottom', end: 'bottom top', scrub: true } });
+  })();
+
+  /* ===== Simulation : la soirée en accéléré ===== */
+  (function(){
+    var curseur = document.getElementById('simuCurseur'); if (!curseur) return;
+    var EV = [
+      { t: 18, canal: 'Instagram', c: 'Coucou, tu as de la place samedi ?', r: 'Samedi 28, j’ai 10 h ou 14 h. Lequel te va ?' },
+      { t: 31, canal: 'Instagram', c: '14 h parfait', r: 'C’est noté pour samedi 28 à 14 h !', rdv: ['Sam. 28 · 14 h', 'Inès, capsules'] },
+      { t: 64, canal: 'SMS', c: 'Bonsoir, il vous reste une place mardi midi ?', r: 'Mardi 24, je peux vous proposer 12 h 15. Je vous le réserve ?' },
+      { t: 76, canal: 'SMS', c: 'Oui merci, Julie Martin', r: 'C’est réservé pour mardi 24 à 12 h 15. À mardi !', rdv: ['Mar. 24 · 12 h 15', 'Julie, semi mains'] },
+      { t: 118, canal: 'WhatsApp', c: 'Ma pose s’est décollée…', r: 'Je transmets à la gérante, elle revient vers vous très vite.', alerte: true },
+      { t: 170, canal: 'Instagram', c: 'Un remplissage jeudi soir ?', r: 'Jeudi 26, j’ai 18 h 30. Je te le réserve ?' },
+      { t: 186, canal: 'Instagram', c: 'Oui !', r: 'C’est noté pour jeudi 26 à 18 h 30 !', rdv: ['Jeu. 26 · 18 h 30', 'Sarah, remplissage'] },
+      { t: 238, canal: 'SMS', c: 'Je dois annuler demain désolée', r: 'Vous souhaitez bien annuler votre rendez-vous de samedi 11 h ?' },
+      { t: 252, canal: 'SMS', c: 'Oui', r: 'C’est annulé. À bientôt !', annule: true }
+    ];
+    var fil = document.getElementById('simuFil'), carnet = document.getElementById('simuCarnet');
+    var nMsg = document.getElementById('simuMsg'), nRep = document.getElementById('simuRep'), nRdv = document.getElementById('simuRdv'), heure = document.getElementById('simuHeure');
+    var dejaVu = -1;
+    function bulle(cls, texte, canal){ var b = document.createElement('div'); b.className = 'bulle ' + cls + ' vu'; if (canal) { var c = document.createElement('span'); c.className = 'canal-tag'; c.textContent = canal; b.appendChild(c); } b.appendChild(document.createTextNode(texte)); fil.appendChild(b); while (fil.children.length > 7) fil.removeChild(fil.firstChild); }
+    function saute(el, v){ if (el.textContent !== String(v)) { el.textContent = v; el.classList.remove('saute'); void el.offsetWidth; el.classList.add('saute'); } }
+    function rendre(v){
+      var m = Number(v); curseur.style.setProperty('--v', (m / 3) + '%');
+      var h = 19 + Math.floor(m / 60), mm = m % 60; heure.textContent = (h === 24 ? '00' : String(h).padStart(2, '0')) + ':' + String(mm).padStart(2, '0');
+      var passes = EV.filter(function(e){ return e.t <= m; });
+      if (passes.length - 1 < dejaVu) { fil.innerHTML = ''; carnet.innerHTML = ''; dejaVu = -1; }
+      passes.forEach(function(e, i){ if (i <= dejaVu) return; bulle('cliente', e.c, e.canal); bulle('salon', e.r); if (e.rdv) { var l = document.createElement('div'); l.className = 'ligne-rdv'; l.innerHTML = '<b></b><span></span>'; l.firstChild.textContent = e.rdv[0]; l.lastChild.textContent = e.rdv[1]; carnet.appendChild(l); } });
+      dejaVu = passes.length - 1;
+      saute(nMsg, passes.length); saute(nRep, passes.length); saute(nRdv, passes.filter(function(e){ return e.rdv; }).length);
+    }
+    curseur.addEventListener('input', function(){ rendre(curseur.value); });
+    var lecture = null;
+    document.getElementById('simuJouer').addEventListener('click', function(){
+      var btn = this; if (lecture) { clearInterval(lecture); lecture = null; btn.textContent = 'Lancer la soirée'; return; }
+      if (Number(curseur.value) >= 300) { curseur.value = 0; rendre(0); }
+      btn.textContent = 'Pause';
+      lecture = setInterval(function(){ var v = Math.min(300, Number(curseur.value) + 2); curseur.value = v; rendre(v); if (v >= 300) { clearInterval(lecture); lecture = null; btn.textContent = 'Revoir la soirée'; } }, 60);
+    });
+    rendre(0);
+    if ('IntersectionObserver' in window && !calme) new IntersectionObserver(function(es, o){ es.forEach(function(e){ if (e.isIntersecting) { o.disconnect(); setTimeout(function(){ if (!lecture && Number(curseur.value) === 0) document.getElementById('simuJouer').click(); }, 600); } }); }, { threshold: .5 }).observe(document.querySelector('.simu-grid'));
+  })();
   /* Demande de démo */
   var form = document.getElementById('demoForm'), btn = document.getElementById('demoBtn'), msg = document.getElementById('demoMsg');
   function dire(t, ok){ msg.textContent = t; msg.className = 'msg ' + (ok ? 'ok' : 'ko'); }

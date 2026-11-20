@@ -619,6 +619,30 @@
   .aj-prochaine .t2{animation:aj-monte .5s var(--ease) .15s both}
   .aj-chiffre{display:inline-block;font-variant-numeric:tabular-nums}
   @media (prefers-reduced-motion:reduce){.aj-passe-zone,.aj-maintenant.balaye{transition:none}.aj-point.ok{animation:none}}
+
+  /* ===== Finition glossy (verre, reflets, profondeur) ===== */
+  body{background:radial-gradient(1200px 600px at 10% -10%,#F3DEDA 0%,transparent 60%),radial-gradient(900px 500px at 110% 10%,#EFD9CE 0%,transparent 55%),var(--ivoire);background-attachment:fixed}
+  .panel{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.6))!important;backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(255,255,255,.75)!important;box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 24px 50px -30px rgba(91,42,60,.35),0 2px 6px -2px rgba(91,42,60,.08)!important}
+  .aj{background:linear-gradient(160deg,rgba(255,255,255,.9),rgba(251,243,238,.7))!important}
+  .aj-prochaine{background:linear-gradient(135deg,#6E3349 0%,var(--laque) 45%,#3E1B28 100%);box-shadow:0 22px 40px -22px rgba(62,27,40,.75),inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.2)}
+  .aj-prochaine::before{content:"";position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));border-radius:20px 20px 0 0;pointer-events:none}
+  .aj-prochaine .reflet{position:absolute;top:-50%;left:-30%;width:30%;height:200%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);transform:rotate(18deg);animation:aj-reflet 6s ease-in-out 1.2s infinite;pointer-events:none}
+  @keyframes aj-reflet{0%,70%{left:-30%}100%{left:130%}}
+  .aj-anneau .plein{filter:drop-shadow(0 0 6px rgba(232,196,192,.8))}
+  .aj-jour{background:linear-gradient(180deg,#fff,#FBF5F2);box-shadow:inset 0 1px 0 #fff,0 6px 14px -10px rgba(91,42,60,.35)}
+  .aj-jour[aria-selected="true"]{background:linear-gradient(180deg,#7A3D53,var(--laque));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 20px -10px rgba(91,42,60,.7)}
+  .aj-jour .barre i{background:linear-gradient(180deg,#F3DEDA,var(--nacre));box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+  .aj-frise{background:repeating-linear-gradient(90deg,rgba(91,42,60,.06) 0 1px,transparent 1px var(--h,60px)),linear-gradient(180deg,#FFFDFC,#F8EFEA);box-shadow:inset 0 1px 3px rgba(91,42,60,.08)}
+  .aj-rdv{background:linear-gradient(180deg,#fff,#FBF5F2);box-shadow:inset 0 1px 0 #fff,0 10px 22px -14px rgba(46,26,34,.55)}
+  .aj-rdv.ia{background:linear-gradient(170deg,#FBE9E5,#F3DEDA 60%,#EBCFC9);border-color:rgba(255,255,255,.8)}
+  .aj-bloc{background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.7));box-shadow:inset 0 1px 0 #fff,0 12px 26px -20px rgba(91,42,60,.35)}
+  .aj-maj{background:linear-gradient(180deg,#fff,#F6ECE7);box-shadow:inset 0 1px 0 #fff,0 4px 10px -6px rgba(91,42,60,.4)}
+  .aj-point.ok{background:radial-gradient(circle at 35% 30%,#7BC48A,#2F6B3A)}
+  .aj-point.alerte{background:radial-gradient(circle at 35% 30%,#F08A7E,#A93226)}
+  .aj-point.pause{background:radial-gradient(circle at 35% 30%,#E3C1A8,#93684F)}
+  .aj-horloge{background:linear-gradient(180deg,#C79A80,#7A5240);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .kpi-hero{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 22px 40px -24px rgba(62,27,40,.7)!important}
+  @media (prefers-reduced-motion:reduce){.aj-prochaine .reflet{animation:none;display:none}}
   @media (prefers-reduced-motion:reduce){.aj-rdv,.aj-jour .barre i{animation:none}.aj-maintenant::before{animation:none}}
 </style>
 </head>
@@ -2492,7 +2516,7 @@
       var anneauVu = prochaine.vu; prochaine.vu = true;
       if (!anneauVu) setTimeout(function(){ var c = el.querySelector('.plein'); if (c) c.setAttribute('stroke-dashoffset', c.getAttribute('data-cible')); }, 80);
       el.className = 'aj-prochaine';
-      el.innerHTML = '<div class="aj-anneau"><svg width="72" height="72" viewBox="0 0 72 72"><circle class="fond" cx="36" cy="36" r="30" fill="none" stroke-width="6"/><circle class="plein" cx="36" cy="36" r="30" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (anneauVu ? (C * (1 - frac)).toFixed(1) : C.toFixed(1)) + '" data-cible="' + (C * (1 - frac)).toFixed(1) + '"/></svg><b>' + (enCours ? duree(reste) + '<small>restantes</small>' : duree(reste)) + '</b></div>' +
+      el.innerHTML = '<span class="reflet"></span><div class="aj-anneau"><svg width="72" height="72" viewBox="0 0 72 72"><circle class="fond" cx="36" cy="36" r="30" fill="none" stroke-width="6"/><circle class="plein" cx="36" cy="36" r="30" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (anneauVu ? (C * (1 - frac)).toFixed(1) : C.toFixed(1)) + '" data-cible="' + (C * (1 - frac)).toFixed(1) + '"/></svg><b>' + (enCours ? duree(reste) + '<small>restantes</small>' : duree(reste)) + '</b></div>' +
         '<div><div class="t1">' + (enCours ? 'En ce moment' : 'Prochaine cliente dans ' + duree(reste)) + '</div><div class="t2">' + esc(r.titre) + (r.par_ia ? '<span class="aj-badge-ia">pris par l’assistant</span>' : '') + '</div><div class="t3">' + hm(s) + ' à ' + hm(f) + (r.prix ? ' · ' + r.prix + ' €' : '') + (liste.length > 1 ? ' · puis ' + (liste.length - 1) + ' autre' + (liste.length > 2 ? 's' : '') : '') + '</div></div>';
     }
     function jours(){
