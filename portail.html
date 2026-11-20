@@ -594,7 +594,11 @@
     .aj{padding:22px 18px}
     .aj-frise-wrap{margin:0 -18px;padding:0 18px 6px}
     .aj-tete h2{font-size:25px}.aj-horloge{font-size:26px}
-    .aj-jours{grid-template-columns:repeat(7,minmax(46px,1fr));overflow-x:auto}
+    .aj-jours{grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;overflow:visible}
+    .aj-jour{padding:7px 1px 6px;font-size:11px;border-radius:11px;min-width:0}
+    .aj-jour .nb{font-size:10px;white-space:nowrap}
+    .aj-jour .barre{height:28px}
+    .aj-jour .ct{display:inline-block;width:min-content;line-height:1.25}
     .aj-bas{grid-template-columns:1fr}
   }
 
@@ -2517,7 +2521,7 @@
       if (!anneauVu) setTimeout(function(){ var c = el.querySelector('.plein'); if (c) c.setAttribute('stroke-dashoffset', c.getAttribute('data-cible')); }, 80);
       el.className = 'aj-prochaine';
       el.innerHTML = '<span class="reflet"></span><div class="aj-anneau"><svg width="72" height="72" viewBox="0 0 72 72"><circle class="fond" cx="36" cy="36" r="30" fill="none" stroke-width="6"/><circle class="plein" cx="36" cy="36" r="30" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (anneauVu ? (C * (1 - frac)).toFixed(1) : C.toFixed(1)) + '" data-cible="' + (C * (1 - frac)).toFixed(1) + '"/></svg><b>' + (enCours ? duree(reste) + '<small>restantes</small>' : duree(reste)) + '</b></div>' +
-        '<div><div class="t1">' + (enCours ? 'En ce moment' : 'Prochaine cliente dans ' + duree(reste)) + '</div><div class="t2">' + esc(r.titre) + (r.par_ia ? '<span class="aj-badge-ia">pris par l’assistant</span>' : '') + '</div><div class="t3">' + hm(s) + ' à ' + hm(f) + (r.prix ? ' · ' + r.prix + ' €' : '') + (liste.length > 1 ? ' · puis ' + (liste.length - 1) + ' autre' + (liste.length > 2 ? 's' : '') : '') + '</div></div>';
+        '<div><div class="t1">' + (enCours ? 'En ce moment' : 'Prochaine cliente dans <span style="white-space:nowrap">' + duree(reste) + '</span>') + '</div><div class="t2">' + esc(r.titre) + (r.par_ia ? '<span class="aj-badge-ia">pris par l’assistant</span>' : '') + '</div><div class="t3">' + hm(s) + ' à ' + hm(f) + (r.prix ? ' · ' + r.prix + ' €' : '') + (liste.length > 1 ? ' · puis ' + (liste.length - 1) + ' autre' + (liste.length > 2 ? 's' : '') : '') + '</div></div>';
     }
     function jours(){
       var max = Math.max.apply(null, (data.semaine || []).map(function(j){ return j.minutes; }).concat([60]));
@@ -2549,7 +2553,7 @@
       if (balayer) { frise.dejaBalaye = true; requestAnimationFrame(function(){ requestAnimationFrame(function(){ var m = $id('ajMaintenant'), z = $id('ajPasse'); if (m) m.style.left = xn + 'px'; if (z) z.style.width = xn + 'px'; setTimeout(function(){ if (m) m.classList.remove('balaye'); }, 1500); }); }); }
       $id('ajDetail').innerHTML = '';
       var cible = $id('ajMaintenant') || wrap.querySelector('.aj-rdv');
-      if (cible) { var fw = $id('ajFriseWrap'); fw.scrollLeft = Math.max(0, cible.offsetLeft - fw.clientWidth / 3); }
+      if (cible) { var fw = $id('ajFriseWrap'), cx = (cible.id === 'ajMaintenant') ? xn : cible.offsetLeft; fw.style.scrollBehavior = 'auto'; fw.scrollLeft = Math.max(0, cx - fw.clientWidth / 3); fw.style.scrollBehavior = ''; }
     }
     function detail(id){
       var r = (data.rdv_semaine || []).find(function(x){ return x.id === id; }); if (!r) return;
