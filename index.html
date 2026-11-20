@@ -133,17 +133,26 @@ section{padding:88px 0}
 .titre p{margin-top:14px;color:var(--gris);font-size:18px}
 
 /* Une soirée ordinaire : la suite des événements */
-.soiree{background:var(--papier-2);border-top:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
+.soiree{background:linear-gradient(180deg,#2F1620 0%,#4A2131 60%,var(--prune) 100%);color:#F3DEDA;position:relative;overflow:hidden}
+.soiree h2{color:#FBF3EE}.soiree .titre p{color:#E8C4C0}
+.soiree::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 12% 18%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 28% 62%,rgba(255,255,255,.5),transparent),radial-gradient(1.5px 1.5px at 47% 24%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 66% 12%,rgba(255,255,255,.5),transparent),radial-gradient(1.5px 1.5px at 83% 40%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 92% 78%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 8% 82%,rgba(255,255,255,.4),transparent);animation:scintille 6s ease-in-out infinite alternate;pointer-events:none}
+@keyframes scintille{from{opacity:.55}to{opacity:1}}
+.lune{position:absolute;right:7%;top:56px;width:64px;height:64px;border-radius:50%;box-shadow:inset -14px 6px 0 0 #F3DEDA;opacity:.85;transform:rotate(-20deg)}
 .fil-temps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative}
-.fil-temps::before{content:"";position:absolute;left:0;right:0;top:15px;height:2px;background:var(--rose)}
+.fil-temps::before{content:"";position:absolute;left:0;right:0;top:15px;height:2px;background:rgba(232,196,192,.25)}
+.fil-temps::after{content:"";position:absolute;left:0;top:15px;height:2px;width:calc(var(--prog,0) * 100%);background:linear-gradient(90deg,var(--rose),#F6D7A8);box-shadow:0 0 12px rgba(246,215,168,.7);transition:width .2s linear}
 .fil-temps li{position:relative;padding:44px 18px 0 0}
-.fil-temps li::before{content:"";position:absolute;top:8px;left:0;width:16px;height:16px;border-radius:50%;background:var(--papier-2);border:2px solid var(--prune)}
-.fil-temps .quand{font-family:var(--serif);font-size:22px;color:var(--prune);font-variant-numeric:tabular-nums}
-.fil-temps p{margin-top:8px;font-size:15.5px;color:var(--gris)}
-.fil-temps .formule{display:inline-block;margin-top:10px;font-size:12.5px;color:var(--or);font-weight:600}
+.fil-temps li::before{content:"";position:absolute;top:8px;left:0;width:16px;height:16px;border-radius:50%;background:#3A1B27;border:2px solid rgba(232,196,192,.5);transition:background .4s,box-shadow .4s,border-color .4s;z-index:1}
+.fil-temps li{opacity:.35;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.fil-temps li.allume{opacity:1;transform:none}
+.fil-temps li.allume::before{background:#F6D7A8;border-color:#F6D7A8;box-shadow:0 0 0 6px rgba(246,215,168,.18),0 0 18px rgba(246,215,168,.8)}
+.fil-temps .quand{font-family:var(--serif);font-size:22px;color:#FBF3EE;font-variant-numeric:tabular-nums}
+.fil-temps p{margin-top:8px;font-size:15.5px;color:#E8C4C0}
+.fil-temps .formule{display:inline-block;margin-top:10px;font-size:12.5px;color:#F6D7A8;font-weight:600}
 @media(max-width:900px){
   .fil-temps{grid-template-columns:1fr;gap:26px}
   .fil-temps::before{left:7px;right:auto;top:0;bottom:0;width:2px;height:auto}
+  .fil-temps::after{left:7px;top:0;width:2px;height:calc(var(--prog,0) * 100%)}
   .fil-temps li{padding:0 0 0 38px}
   .fil-temps li::before{top:6px}
 }
@@ -194,6 +203,11 @@ section{padding:88px 0}
 .formule-carte li.non{color:var(--gris)}
 .formule-carte li.non::before{border:0;height:2px;width:10px;background:var(--ligne);transform:none;top:11px}
 .formule-carte.premium{box-shadow:inset 0 0 0 2px var(--or)}
+.prem-tete{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.bascule{display:inline-flex;background:var(--rose-2);border-radius:999px;padding:3px}
+.bascule button{font:500 13px var(--sans);border:0;background:transparent;color:var(--prune);padding:6px 12px;border-radius:999px;cursor:pointer}
+.bascule button[aria-pressed="true"]{background:var(--prune);color:#fff}
+#prixPremium{transition:opacity .2s,transform .2s}#prixPremium.change{opacity:0;transform:translateY(-6px)}
 .tarifs-pied{margin-top:22px;font-size:14px;color:#E8C4C0}
 @media(max-width:900px){.fondatrice,.formules{grid-template-columns:1fr}}
 
@@ -237,7 +251,7 @@ footer a{color:var(--gris)}
 .barre-mobile{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:none}
 .barre-mobile .btn{width:100%;box-shadow:0 12px 30px -10px rgba(46,26,34,.5)}
 @media(max-width:760px){.barre-mobile.on{display:block}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bulle{opacity:1;transform:none}.creneau.nouveau .t{clip-path:none}}
+@media(prefers-reduced-motion:reduce){.fil-temps li{opacity:1;transform:none}*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bulle{opacity:1;transform:none}.creneau.nouveau .t{clip-path:none}}
 </style>
 </head>
 <body>
@@ -295,6 +309,7 @@ footer a{color:var(--gris)}
 </section>
 
 <section class="soiree" id="soiree">
+  <span class="lune" aria-hidden="true"></span>
   <div class="wrap">
     <div class="titre">
       <h2>Une soirée ordinaire, sans téléphone à la main</h2>
@@ -380,9 +395,9 @@ footer a{color:var(--gris)}
         </ul>
       </div>
       <div class="formule-carte premium">
-        <h3>Premium</h3>
-        <div class="prix">59 € <small>par mois</small></div>
-        <div class="install">Installation 99 €, ou 590 € à l'année installation comprise</div>
+        <div class="prem-tete"><h3>Premium</h3><div class="bascule" role="group" aria-label="Paiement"><button type="button" data-paie="mois" aria-pressed="true">Au mois</button><button type="button" data-paie="an" aria-pressed="false">À l'année</button></div></div>
+        <div class="prix" id="prixPremium">59 € <small>par mois</small></div>
+        <div class="install" id="installPremium">Installation 99 €</div>
         <ul>
           <li>Tout Classic</li>
           <li>Réponses aux SMS depuis le numéro du salon (iPhone réservé au salon)</li>
@@ -537,6 +552,28 @@ footer a{color:var(--gris)}
       : 'L\'assistant continue la conversation, et vous restez prévenue.';
   }); });
 
+
+  /* Soirée : le fil se remplit au défilement et chaque étape s'allume */
+  var filTemps = document.querySelector('.fil-temps');
+  if (filTemps) {
+    var etapes = filTemps.querySelectorAll('li');
+    function progression(){
+      var r = filTemps.getBoundingClientRect(), h = window.innerHeight;
+      var p = Math.min(1, Math.max(0, (h * 0.75 - r.top) / (r.height + h * 0.25)));
+      if (window.innerWidth > 900) p = Math.min(1, Math.max(0, (h * 0.8 - r.top) / (h * 0.5)));
+      filTemps.style.setProperty('--prog', calme ? 1 : p);
+      etapes.forEach(function(li, i){ li.classList.toggle('allume', calme || p >= i / etapes.length + 0.02); });
+    }
+    window.addEventListener('scroll', progression, { passive: true }); window.addEventListener('resize', progression); progression();
+  }
+  /* Premium au mois ou à l'année */
+  var prix = document.getElementById('prixPremium'), inst = document.getElementById('installPremium');
+  document.querySelectorAll('.bascule button').forEach(function(b){ b.addEventListener('click', function(){
+    document.querySelectorAll('.bascule button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    var an = b.dataset.paie === 'an';
+    prix.classList.add('change');
+    setTimeout(function(){ prix.innerHTML = an ? '590 € <small>par an</small>' : '59 € <small>par mois</small>'; inst.textContent = an ? 'Installation comprise, soit deux mois offerts' : 'Installation 99 €'; prix.classList.remove('change'); }, 180);
+  }); });
   /* Demande de démo */
   var form = document.getElementById('demoForm'), btn = document.getElementById('demoBtn'), msg = document.getElementById('demoMsg');
   function dire(t, ok){ msg.textContent = t; msg.className = 'msg ' + (ok ? 'ok' : 'ko'); }
