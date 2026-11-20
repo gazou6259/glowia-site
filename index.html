@@ -393,8 +393,18 @@ details p{animation:entre .35s ease}
 
 /* Effets inspirés des sites « immersifs », version GlowIA */
 .hero{position:relative;isolation:isolate}
-.poussiere{position:absolute;inset:-40px 0 0;width:100%;height:calc(100% + 40px);z-index:-1;pointer-events:none}
+.poussiere{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none}
 .sans-eclat .poussiere{display:none}
+.aurore{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
+.aurore i{position:absolute;border-radius:50%;filter:blur(50px);opacity:.95;will-change:transform}
+.aurore i:nth-child(1){width:46vw;height:46vw;left:-10vw;top:-8vw;background:radial-gradient(circle,#EFCFCA 0%,rgba(239,207,202,0) 70%);animation:aurore1 26s ease-in-out infinite alternate}
+.aurore i:nth-child(2){width:40vw;height:40vw;right:-8vw;top:20vh;background:radial-gradient(circle,rgba(232,196,192,.9) 0%,rgba(232,196,192,0) 70%);animation:aurore2 32s ease-in-out infinite alternate}
+.aurore i:nth-child(3){width:38vw;height:38vw;left:30vw;bottom:-14vw;background:radial-gradient(circle,rgba(214,178,150,.55) 0%,rgba(214,178,150,0) 70%);animation:aurore3 38s ease-in-out infinite alternate}
+@keyframes aurore1{to{transform:translate(18vw,22vh) scale(1.15)}}
+@keyframes aurore2{to{transform:translate(-22vw,30vh) scale(.9)}}
+@keyframes aurore3{to{transform:translate(-14vw,-40vh) scale(1.2)}}
+@media(max-width:600px){.aurore i{filter:blur(40px)}.aurore i:nth-child(1){width:90vw;height:90vw}.aurore i:nth-child(2){width:80vw;height:80vw}.aurore i:nth-child(3){width:80vw;height:80vw}}
+@media(prefers-reduced-motion:reduce){.aurore i{animation:none}}
 .signature{padding:40px 0 28px;text-align:center;overflow:hidden}
 .signature-scene{position:relative;height:clamp(170px,34vw,380px);max-width:1100px;margin:0 auto}
 .signature-scene canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -422,6 +432,8 @@ html.lenis,html.lenis body{height:auto}
 </head>
 <body>
 
+<div class="aurore" aria-hidden="true"><i></i><i></i><i></i></div>
+<canvas id="poussiere" class="poussiere" aria-hidden="true"></canvas>
 <header id="haut"><span class="progression" id="progression" aria-hidden="true"></span>
   <div class="wrap nav">
     <a href="#" class="logo" aria-label="GlowIA, accueil">Glow<span>IA</span></a>
@@ -437,7 +449,6 @@ html.lenis,html.lenis body{height:auto}
 
 <main>
 <section class="hero" id="accueil">
-  <canvas id="poussiere" class="poussiere" aria-hidden="true"></canvas>
   <div class="wrap hero-grid">
     <div>
       <h1 class="titre-anim" aria-label="Vos clientes écrivent pendant la pose. GlowIA leur répond."><span class="l" aria-hidden="true"><span style="animation-delay:0.00s">Vos</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.06s">clientes</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.12s">écrivent</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.18s">pendant</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.24s">la</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.30s">pose.</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.36s">GlowIA</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.42s">leur</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.48s">répond.</span></span></h1>

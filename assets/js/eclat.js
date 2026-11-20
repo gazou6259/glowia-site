@@ -4,7 +4,8 @@
   'use strict';
   var reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var nav = navigator;
-  var faible = (nav.hardwareConcurrency || 8) <= 2 || (nav.deviceMemory || 8) <= 2 || (nav.connection && nav.connection.saveData === true);
+  // Safari annonce volontairement peu de cœurs (vie privée) : on ne s'y fie pas. On coupe seulement en mode économie de données ou sous 2 Go de mémoire.
+  var faible = (nav.deviceMemory || 8) < 2 || (nav.connection && nav.connection.saveData === true);
   var souris = window.matchMedia('(pointer: fine)').matches && window.innerWidth > 900;
   var petit = window.innerWidth < 600;
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -44,8 +45,8 @@
   var cvHero = document.getElementById('poussiere');
   if (cvHero) {
     var H = preparer(cvHero), grains = [];
-    var N = petit ? 34 : 90;
-    for (var i = 0; i < N; i++) grains.push({ x: Math.random(), y: Math.random(), z: 0.3 + Math.random() * 0.7, r: 0.8 + Math.random() * 2.2, c: COULEURS[i % 4], ph: Math.random() * 6.28, dx: 0, dy: 0 });
+    var N = petit ? 55 : 130;
+    for (var i = 0; i < N; i++) grains.push({ x: Math.random(), y: Math.random(), z: 0.3 + Math.random() * 0.7, r: 1 + Math.random() * 2.8, c: COULEURS[i % 4], ph: Math.random() * 6.28, dx: 0, dy: 0 });
     var tH = 0;
     (function boucle() {
       requestAnimationFrame(boucle);
@@ -53,16 +54,16 @@
       tH += 0.006;
       var ctx = H.ctx, r = cvHero.getBoundingClientRect();
       ctx.clearRect(0, 0, H.l, H.h);
-      var fuite = Math.max(0, Math.min(1, -r.top / (r.height * 0.8)));
+      var fuite = 0, defile = window.scrollY || 0;
       for (var k = 0; k < grains.length; k++) {
         var g = grains[k];
         g.y -= 0.00022 * g.z; if (g.y < -0.05) { g.y = 1.05; g.x = Math.random(); }
-        var x = (g.x + Math.sin(tH + g.ph) * 0.012) * H.l, y = (g.y + Math.cos(tH * 0.8 + g.ph) * 0.01) * H.h - fuite * 120 * g.z;
+        var x = (g.x + Math.sin(tH + g.ph) * 0.012) * H.l, yy = ((g.y * H.h - defile * 0.12 * g.z) % H.h + H.h) % H.h, y = yy + Math.cos(tH * 0.8 + g.ph) * 0.01 * H.h;
         var mx = pointeur.x - r.left, my = pointeur.y - r.top, ex = x - mx, ey = y - my, d2 = ex * ex + ey * ey;
         if (d2 < 14000) { var f = (1 - d2 / 14000) * 3.2; g.dx += ex / Math.sqrt(d2 + 1) * f; g.dy += ey / Math.sqrt(d2 + 1) * f; }
         g.dx *= 0.92; g.dy *= 0.92;
         var s = g.r * 5 * g.z;
-        ctx.globalAlpha = (0.35 + 0.45 * g.z) * (0.75 + 0.25 * Math.sin(tH * 3 + g.ph)) * (1 - fuite);
+        ctx.globalAlpha = (0.45 + 0.5 * g.z) * (0.75 + 0.25 * Math.sin(tH * 3 + g.ph)) * (1 - fuite);
         ctx.drawImage(lueur(g.c), x + g.dx - s / 2, y + g.dy - s / 2, s, s);
       }
       ctx.globalAlpha = 1;
