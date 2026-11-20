@@ -390,6 +390,34 @@ details p{animation:entre .35s ease}
 @media(max-width:900px){.simu-grid{grid-template-columns:1fr}.simu-tel{max-width:320px;margin:0 auto;order:2}.simu-ecran{height:340px}.simu-horloge{font-size:48px}.simu-compteurs b{font-size:30px}}
 @media(prefers-reduced-motion:reduce){.balayage,.point::after{animation:none}}
 @media(prefers-reduced-motion:reduce){.fil-temps li{opacity:1;transform:none}*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bulle{opacity:1;transform:none}.creneau.nouveau .t{clip-path:none}}
+
+/* Effets inspirés des sites « immersifs », version GlowIA */
+.hero{position:relative;isolation:isolate}
+.poussiere{position:absolute;inset:-40px 0 0;width:100%;height:calc(100% + 40px);z-index:-1;pointer-events:none}
+.sans-eclat .poussiere{display:none}
+.signature{padding:40px 0 28px;text-align:center;overflow:hidden}
+.signature-scene{position:relative;height:clamp(170px,34vw,380px);max-width:1100px;margin:0 auto}
+.signature-scene canvas{position:absolute;inset:0;width:100%;height:100%}
+.signature-repli{display:none;margin:0;font:600 clamp(72px,15vw,170px)/1 var(--serif);color:var(--prune);position:absolute;inset:0;place-items:center}
+.sans-eclat .signature-repli{display:grid}
+.sans-eclat .signature-scene canvas{display:none}
+.signature-phrase{font:500 clamp(19px,2.2vw,24px)/1.4 var(--serif);color:var(--prune);margin:6px auto 0;max-width:30ch;opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.signature .forme + .signature-phrase,.signature-scene.forme ~ .signature-phrase,.sans-eclat .signature-phrase{opacity:1;transform:none}
+/* Curseur nacré (ordinateur) */
+.curseur-perso,.curseur-perso a,.curseur-perso button,.curseur-perso summary,.curseur-perso label,.curseur-perso [role=tab]{cursor:none}
+.curseur-perso input:not([type=range]),.curseur-perso textarea{cursor:text}
+.curseur-point,.curseur-anneau{position:fixed;left:0;top:0;pointer-events:none;z-index:9999;border-radius:50%}
+.curseur-point{width:6px;height:6px;margin:-3px 0 0 -3px;background:var(--prune)}
+.curseur-anneau{width:34px;height:34px;margin:-17px 0 0 -17px;border:1.5px solid rgba(184,138,114,.7);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),rgba(232,196,192,.18) 60%,transparent 70%);transition:width .25s ease,height .25s ease,margin .25s ease,background .25s ease,border-color .25s ease,opacity .2s}
+.curseur-survol .curseur-anneau{width:60px;height:60px;margin:-30px 0 0 -30px;border-color:rgba(91,42,60,.35);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.6),rgba(232,196,192,.35) 65%)}
+.curseur-survol .curseur-point{opacity:0}
+.curseur-texte .curseur-anneau,.curseur-texte .curseur-point{opacity:0}
+.curseur-appui .curseur-anneau{width:26px;height:26px;margin:-13px 0 0 -13px}
+.btn-prune,.btn-ligne{transition:transform .35s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .2s}
+/* Défilement doux (Lenis) */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
 </style>
 </head>
 <body>
@@ -409,6 +437,7 @@ details p{animation:entre .35s ease}
 
 <main>
 <section class="hero" id="accueil">
+  <canvas id="poussiere" class="poussiere" aria-hidden="true"></canvas>
   <div class="wrap hero-grid">
     <div>
       <h1 class="titre-anim" aria-label="Vos clientes écrivent pendant la pose. GlowIA leur répond."><span class="l" aria-hidden="true"><span style="animation-delay:0.00s">Vos</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.06s">clientes</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.12s">écrivent</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.18s">pendant</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.24s">la</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.30s">pose.</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.36s">GlowIA</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.42s">leur</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.48s">répond.</span></span></h1>
@@ -417,7 +446,7 @@ details p{animation:entre .35s ease}
         <a href="#demo" class="btn btn-prune">Réservez votre démo</a>
         <a href="#soiree" class="btn btn-ligne">Voir une soirée type</a>
       </div>
-      <div class="hero-note entre" style="--d:.85s"><span><b>Onglerie, coiffure, institut</b> à Lille et dans la métropole</span><span>Installé chez vous par le fondateur</span></div>
+      <div class="hero-note entre" style="--d:.85s"><span><b>Onglerie, coiffure, institut</b> à Lille et dans la métropole</span><span>Installé avec vous en visio par le fondateur</span></div>
     </div>
 
     <div class="scene" aria-label="Démonstration : une cliente écrit au salon et le rendez-vous s'inscrit dans le carnet">
@@ -448,7 +477,7 @@ details p{animation:entre .35s ease}
 
 <div class="bandes" aria-hidden="true">
   <div class="bande bande-a"><div class="piste"><span>Instagram</span><i></i><span>WhatsApp</span><i></i><span>SMS sur votre numéro</span><i></i><span>Rendez-vous dans votre agenda</span><i></i><span>Rappel la veille</span><i></i><span>Avis Google</span><i></i><span>Vous gardez la main</span><i></i></div></div>
-  <div class="bande bande-b"><div class="piste"><span>Onglerie</span><i></i><span>Coiffure</span><i></i><span>Institut</span><i></i><span>Métropole lilloise</span><i></i><span>Installé chez vous</span><i></i><span>Sans engagement</span><i></i></div></div>
+  <div class="bande bande-b"><div class="piste"><span>Onglerie</span><i></i><span>Coiffure</span><i></i><span>Institut</span><i></i><span>Métropole lilloise</span><i></i><span>Installé avec vous en visio</span><i></i><span>Sans engagement</span><i></i></div></div>
 </div>
 
 <section class="radar-section" id="radar">
@@ -614,8 +643,8 @@ details p{animation:entre .35s ease}
   <div class="wrap fondateur">
     <div class="sceau tampon" aria-hidden="true">J</div>
     <div>
-      <h2>Quelqu'un qui vient au salon</h2>
-      <p>Je m'appelle Jason, je construis GlowIA à Lille. Je viens installer l'assistant dans votre salon, avec vous : vos prestations, vos prix, vos horaires, votre agenda. On fait les premiers essais ensemble avant de l'allumer.</p>
+      <h2>Quelqu'un qui installe avec vous</h2>
+      <p>Je m'appelle Jason, je construis GlowIA à Lille. On installe l'assistant ensemble, en appel vidéo, votre téléphone en main : vos prestations, vos prix, vos horaires, votre agenda. On fait les premiers essais ensemble avant de l'allumer.</p>
       <p>GlowIA peut se tromper, comme tout le monde. C'est pour ça que vous êtes prévenue dès qu'une conversation sort de l'ordinaire, et que vous pouvez reprendre la main à tout moment.</p>
       <p class="sign">Jason, fondateur de GlowIA</p>
     </div>
@@ -628,10 +657,18 @@ details p{animation:entre .35s ease}
     <details><summary>Est-ce que je perds le contact avec mes clientes ?</summary><p>Non. Vous voyez toutes les conversations dans vos applis habituelles, vous êtes prévenue quand une cliente a besoin de vous, et vous reprenez la main quand vous voulez. Quand vous répondez vous-même, l'assistant se met en retrait sur cette conversation.</p></details>
     <details><summary>Est-ce que ça remplace mon agenda ?</summary><p>Non. GlowIA lit et remplit votre agenda Google. Les rendez-vous que vous notez vous-même sont pris en compte : l'assistant ne propose jamais un créneau déjà occupé.</p></details>
     <details><summary>Et s'il se trompe ?</summary><p>Il peut arriver qu'il comprenne mal une demande. Ses réponses sont vérifiées avant l'envoi (date, heure, prix), et pour tout ce qui sort de l'ordinaire il vous passe la main. Vous pouvez aussi le mettre en pause à tout moment.</p></details>
-    <details><summary>Comment se passe l'installation ?</summary><p>Je viens au salon. On renseigne ensemble vos prestations avec leur durée et leur prix, vos horaires et votre agenda, puis on connecte vos comptes et on fait des essais avant d'allumer l'assistant.</p></details>
+    <details><summary>Comment se passe l'installation ?</summary><p>En appel vidéo, depuis chez vous ou le salon, votre téléphone en main. On renseigne ensemble vos prestations avec leur durée et leur prix, vos horaires et votre agenda, puis on connecte vos comptes et on fait des essais avant d'allumer l'assistant.</p></details>
     <details><summary>Que deviennent les données de mes clientes ?</summary><p>Elles servent uniquement à faire fonctionner votre assistant, ne sont jamais revendues, et vous pouvez supprimer la fiche d'une cliente depuis votre espace. Le détail est dans la <a href="/politique-confidentialite">politique de confidentialité</a>.</p></details>
     <details><summary>Et si je veux arrêter ?</summary><p>Pas d'engagement : vous arrêtez quand vous voulez, sans justification.</p></details>
   </div>
+</section>
+
+<section class="signature" id="signature" aria-label="GlowIA, vous gardez la main">
+  <div class="signature-scene">
+    <canvas id="signatureToile" aria-hidden="true"></canvas>
+    <p class="signature-repli" aria-hidden="true">GlowIA</p>
+  </div>
+  <p class="signature-phrase">L'assistant de votre salon. Vous gardez la main.</p>
 </section>
 
 <section class="demo" id="demo">
@@ -641,7 +678,7 @@ details p{animation:entre .35s ease}
       <p class="lead" style="margin-top:16px">Deux minutes sur votre téléphone, avec un vrai exemple de conversation. Ensuite, c'est vous qui décidez.</p>
       <ol class="demo-etapes">
         <li>Vous laissez vos coordonnées.</li>
-        <li>Je vous rappelle pour fixer un moment, au salon ou par téléphone.</li>
+        <li>Je vous rappelle pour fixer un moment, en visio ou par téléphone.</li>
         <li>Je vous montre GlowIA sur un cas de votre salon.</li>
       </ol>
     </div>
@@ -672,6 +709,7 @@ details p{animation:entre .35s ease}
 
 <script src="/assets/js/gsap.min.js"></script>
 <script src="/assets/js/ScrollTrigger.min.js"></script>
+<script src="/assets/js/lenis.min.js"></script>
 <script>
 (function(){
   var calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -897,5 +935,6 @@ details p{animation:entre .35s ease}
   });
 })();
 </script>
+<script src="/assets/js/eclat.js" defer></script>
 </body>
 </html>
