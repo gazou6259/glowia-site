@@ -33,7 +33,8 @@
   --r-s:8px; --r-m:14px; --r-l:26px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{overflow-x:clip}
 body{margin:0;background:var(--papier);color:var(--encre);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
 img,svg{display:block}
 a{color:var(--prune)}
@@ -243,6 +244,9 @@ form .btn{justify-self:start}
 .msg.ok{color:#2F6B3A}.msg.ko{color:#9B2C2C}
 .form-pied{font-size:13px;color:var(--gris)}
 @media(max-width:900px){.demo-grid{grid-template-columns:1fr}.champs{grid-template-columns:1fr}}
+.demo-grid>*,.champs>*,label{min-width:0}
+input,textarea{width:100%;min-width:0;box-sizing:border-box}
+@media(max-width:420px){form{padding:20px}.demo-grid{gap:32px}form .btn{justify-self:stretch;text-align:center}}
 
 footer{padding:36px 0 110px;font-size:14px;color:var(--gris)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 22px;justify-content:space-between}
@@ -310,7 +314,7 @@ details p{animation:entre .35s ease}
 .bande-b .piste span{font-style:normal;font-family:var(--sans);font-weight:600;font-size:18px;letter-spacing:.02em}
 .piste i{width:10px;height:10px;border-radius:50%;background:var(--or);flex:none}
 .bande-b .piste i{background:var(--prune)}
-@media(max-width:600px){.bandes{height:120px}.piste span{font-size:22px}.bande-b .piste span{font-size:15px}}
+@media(max-width:600px){.bandes{height:104px}.bande{padding:10px 0}.bande-a{top:18px}.bande-b{top:52px}.piste{gap:18px}.piste span{font-size:20px}.bande-b .piste span{font-size:14px}}
 
 /* ===== Radar ===== */
 .radar-section{padding:72px 0 96px;overflow:hidden}
@@ -329,13 +333,14 @@ details p{animation:entre .35s ease}
 .radar-salon{position:absolute;left:50%;top:50%;width:108px;height:108px;margin:-54px 0 0 -54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7A3D53,var(--prune));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#FBF3EE;font:600 11.5px var(--sans);box-shadow:0 20px 40px -18px rgba(91,42,60,.8),inset 0 1px 0 rgba(255,255,255,.25);z-index:3}
 .radar-salon.recoit{animation:recoit .45s ease}
 @keyframes recoit{50%{transform:scale(1.1);box-shadow:0 0 0 14px rgba(232,196,192,.35)}}
-.points{position:absolute;inset:0}
-.point{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;z-index:2;box-shadow:0 0 0 0 rgba(255,255,255,.6)}
+.radar-points{position:absolute;inset:0}
+.point{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;z-index:4;box-shadow:0 0 0 0 rgba(255,255,255,.6)}
 .point::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid currentColor;opacity:.5;animation:pulse 1.8s ease-out infinite}
 @keyframes pulse{from{transform:scale(.5);opacity:.6}to{transform:scale(1.8);opacity:0}}
 .point.ig{background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF);color:#DD2A7B}.point.wa{background:#25D366;color:#25D366}.point.sms{background:#3478F6;color:#3478F6}
 .point .bulle-r{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;border-radius:10px;padding:5px 9px;font:500 11.5px var(--sans);color:var(--encre);white-space:nowrap;box-shadow:0 8px 20px -10px rgba(46,26,34,.45)}
-@media(max-width:900px){.radar-grid{grid-template-columns:1fr}.radar{margin:0 auto}}
+@media(max-width:900px){.radar-grid{grid-template-columns:1fr;gap:28px}.radar{margin:0 auto;max-width:360px}}
+@media(max-width:600px){.point .bulle-r{font-size:10.5px;padding:4px 7px}.radar-salon{width:92px;height:92px;margin:-46px 0 0 -46px}.radar-section{padding:56px 0 64px}}
 
 /* ===== Cartes empilées ===== */
 .empile{padding:96px 0 60px}
@@ -354,7 +359,7 @@ details p{animation:entre .35s ease}
 .mini-bulle.c{background:#fff;border:1px solid var(--ligne);border-bottom-left-radius:5px;justify-self:start}
 .mini-bulle.s{background:var(--prune);color:#fff;border-bottom-right-radius:5px;justify-self:end}
 .cc-visuel.wa .mini-bulle.s{background:#D9FDD3;color:var(--encre)}.cc-visuel.sms .mini-bulle.s{background:#3478F6}
-@media(max-width:800px){.carte-canal{grid-template-columns:1fr;padding:26px;top:84px}.carte-canal.c2{top:96px}.carte-canal.c3{top:108px}}
+@media(max-width:800px){.carte-canal,.carte-canal.c2,.carte-canal.c3{position:relative;top:auto;grid-template-columns:1fr;padding:24px;min-height:0;margin-bottom:18px;gap:20px}.carte-canal h3{font-size:30px}}
 
 /* ===== Simulation ===== */
 .simu{background:linear-gradient(180deg,var(--papier) 0%,#F3E4DE 100%)}
@@ -381,6 +386,7 @@ details p{animation:entre .35s ease}
 @keyframes ecrireLigne{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .simu-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap}
 .simu-note{font-size:13px;color:var(--gris)}
+@media(max-width:600px){.simu-compteurs{gap:8px}.simu-compteurs div{padding:12px 10px}.simu-compteurs span{font-size:12px;line-height:1.3;display:block}}
 @media(max-width:900px){.simu-grid{grid-template-columns:1fr}.simu-tel{max-width:320px;margin:0 auto;order:2}.simu-ecran{height:340px}.simu-horloge{font-size:48px}.simu-compteurs b{font-size:30px}}
 @media(prefers-reduced-motion:reduce){.balayage,.point::after{animation:none}}
 @media(prefers-reduced-motion:reduce){.fil-temps li{opacity:1;transform:none}*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bulle{opacity:1;transform:none}.creneau.nouveau .t{clip-path:none}}
@@ -461,7 +467,7 @@ details p{animation:entre .35s ease}
       <div class="onde o1"></div><div class="onde o2"></div><div class="onde o3"></div>
       <div class="balayage"></div>
       <div class="radar-salon" id="radarSalon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M8 2v4M16 2v4M3.5 9h17M5 5h14a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 19 21H5a1.5 1.5 0 0 1-1.5-1.5v-13A1.5 1.5 0 0 1 5 5z" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 14.5l2.3 2.3 4.7-5" stroke="#F6D7A8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Votre agenda</span></div>
-      <div class="points" id="radarPoints"></div>
+      <div class="radar-points" id="radarPoints"></div>
     </div>
   </div>
 </section>
@@ -804,7 +810,7 @@ details p{animation:entre .35s ease}
     var actif = false, idx = 0;
     function lancer(){
       if (!actif) return;
-      var d = DEMANDES[idx++ % DEMANDES.length], a = Math.random() * Math.PI * 2, r = 0.36 + Math.random() * 0.12;
+      var d = DEMANDES[idx++ % DEMANDES.length], a = Math.random() * Math.PI * 2, petit = window.innerWidth < 600, r = (petit ? 0.28 : 0.36) + Math.random() * (petit ? 0.08 : 0.12);
       var el = document.createElement('div'); el.className = 'point ' + d[0];
       el.style.left = (50 + Math.cos(a) * r * 100) + '%'; el.style.top = (50 + Math.sin(a) * r * 100) + '%';
       var b = document.createElement('span'); b.className = 'bulle-r'; b.textContent = d[1]; el.appendChild(b); el.classList.add(Math.cos(a) > 0 ? 'droite' : 'gauche');
@@ -827,7 +833,8 @@ details p{animation:entre .35s ease}
     var cartes = gsap.utils.toArray('.carte-canal');
     cartes.forEach(function(c, i){
       if (i === cartes.length - 1) return;
-      gsap.to(c, { scale: .93 - (cartes.length - i - 2) * .03, filter: 'brightness(.94)', ease: 'none', scrollTrigger: { trigger: cartes[i + 1], start: 'top 85%', end: 'top 25%', scrub: true } });
+      if (!window.matchMedia('(min-width: 801px)').matches) return;
+      gsap.to(c, { scale: .93 - (cartes.length - i - 2) * .03, opacity: .75, ease: 'none', scrollTrigger: { trigger: cartes[i + 1], start: 'top 85%', end: 'top 25%', scrub: true } });
     });
     gsap.utils.toArray('.cc-visuel').forEach(function(v){ gsap.from(v.children, { y: 24, opacity: 0, stagger: .25, duration: .6, ease: 'power2.out', scrollTrigger: { trigger: v, start: 'top 80%' } }); });
     gsap.to('.radar', { rotate: 8, ease: 'none', scrollTrigger: { trigger: '#radar', start: 'top bottom', end: 'bottom top', scrub: true } });
