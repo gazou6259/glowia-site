@@ -251,12 +251,61 @@ footer a{color:var(--gris)}
 .barre-mobile{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:none}
 .barre-mobile .btn{width:100%;box-shadow:0 12px 30px -10px rgba(46,26,34,.5)}
 @media(max-width:760px){.barre-mobile.on{display:block}}
+
+/* ===== Mouvement : chaque animation dit quelque chose (la page qui s'ouvre, l'écriture, la notification, le temps) ===== */
+.progression{position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform-origin:left;transform:scaleX(var(--p,0));background:linear-gradient(90deg,var(--rose),var(--or))}
+.titre-anim .l{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
+.titre-anim .l>span{display:inline-block;transform:translateY(105%);animation:monteLigne .9s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes monteLigne{to{transform:none}}
+.entre{opacity:0;transform:translateY(10px);animation:entre .7s ease forwards;animation-delay:var(--d,0s)}
+@keyframes entre{to{opacity:1;transform:none}}
+.carnet.page{transform-origin:left center;animation:ouvrePage 1.1s cubic-bezier(.2,.8,.2,1) .35s both}
+@keyframes ouvrePage{from{opacity:0;transform:perspective(1200px) rotateY(-55deg) translateX(-20px)}to{opacity:1;transform:none}}
+.tel.arrive{animation:arriveTel .9s cubic-bezier(.2,.9,.25,1.15) .6s both}
+@keyframes arriveTel{from{opacity:0;transform:translateY(40px) rotate(-4deg)}to{opacity:1;transform:none}}
+@media(max-width:560px){.tel.arrive{animation-name:arriveTelM}@keyframes arriveTelM{from{opacity:0;transform:translate(-50%,40px)}to{opacity:1;transform:translateX(-50%)}}}
+.avatar{position:relative}
+.pastille-notif{position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;border-radius:8px;background:#E0245E;color:#fff;font:600 10px/16px var(--sans);text-align:center;font-style:normal;transform:scale(0)}
+.pastille-notif.on{animation:pop .5s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes pop{to{transform:scale(1)}}
+.tel.vibre{animation:vibre .45s linear}
+@keyframes vibre{20%{transform:translateX(-2px) rotate(-1deg)}40%{transform:translateX(2px) rotate(1deg)}60%{transform:translateX(-2px)}80%{transform:translateX(1px)}}
+@media(max-width:560px){@keyframes vibre{20%{transform:translateX(calc(-50% - 2px))}40%{transform:translateX(calc(-50% + 2px))}60%{transform:translateX(calc(-50% - 2px))}80%{transform:translateX(-50%)}}}
+.creneau.nouveau .plume{position:absolute;left:78px;top:9px;width:3px;height:20px;border-radius:2px;background:var(--prune);opacity:0}
+.creneau.nouveau.ecrit .plume{animation:plume 1.4s steps(28,end) forwards}
+@keyframes plume{0%{opacity:1;transform:translateX(0)}95%{opacity:1}100%{opacity:0;transform:translateX(125px)}}
+.carnet-note::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--or);margin-right:6px;vertical-align:middle}
+.barre-prix s{text-decoration:none;position:relative}
+.barre-prix s::after{content:"";position:absolute;left:-2px;right:-2px;top:52%;height:2px;background:#F6D7A8;transform:scaleX(0);transform-origin:left;transition:transform .6s ease .3s}
+.vu .barre-prix s::after,.barre-prix.vu s::after{transform:scaleX(1)}
+.fondatrice .prix{transition:transform .5s cubic-bezier(.2,1.5,.4,1) .7s}
+.fondatrice:not(.vu) .prix{transform:scale(.9)}
+.notif-arrive{transform:translateY(-30px) scale(.96);opacity:0;transition:transform .7s cubic-bezier(.2,1.4,.4,1),opacity .4s}
+.notif-arrive.vu{transform:none;opacity:1}
+.notif-arrive.vu .alerte-tete .ico{animation:sonne .8s ease .6s 2}
+@keyframes sonne{25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+.alerte-corps{transition:background .4s}
+.alerte.repris .alerte-corps{background:#EAF3EC}
+.alerte.repris .alerte-corps::after{content:"Assistant en retrait sur cette conversation";display:block;margin-top:8px;font-size:12.5px;color:#2F6B3A;animation:entre .4s ease both}
+.alerte.garde .alerte-corps::after{content:"L'assistant continue, vous restez prévenue";display:block;margin-top:8px;font-size:12.5px;color:var(--prune);animation:entre .4s ease both}
+.monte-groupe>*{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
+.monte-groupe.vu>*{opacity:1;transform:none}
+.monte-groupe.vu>*:nth-child(2){transition-delay:.12s}.monte-groupe.vu>*:nth-child(3){transition-delay:.24s}
+.formule-carte{transition:transform .3s ease,box-shadow .3s ease}
+.formule-carte:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px rgba(0,0,0,.45)}
+.tampon{transform:scale(1.8) rotate(-18deg);opacity:0;transition:transform .45s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.tampon.vu{transform:rotate(-6deg);opacity:1}
+.btn-prune{position:relative;overflow:hidden}
+.btn-prune::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);animation:reflet 5s ease-in-out 2.5s infinite}
+@keyframes reflet{0%,80%{left:-60%}100%{left:130%}}
+details p{animation:entre .35s ease}
+@media(prefers-reduced-motion:reduce){.titre-anim .l>span,.entre,.carnet.page,.tel.arrive{transform:none!important;opacity:1!important}.notif-arrive,.monte-groupe>*,.tampon{opacity:1!important;transform:none!important}.barre-prix s::after{transform:scaleX(1)}}
 @media(prefers-reduced-motion:reduce){.fil-temps li{opacity:1;transform:none}*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.bulle{opacity:1;transform:none}.creneau.nouveau .t{clip-path:none}}
 </style>
 </head>
 <body>
 
-<header id="haut">
+<header id="haut"><span class="progression" id="progression" aria-hidden="true"></span>
   <div class="wrap nav">
     <a href="#" class="logo" aria-label="GlowIA, accueil">Glow<span>IA</span></a>
     <nav class="nav-links" aria-label="Navigation principale">
@@ -273,13 +322,13 @@ footer a{color:var(--gris)}
 <section class="hero" id="accueil">
   <div class="wrap hero-grid">
     <div>
-      <h1>Vos clientes écrivent pendant la pose. GlowIA leur répond.</h1>
-      <p class="lead">Sur Instagram, WhatsApp et par SMS, l'assistant de votre salon répond tout de suite, propose de vrais créneaux pris dans votre agenda et note le rendez-vous. Vous gardez la main.</p>
-      <div class="hero-actions">
+      <h1 class="titre-anim" aria-label="Vos clientes écrivent pendant la pose. GlowIA leur répond."><span class="l" aria-hidden="true"><span style="animation-delay:0.00s">Vos</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.06s">clientes</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.12s">écrivent</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.18s">pendant</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.24s">la</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.30s">pose.</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.36s">GlowIA</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.42s">leur</span></span> <span class="l" aria-hidden="true"><span style="animation-delay:0.48s">répond.</span></span></h1>
+      <p class="lead entre" style="--d:.55s">Sur Instagram, WhatsApp et par SMS, l'assistant de votre salon répond tout de suite, propose de vrais créneaux pris dans votre agenda et note le rendez-vous. Vous gardez la main.</p>
+      <div class="hero-actions entre" style="--d:.7s">
         <a href="#demo" class="btn btn-prune">Réservez votre démo</a>
         <a href="#soiree" class="btn btn-ligne">Voir une soirée type</a>
       </div>
-      <div class="hero-note"><span><b>Onglerie, coiffure, institut</b> à Lille et dans la métropole</span><span>Installé chez vous par le fondateur</span></div>
+      <div class="hero-note entre" style="--d:.85s"><span><b>Onglerie, coiffure, institut</b> à Lille et dans la métropole</span><span>Installé chez vous par le fondateur</span></div>
     </div>
 
     <div class="scene" aria-label="Démonstration : une cliente écrit au salon et le rendez-vous s'inscrit dans le carnet">
@@ -288,18 +337,18 @@ footer a{color:var(--gris)}
         <button type="button" data-canal="sms" aria-pressed="false">SMS</button>
         <button type="button" data-canal="whatsapp" aria-pressed="false">WhatsApp</button>
       </div>
-      <div class="carnet" aria-hidden="true">
+      <div class="carnet page" aria-hidden="true">
         <div class="carnet-tete">Vendredi 27 nov.</div>
         <div class="creneau" style="top:52px"><span class="h">14h</span><span class="t">Camille, capsules</span></div>
         <div class="creneau" style="top:92px"><span class="h">15h</span></div>
         <div class="creneau" style="top:132px"><span class="h">16h</span><span class="t">Inès, remplissage</span></div>
-        <div class="creneau nouveau" id="nouveauRdv" style="top:172px"><span class="h">17h30</span><span class="t" id="nouveauTexte">Sarah, pose gel</span></div>
+        <div class="creneau nouveau" id="nouveauRdv" style="top:172px"><span class="h">17h30</span><span class="t" id="nouveauTexte">Sarah, pose gel</span><span class="plume" aria-hidden="true"></span></div>
         <div class="creneau" style="top:212px"><span class="h">18h30</span><span class="t">Léa, semi mains</span></div>
         <div class="carnet-note" id="carnetNote">Noté par GlowIA à 21 h 48, avec son numéro</div>
       </div>
-      <div class="tel" id="tel" data-canal="instagram">
+      <div class="tel arrive" id="tel" data-canal="instagram">
         <div class="tel-ecran">
-          <div class="tel-haut"><span class="avatar">S</span><span><b id="telNom">sarah.nails.fan</b><small id="telSous">Instagram</small></span></div>
+          <div class="tel-haut"><span class="avatar">S<i class="pastille-notif" id="notif">1</i></span><span><b id="telNom">sarah.nails.fan</b><small id="telSous">Instagram</small></span></div>
           <div class="fil" id="fil" aria-live="polite"></div>
         </div>
       </div>
@@ -337,7 +386,7 @@ footer a{color:var(--gris)}
         <li><b>Il écrit comme vous</b>Il apprend votre façon d'écrire à partir de vos messages, tutoiement compris si c'est votre habitude.</li>
       </ul>
     </div>
-    <div class="alerte" aria-label="Exemple de notification envoyée à la gérante">
+    <div class="alerte notif-arrive" aria-label="Exemple de notification envoyée à la gérante">
       <div class="alerte-tete"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M21.9 4.3 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L6 13.6l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3c.9-.3 1.7.2 1.4 1.3z"/></svg></span>GlowIA · maintenant</div>
       <div class="alerte-corps"><b>Une cliente a besoin de vous</b><br>«&nbsp;Ma pose s'est décollée au bout de trois jours…&nbsp;» L'assistant lui a répondu que vous revenez vers elle.</div>
       <div class="alerte-boutons" role="group" aria-label="Que faire de cette conversation ?">
@@ -355,7 +404,7 @@ footer a{color:var(--gris)}
       <h2>Là où vos clientes vous écrivent déjà</h2>
       <p>Elles ne téléchargent rien et ne changent rien à leurs habitudes. Les rendez-vous arrivent dans votre agenda Google habituel.</p>
     </div>
-    <div class="canaux-grid">
+    <div class="canaux-grid monte-groupe">
       <div class="canal"><h3>Instagram</h3><p>Réponse aux messages privés de votre compte professionnel, prise, déplacement et annulation de rendez-vous.</p></div>
       <div class="canal"><h3>WhatsApp</h3><p>Vous gardez votre appli WhatsApp Business et vos conversations. Quand vous répondez vous-même, l'assistant s'efface.</p></div>
       <div class="canal"><h3>SMS sur votre numéro</h3><p>L'assistant répond aux SMS depuis le numéro que vos clientes connaissent déjà.</p><p class="cond">Formule Premium. Il faut un iPhone réservé au salon, séparé de votre téléphone personnel. Android : bientôt.</p></div>
@@ -379,9 +428,9 @@ footer a{color:var(--gris)}
           <li>En échange, un retour honnête au bout d'une semaine</li>
         </ul>
       </div>
-      <div><div class="prix">39 € <small>par mois, prix gardé tant que vous restez cliente</small></div><p style="margin-top:14px;font-size:14.5px;color:#E8C4C0">au lieu de 59 € par mois</p></div>
+      <div><div class="prix">39 € <small>par mois, prix gardé tant que vous restez cliente</small></div><p class="barre-prix" style="margin-top:14px;font-size:14.5px;color:#E8C4C0">au lieu de <s>59 €</s> par mois</p></div>
     </div>
-    <div class="formules">
+    <div class="formules monte-groupe">
       <div class="formule-carte">
         <h3>Classic</h3>
         <div class="prix">39 € <small>par mois</small></div>
@@ -412,7 +461,7 @@ footer a{color:var(--gris)}
 
 <section id="fondateur">
   <div class="wrap fondateur">
-    <div class="sceau" aria-hidden="true">J</div>
+    <div class="sceau tampon" aria-hidden="true">J</div>
     <div>
       <h2>Quelqu'un qui vient au salon</h2>
       <p>Je m'appelle Jason, je construis GlowIA à Lille. Je viens installer l'assistant dans votre salon, avec vous : vos prestations, vos prix, vos horaires, votre agenda. On fait les premiers essais ensemble avant de l'allumer.</p>
@@ -520,6 +569,9 @@ footer a{color:var(--gris)}
     if (calme) { s.msgs.forEach(bulle); rdv.classList.add('ecrit'); rdv.parentNode.classList.add('fini'); return; }
     var t = 400, frappe = document.createElement('div');
     frappe.className = 'ecrit-en-cours'; frappe.innerHTML = '<i></i><i></i><i></i>';
+    var notifEl = document.getElementById('notif'); notifEl.classList.remove('on');
+    plus(function(){ notifEl.classList.add('on'); tel.classList.remove('vibre'); void tel.offsetWidth; tel.classList.add('vibre'); }, 150);
+    plus(function(){ notifEl.classList.remove('on'); }, 1500);
     s.msgs.forEach(function(m){
       if (m[0] === 'salon') {
         plus(function(){ fil.appendChild(frappe); frappe.classList.add('on'); }, t); t += 1300;
@@ -539,7 +591,7 @@ footer a{color:var(--gris)}
   });
   var scene = document.querySelector('.scene'), dejaVu = false;
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting && !dejaVu) { dejaVu = true; jouer('instagram'); } }); }, { threshold: .2 }).observe(scene);
+    new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting && !dejaVu) { dejaVu = true; setTimeout(function(){ jouer('instagram'); }, calme ? 0 : 1500); } }); }, { threshold: .2 }).observe(scene);
   } else jouer('instagram');
 
   /* Notification : essayer les deux boutons */
@@ -547,6 +599,7 @@ footer a{color:var(--gris)}
   var choix = document.querySelectorAll('.alerte-boutons button');
   choix.forEach(function(b){ b.addEventListener('click', function(){
     choix.forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    var carte = document.querySelector('.alerte'); carte.classList.toggle('repris', b.dataset.choix === 'moi'); carte.classList.toggle('garde', b.dataset.choix !== 'moi');
     retour.textContent = b.dataset.choix === 'moi'
       ? 'L\'assistant se met en retrait : vous répondez à cette cliente depuis votre téléphone.'
       : 'L\'assistant continue la conversation, et vous restez prévenue.';
@@ -574,6 +627,15 @@ footer a{color:var(--gris)}
     prix.classList.add('change');
     setTimeout(function(){ prix.innerHTML = an ? '590 € <small>par an</small>' : '59 € <small>par mois</small>'; inst.textContent = an ? 'Installation comprise, soit deux mois offerts' : 'Installation 99 €'; prix.classList.remove('change'); }, 180);
   }); });
+
+  /* Barre de lecture et apparitions qui ont un sens */
+  var prog = document.getElementById('progression');
+  window.addEventListener('scroll', function(){ var h = document.documentElement; prog.style.setProperty('--p', Math.min(1, h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight))); }, { passive: true });
+  var aVoir = document.querySelectorAll('.monte-groupe, .notif-arrive, .tampon, .fondatrice, .barre-prix');
+  if ('IntersectionObserver' in window && !calme) {
+    var obs = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('vu'); obs.unobserve(e.target); } }); }, { threshold: .3 });
+    aVoir.forEach(function(el){ obs.observe(el); });
+  } else aVoir.forEach(function(el){ el.classList.add('vu'); });
   /* Demande de démo */
   var form = document.getElementById('demoForm'), btn = document.getElementById('demoBtn'), msg = document.getElementById('demoMsg');
   function dire(t, ok){ msg.textContent = t; msg.className = 'msg ' + (ok ? 'ok' : 'ko'); }

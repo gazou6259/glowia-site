@@ -597,6 +597,28 @@
     .aj-jours{grid-template-columns:repeat(7,minmax(46px,1fr));overflow-x:auto}
     .aj-bas{grid-template-columns:1fr}
   }
+
+  .aj-pied{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .aj-pied .aj-activite{margin:0}
+  .aj-maj{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(91,42,60,.15);background:#fff;color:var(--laque);border-radius:999px;padding:6px 12px;font:500 12.5px 'Inter',sans-serif;cursor:pointer}
+  .aj-maj.tourne svg{animation:spin-slow .8s linear infinite}
+  .aj-passe-zone{position:absolute;left:0;top:22px;bottom:4px;border-radius:12px 0 0 12px;background:repeating-linear-gradient(135deg,rgba(91,42,60,.05) 0 6px,transparent 6px 12px);width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+  .aj-maintenant.balaye{transition:left 1.4s cubic-bezier(.2,.8,.2,1)}
+  .aj-maintenant span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font:600 10.5px 'Inter',sans-serif;color:#C0392B;background:#fff;border-radius:6px;padding:1px 5px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  .aj-frise.vers-gauche .aj-rdv{animation-name:aj-glisse-g}.aj-frise.vers-droite .aj-rdv{animation-name:aj-glisse-d}
+  @keyframes aj-glisse-g{from{opacity:0;transform:translateX(40px)}}@keyframes aj-glisse-d{from{opacity:0;transform:translateX(-40px)}}
+  .aj-sante li,.aj-reprendre li{animation:aj-monte .45s var(--ease) both}
+  .aj-sante li:nth-child(2){animation-delay:.06s}.aj-sante li:nth-child(3){animation-delay:.12s}.aj-sante li:nth-child(4){animation-delay:.18s}.aj-sante li:nth-child(5){animation-delay:.24s}
+  .aj-point.ok{animation:aj-battement 2.6s ease-in-out infinite}
+  @keyframes aj-battement{0%,100%{box-shadow:0 0 0 3px rgba(61,122,74,.15)}50%{box-shadow:0 0 0 6px rgba(61,122,74,.05)}}
+  .aj-coche{display:flex;align-items:center;gap:10px}
+  .aj-coche svg{flex:none}
+  .aj-coche svg circle{stroke-dasharray:63;stroke-dashoffset:63;animation:aj-trace .7s ease forwards}
+  .aj-coche svg path{stroke-dasharray:14;stroke-dashoffset:14;animation:aj-trace .4s ease .6s forwards}
+  @keyframes aj-trace{to{stroke-dashoffset:0}}
+  .aj-prochaine .t2{animation:aj-monte .5s var(--ease) .15s both}
+  .aj-chiffre{display:inline-block;font-variant-numeric:tabular-nums}
+  @media (prefers-reduced-motion:reduce){.aj-passe-zone,.aj-maintenant.balaye{transition:none}.aj-point.ok{animation:none}}
   @media (prefers-reduced-motion:reduce){.aj-rdv,.aj-jour .barre i{animation:none}.aj-maintenant::before{animation:none}}
 </style>
 </head>
@@ -779,7 +801,7 @@
           <ul class="aj-sante" id="ajSante"></ul>
         </div>
       </div>
-      <p class="aj-activite" id="ajActivite"></p>
+      <div class="aj-pied"><p class="aj-activite" id="ajActivite"></p><button type="button" class="aj-maj" id="ajMaj" aria-label="Actualiser"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="ajMajTxt">Actualiser</span></button></div>
     </section>
 
     <div class="panel anim mr-panel" data-tab="accueil" id="mrPanel" style="display:none;animation-delay:.08s;">
@@ -2467,8 +2489,10 @@
       var enCours = s <= n, reste = Math.round(((enCours ? f : s) - n) / 60000);
       var total = enCours ? r.duree : 180, frac = enCours ? 1 - reste / Math.max(1, r.duree) : Math.max(0, 1 - reste / total);
       var C = 2 * Math.PI * 30;
+      var anneauVu = prochaine.vu; prochaine.vu = true;
+      if (!anneauVu) setTimeout(function(){ var c = el.querySelector('.plein'); if (c) c.setAttribute('stroke-dashoffset', c.getAttribute('data-cible')); }, 80);
       el.className = 'aj-prochaine';
-      el.innerHTML = '<div class="aj-anneau"><svg width="72" height="72" viewBox="0 0 72 72"><circle class="fond" cx="36" cy="36" r="30" fill="none" stroke-width="6"/><circle class="plein" cx="36" cy="36" r="30" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - frac)).toFixed(1) + '"/></svg><b>' + (enCours ? duree(reste) + '<small>restantes</small>' : duree(reste)) + '</b></div>' +
+      el.innerHTML = '<div class="aj-anneau"><svg width="72" height="72" viewBox="0 0 72 72"><circle class="fond" cx="36" cy="36" r="30" fill="none" stroke-width="6"/><circle class="plein" cx="36" cy="36" r="30" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (anneauVu ? (C * (1 - frac)).toFixed(1) : C.toFixed(1)) + '" data-cible="' + (C * (1 - frac)).toFixed(1) + '"/></svg><b>' + (enCours ? duree(reste) + '<small>restantes</small>' : duree(reste)) + '</b></div>' +
         '<div><div class="t1">' + (enCours ? 'En ce moment' : 'Prochaine cliente dans ' + duree(reste)) + '</div><div class="t2">' + esc(r.titre) + (r.par_ia ? '<span class="aj-badge-ia">pris par l’assistant</span>' : '') + '</div><div class="t3">' + hm(s) + ' à ' + hm(f) + (r.prix ? ' · ' + r.prix + ' €' : '') + (liste.length > 1 ? ' · puis ' + (liste.length - 1) + ' autre' + (liste.length > 2 ? 's' : '') : '') + '</div></div>';
     }
     function jours(){
@@ -2495,8 +2519,10 @@
       });
       if (!liste.length) html += '<div class="aj-ferme-txt">' + (jour.ferme ? 'Salon fermé ce jour-là' : 'Aucun rendez-vous ce jour-là') + '</div>';
       var auj = (data.semaine || [])[0];
-      if (auj && jourChoisi === auj.jour) { var xn = x(n); if (xn >= 0 && xn <= largeur) html += '<div class="aj-maintenant" id="ajMaintenant" style="left:' + xn + 'px" title="Maintenant"></div>'; }
+      var balayer = false, xn = 0;
+      if (auj && jourChoisi === auj.jour) { xn = Math.max(0, Math.min(largeur, x(n))); balayer = !frise.dejaBalaye && !window.matchMedia('(prefers-reduced-motion: reduce)').matches; html = '<div class="aj-passe-zone" id="ajPasse" style="width:' + (balayer ? 0 : xn) + 'px"></div>' + html + '<div class="aj-maintenant' + (balayer ? ' balaye' : '') + '" id="ajMaintenant" style="left:' + (balayer ? 0 : xn) + 'px"><span>' + String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0') + '</span></div>'; }
       wrap.innerHTML = html;
+      if (balayer) { frise.dejaBalaye = true; requestAnimationFrame(function(){ requestAnimationFrame(function(){ var m = $id('ajMaintenant'), z = $id('ajPasse'); if (m) m.style.left = xn + 'px'; if (z) z.style.width = xn + 'px'; setTimeout(function(){ if (m) m.classList.remove('balaye'); }, 1500); }); }); }
       $id('ajDetail').innerHTML = '';
       var cible = $id('ajMaintenant') || wrap.querySelector('.aj-rdv');
       if (cible) { var fw = $id('ajFriseWrap'); fw.scrollLeft = Math.max(0, cible.offsetLeft - fw.clientWidth / 3); }
@@ -2509,15 +2535,18 @@
     }
     function bas(){
       var rp = data.a_reprendre || [];
-      $id('ajReprendre').innerHTML = rp.length ? rp.map(function(c){ var d = new Date(c.depuis), min = Math.round((Date.now() - d) / 60000); return '<li><span class="pastille">' + esc(c.canal) + '</span>' + esc(c.qui) + '<time>il y a ' + duree(min) + '</time></li>'; }).join('') : '<li class="aj-vide">Rien à reprendre. L’assistant s’occupe de vos clientes et vous prévient si l’une d’elles a besoin de vous.</li>';
+      $id('ajReprendre').innerHTML = rp.length ? rp.map(function(c){ var d = new Date(c.depuis), min = Math.round((Date.now() - d) / 60000); return '<li><span class="pastille">' + esc(c.canal) + '</span>' + esc(c.qui) + '<time>il y a ' + duree(min) + '</time></li>'; }).join('') : '<li class="aj-vide aj-coche"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#3D7A4A" stroke-width="1.8"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#3D7A4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Rien à reprendre. L’assistant s’occupe de vos clientes et vous prévient si l’une d’elles a besoin de vous.</span></li>';
       $id('ajSante').innerHTML = (data.connexions || []).map(function(c){ return '<li><span class="aj-point ' + c.etat + '"></span>' + esc(c.nom) + '<small>' + esc(c.detail) + '</small></li>'; }).join('');
       var a = data.activite || {};
-      $id('ajActivite').innerHTML = a.rdv_ia_a_venir ? 'À venir : <b>' + a.rdv_ia_a_venir + ' rendez-vous</b> pris par votre assistant' + (a.montant_rdv_ia_a_venir ? ' (' + a.montant_rdv_ia_a_venir + ' €)' : '') + '.' : '';
+      $id('ajActivite').innerHTML = a.rdv_ia_a_venir ? 'À venir : <b><span class="aj-chiffre" data-n="' + a.rdv_ia_a_venir + '">0</span> rendez-vous</b> pris par votre assistant' + (a.montant_rdv_ia_a_venir ? ' (<span class="aj-chiffre" data-n="' + a.montant_rdv_ia_a_venir + '">0</span> €)' : '') + '.' : '';
+      var calmeAj = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      Array.prototype.forEach.call(document.querySelectorAll('.aj-chiffre'), function(c){ var cible = Number(c.getAttribute('data-n')) || 0; if (calmeAj) { c.textContent = cible; return; } var t0 = performance.now(); (function pas(){ var k = Math.min(1, (performance.now() - t0) / 900); c.textContent = Math.round(cible * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(pas); })(); });
+      var n2 = parisNow(); $id('ajMajTxt').textContent = 'Mis à jour à ' + String(n2.getHours()).padStart(2,'0') + ':' + String(n2.getMinutes()).padStart(2,'0');
     }
     function tout(){ horloge(); prochaine(); jours(); frise(); bas(); }
     function tic(){
       horloge(); prochaine();
-      var m = $id('ajMaintenant'); if (m && data && jourChoisi === data.semaine[0].jour) { var p = plage(jourChoisi), wrap = $id('ajFrise'), parH = parseFloat(wrap.style.getPropertyValue('--h')) || 60, n = parisNow(); m.style.left = (((n.getHours() + n.getMinutes()/60) - p.deb) * parH) + 'px'; }
+      var m = $id('ajMaintenant'); if (m && data && jourChoisi === data.semaine[0].jour) { var p = plage(jourChoisi), wrap = $id('ajFrise'), parH = parseFloat(wrap.style.getPropertyValue('--h')) || 60, n = parisNow(); var xx = (((n.getHours() + n.getMinutes()/60) - p.deb) * parH); m.style.left = xx + 'px'; var z = $id('ajPasse'); if (z) z.style.width = xx + 'px'; var et = m.querySelector('span'); if (et) et.textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0'); }
     }
     window.ajLoad = function(){
       var token = localStorage.getItem('glowia_token'); if (!token) return;
@@ -2535,9 +2564,10 @@
     };
     document.addEventListener('click', function(e){
       var j = e.target.closest && e.target.closest('.aj-jour');
-      if (j) { jourChoisi = j.getAttribute('data-jour'); jours(); frise(); return; }
+      if (j) { var avant = jourChoisi; jourChoisi = j.getAttribute('data-jour'); var fr = $id('ajFrise'); fr.classList.remove('vers-gauche','vers-droite'); fr.classList.add(jourChoisi > avant ? 'vers-gauche' : 'vers-droite'); jours(); frise(); return; }
       var r = e.target.closest && e.target.closest('.aj-rdv');
       if (r) { detail(r.getAttribute('data-id')); return; }
+      if (e.target.closest && e.target.closest('#ajMaj')) { var bm = $id('ajMaj'); bm.classList.add('tourne'); window.ajLoad(); setTimeout(function(){ bm.classList.remove('tourne'); }, 900); return; }
       if (e.target.closest && e.target.closest('.aj-detail .x')) { $id('ajDetail').innerHTML = ''; Array.prototype.forEach.call(document.querySelectorAll('.aj-rdv.actif'), function(b){ b.classList.remove('actif'); }); }
     });
     window.addEventListener('resize', function(){ if (data) frise(); });
