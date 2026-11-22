@@ -1996,7 +1996,7 @@
     if (sms.present) L.push({ id:'sms', nom:'SMS du salon', on: true, pause: sms.pause, compte: sms.compte || '',
       desc: "L'IA répond aux SMS reçus sur le numéro du salon, depuis votre téléphone.", toggle: 'Réponses de l’IA', canDisconnect: false });
     L.push({ id:'whatsapp', nom:'WhatsApp', on: wa.connecte, pause: wa.pause, compte: wa.compte || '',
-      desc: wa.connecte ? (wa.mode === 'coexistence' ? "L'IA répond à vos clientes. Quand vous répondez vous-même depuis votre appli WhatsApp Business, l'IA se tait sur cette conversation." : "L'IA répond aux messages WhatsApp de vos clientes.") : "Vous gardez votre numéro, votre appli WhatsApp Business et vos conversations. Environ 3 minutes, téléphone en main.",
+      desc: wa.connecte ? (wa.mode === 'coexistence' ? "L'IA répond à vos clientes. Quand vous répondez vous-même depuis votre appli WhatsApp Business, l'IA se tait sur cette conversation." : "L'IA répond aux messages WhatsApp de vos clientes.") : "Vous gardez votre numéro, votre appli WhatsApp Business et vos conversations. Téléphone en main.",
       toggle: 'Réponses de l’IA', connect: 'Connecter WhatsApp', canDisconnect: true });
     var tg = e.telegram || {};
     var TG_APP = IS_IOS ? 'https://apps.apple.com/fr/app/telegram-messenger/id686449807' : (/Android/i.test(navigator.userAgent) ? 'https://play.google.com/store/apps/details?id=org.telegram.messenger' : 'https://telegram.org/apps');
@@ -2175,7 +2175,7 @@
         + '<button type="button" class="wa-x" data-wa="close" aria-label="Fermer">×</button>'
         + '<div class="wa-ico">' + CX_ICONS.whatsapp + '</div>'
         + '<h3 id="waTitle">Connecter votre WhatsApp</h3>'
-        + '<p class="wa-sub">Environ 3 minutes. Vous gardez votre numéro, votre appli et toutes vos conversations.</p>'
+        + '<p class="wa-sub">Vous gardez votre numéro, votre appli et toutes vos conversations.</p>'
         + '<p class="wa-h">Avant de commencer, vérifiez ces 3 points :</p>'
         + '<label class="wa-chk"><input type="checkbox"><span><b>Votre numéro est sur l’appli « WhatsApp Business »</b> (logo avec un B), pas sur WhatsApp classique. <button type="button" class="wa-more" data-wa="help">Je suis sur WhatsApp classique</button></span></label>'
         + '<div class="wa-help" id="waHelp">Installez <b>WhatsApp Business</b> depuis l’App Store ou le Play Store, ouvrez-la et choisissez votre numéro actuel : l’appli propose de reprendre vos conversations. C’est gratuit et prend 2 minutes. Revenez ensuite ici.</div>'
