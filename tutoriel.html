@@ -3,43 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tutoriel de votre espace — GlowIA</title>
+<title>Tutoriel de votre espace · GlowIA</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#6E1D31">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#5B2A3C">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{ --laque:#6E1D31; --laque-clair:#8C2E45; --ivoire:#F7EFE2; --laiton-profond:#A97C33; --encre:#2B1A1F; --encre-doux:#5a4148; }
+  :root{ --creme:#F6EFE8; --rose:#E8C4C0; --or:#B88A72; --prune:#5B2A3C; --encre:#2E1A22; --doux:#6b5059; }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--ivoire);color:var(--encre);font-family:'Work Sans',sans-serif;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 60px;}
-  .brand{display:flex;align-items:center;gap:10px;margin-bottom:24px;text-decoration:none;}
-  .brand svg{width:28px;height:29px;}
-  .brand span{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:19px;color:var(--laque);}
-  .brand i{color:var(--laiton-profond);}
-  h1{font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:28px;line-height:1.2;color:var(--laque);margin-bottom:8px;}
-  p.sub{color:var(--encre-doux);font-size:15px;line-height:1.55;margin-bottom:20px;}
-  video{width:100%;border-radius:14px;background:#1b1014;box-shadow:0 12px 40px rgba(43,26,31,.18);display:block;}
-  .note{font-size:12.5px;color:var(--encre-doux);margin-top:10px;}
+  body{background:radial-gradient(1200px 700px at 10% 0%,#f0d9d4 0%,transparent 60%),radial-gradient(900px 700px at 100% 60%,#efd6d1 0%,transparent 55%),var(--creme);color:var(--encre);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 18px 60px;}
+  .brand{display:inline-flex;align-items:baseline;margin-bottom:22px;text-decoration:none;font-family:'Lora',Georgia,serif;font-weight:500;font-size:22px;color:var(--prune);}
+  .brand i{font-style:normal;color:var(--or);}
+  h1{font-family:'Lora',Georgia,serif;font-weight:500;font-size:30px;line-height:1.2;color:var(--prune);margin-bottom:8px;}
+  h1 em{color:var(--or);}
+  p.sub{color:var(--doux);font-size:15px;line-height:1.55;margin-bottom:22px;max-width:620px;}
+  .grid{display:grid;grid-template-columns:minmax(0,400px) 1fr;gap:28px;align-items:start;}
+  video{width:100%;aspect-ratio:9/16;border-radius:22px;background:#2b1620;box-shadow:0 18px 50px rgba(91,42,60,.22);display:block;}
+  .note{font-size:12.5px;color:var(--doux);margin-top:10px;}
+  .chap h2{font-family:'Lora',Georgia,serif;font-weight:500;font-size:19px;color:var(--prune);margin-bottom:10px;}
+  .chap ol{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .chap button{width:100%;text-align:left;display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.65);border:1px solid rgba(184,138,114,.35);border-radius:14px;padding:12px 14px;font:inherit;font-size:15px;color:var(--encre);cursor:pointer;}
+  .chap button:hover{border-color:var(--or);background:#fff;}
+  .chap button span{font-variant-numeric:tabular-nums;color:var(--or);font-weight:600;min-width:42px;}
   .actions{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;}
-  .btn{background:var(--laque);color:#fff;text-decoration:none;border-radius:999px;padding:13px 24px;font-weight:600;font-size:15px;}
-  .btn:hover{background:var(--laque-clair);}
-  .lien{color:var(--laque);font-size:14px;align-self:center;}
+  .btn{background:var(--prune);color:#fff;text-decoration:none;border-radius:999px;padding:13px 24px;font-weight:600;font-size:15px;}
+  .btn:hover{background:#6e3549;}
+  .lien{color:var(--prune);font-size:14px;align-self:center;}
+  @media (max-width:760px){ .grid{grid-template-columns:1fr;} video{max-width:420px;margin:0 auto;} }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="brand" href="/portail"><svg viewBox="0 0 64 66" aria-hidden="true"><rect x="4" y="6" width="56" height="40" rx="14" fill="#6E1D31"/><path d="M14 44 L14 62 L32 45 Z" fill="#6E1D31"/><path d="M19 20 A13 13 0 0 0 45 20" fill="none" stroke="#C79A56" stroke-width="7" stroke-linecap="round"/></svg><span>Glow<i>IA</i></span></a>
-  <h1>Le tutoriel de votre espace</h1>
-  <p class="sub">Vos connexions, vos horaires et prestations, les réglages de votre assistant, et comment reprendre la main à tout moment.</p>
-  <video controls playsinline preload="metadata" poster="/assets/video/glowia-tutoriel-espace-poster.jpg">
-    <source src="/assets/video/glowia-tutoriel-espace.mp4" type="video/mp4">
-  </video>
-  <p class="note">Les noms et les chiffres de la vidéo sont des exemples, sur un compte de démonstration.</p>
-  <div class="actions">
-    <a class="btn" href="/portail">Ouvrir mon espace</a>
-    <a class="lien" href="mailto:contact@glow-ia.fr">Une question ? contact@glow-ia.fr</a>
+  <a class="brand" href="/portail">Glow<i>IA</i></a>
+  <h1>Votre espace, <em>en 2 minutes</em></h1>
+  <p class="sub">Votre journée, les réglages de votre assistant, vos connexions, vos clientes, votre salon, et comment reprendre la main à tout moment.</p>
+  <div class="grid">
+    <div>
+      <video id="v" controls playsinline preload="metadata" poster="/assets/video/glowia-tutoriel-espace-poster.jpg">
+        <source src="/assets/video/glowia-tutoriel-espace-v2.mp4" type="video/mp4">
+      </video>
+      <p class="note">Les noms et les chiffres de la vidéo sont des exemples, sur un compte de démonstration.</p>
+    </div>
+    <div class="chap">
+      <h2>Aller directement à</h2>
+      <ol id="chapitres"></ol>
+      <div class="actions">
+        <a class="btn" href="/portail">Ouvrir mon espace</a>
+        <a class="lien" href="mailto:contact@glow-ia.fr">Une question ? contact@glow-ia.fr</a>
+      </div>
+    </div>
   </div>
 </div>
+<script>
+  var C = [["Votre journée",5],["Mon assistant",33.5],["Connexions",57],["Mes clientes",80.5],["Mon salon",101],["Reprendre la main",121.5]];
+  var v = document.getElementById('v'), ol = document.getElementById('chapitres');
+  C.forEach(function (c) {
+    var li = document.createElement('li'), b = document.createElement('button');
+    var m = Math.floor(c[1] / 60), s = Math.floor(c[1] % 60);
+    b.innerHTML = '<span>' + m + ':' + (s < 10 ? '0' : '') + s + '</span>' + c[0];
+    b.onclick = function () { v.currentTime = c[1]; v.play(); };
+    li.appendChild(b); ol.appendChild(li);
+  });
+</script>
 </body>
 </html>
