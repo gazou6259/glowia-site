@@ -457,7 +457,7 @@ html.lenis,html.lenis body{height:auto}
         <a href="#demo" class="btn btn-prune">Réservez votre démo</a>
         <a href="#soiree" class="btn btn-ligne">Voir une soirée type</a>
       </div>
-      <div class="hero-note entre" style="--d:.85s"><span><b>Onglerie, coiffure, institut</b> à Lille et dans la métropole</span><span>Installé avec vous en visio par le fondateur</span></div>
+      <div class="hero-note entre" style="--d:.85s"><span><b>Ongles, cils, soins, coiffure</b> : pour les indépendantes de la beauté, à Lille et dans la métropole</span><span>Installé avec vous en visio par le fondateur</span></div>
     </div>
 
     <div class="scene" aria-label="Démonstration : une cliente écrit au salon et le rendez-vous s'inscrit dans le carnet">
@@ -472,7 +472,7 @@ html.lenis,html.lenis body{height:auto}
         <div class="creneau" style="top:92px"><span class="h">15h</span></div>
         <div class="creneau" style="top:132px"><span class="h">16h</span><span class="t">Inès, remplissage</span></div>
         <div class="creneau nouveau" id="nouveauRdv" style="top:172px"><span class="h">17h30</span><span class="t" id="nouveauTexte">Sarah, pose gel</span><span class="plume" aria-hidden="true"></span></div>
-        <div class="creneau" style="top:212px"><span class="h">18h30</span><span class="t">Léa, semi mains</span></div>
+        <div class="creneau" style="top:212px"><span class="h">18h30</span><span class="t">Léa, rehaussement de cils</span></div>
         <div class="carnet-note" id="carnetNote">Noté par GlowIA à 21 h 48, avec son numéro</div>
       </div>
       <div class="tel arrive" id="tel" data-canal="instagram">
@@ -488,7 +488,7 @@ html.lenis,html.lenis body{height:auto}
 
 <div class="bandes" aria-hidden="true">
   <div class="bande bande-a"><div class="piste"><span>Instagram</span><i></i><span>WhatsApp</span><i></i><span>SMS sur votre numéro</span><i></i><span>Rendez-vous dans votre agenda</span><i></i><span>Rappel la veille</span><i></i><span>Avis Google</span><i></i><span>Vous gardez la main</span><i></i></div></div>
-  <div class="bande bande-b"><div class="piste"><span>Onglerie</span><i></i><span>Coiffure</span><i></i><span>Institut</span><i></i><span>Métropole lilloise</span><i></i><span>Installé avec vous en visio</span><i></i><span>Sans engagement</span><i></i></div></div>
+  <div class="bande bande-b"><div class="piste"><span>Ongles</span><i></i><span>Cils et sourcils</span><i></i><span>Soins du visage</span><i></i><span>Coiffure</span><i></i><span>Métropole lilloise</span><i></i><span>Installé avec vous en visio</span><i></i><span>Sans engagement</span><i></i></div></div>
 </div>
 
 <section class="radar-section" id="radar">
@@ -517,10 +517,10 @@ html.lenis,html.lenis body{height:auto}
   <div class="wrap">
     <div class="titre">
       <h2>Une soirée ordinaire, sans téléphone à la main</h2>
-      <p>Une cliente écrit après la fermeture. Voici ce qui se passe, sans que vous ayez à poser votre pinceau.</p>
+      <p>Une cliente écrit après la fermeture. Voici ce qui se passe, sans que vous ayez à lâcher ce que vous faites.</p>
     </div>
     <ol class="fil-temps">
-      <li><div class="quand">21 h 47</div><p>Une cliente demande une pose gel pour vendredi.</p></li>
+      <li><div class="quand">21 h 47</div><p>Une cliente demande une pose de cils pour vendredi.</p></li>
       <li><div class="quand">21 h 47</div><p>GlowIA lui répond avec le prix de votre catalogue et deux créneaux libres dans votre agenda.</p></li>
       <li><div class="quand">21 h 49</div><p>Elle choisit 17 h 30. Le rendez-vous apparaît dans votre agenda Google, avec son nom et son numéro.</p></li>
       <li><div class="quand">Jeudi, 19 h</div><p>Elle reçoit un rappel par SMS, envoyé depuis le numéro du salon.</p><span class="formule">Formule Premium</span></li>
@@ -855,7 +855,7 @@ html.lenis,html.lenis body{height:auto}
   (function(){
     var zone = document.getElementById('radarPoints'), salon = document.getElementById('radarSalon');
     if (!zone) return;
-    var DEMANDES = [['ig','Une place samedi ?'],['sms','Il vous reste demain ?'],['wa','Remplissage mardi ?'],['ig','Capsules la semaine pro ?'],['sms','Bonsoir, un semi ?'],['wa','Vous êtes ouverte lundi ?'],['ig','Dispo ce midi ?'],['sms','Pose gel vendredi ?']];
+    var DEMANDES = [['ig','Une place samedi ?'],['sms','Il vous reste demain ?'],['wa','Remplissage cils mardi ?'],['ig','Un soin visage la semaine pro ?'],['sms','Bonsoir, un brushing ?'],['wa','Vous êtes ouverte lundi ?'],['ig','Dispo ce midi ?'],['sms','Pose gel vendredi ?']];
     var actif = false, idx = 0;
     function lancer(){
       if (!actif) return;
@@ -894,9 +894,9 @@ html.lenis,html.lenis body{height:auto}
     var curseur = document.getElementById('simuCurseur'); if (!curseur) return;
     var EV = [
       { t: 18, canal: 'Instagram', c: 'Coucou, tu as de la place samedi ?', r: 'Samedi 28, j’ai 10 h ou 14 h. Lequel te va ?' },
-      { t: 31, canal: 'Instagram', c: '14 h parfait', r: 'C’est noté pour samedi 28 à 14 h !', rdv: ['Sam. 28 · 14 h', 'Inès, capsules'] },
+      { t: 31, canal: 'Instagram', c: '14 h parfait', r: 'C’est noté pour samedi 28 à 14 h !', rdv: ['Sam. 28 · 14 h', 'Inès, extensions de cils'] },
       { t: 64, canal: 'SMS', c: 'Bonsoir, il vous reste une place mardi midi ?', r: 'Mardi 24, je peux vous proposer 12 h 15. Je vous le réserve ?' },
-      { t: 76, canal: 'SMS', c: 'Oui merci, Julie Martin', r: 'C’est réservé pour mardi 24 à 12 h 15. À mardi !', rdv: ['Mar. 24 · 12 h 15', 'Julie, semi mains'] },
+      { t: 76, canal: 'SMS', c: 'Oui merci, Julie Martin', r: 'C’est réservé pour mardi 24 à 12 h 15. À mardi !', rdv: ['Mar. 24 · 12 h 15', 'Julie, soin du visage'] },
       { t: 118, canal: 'WhatsApp', c: 'Ma pose s’est décollée…', r: 'Je transmets à la gérante, elle revient vers vous très vite.', alerte: true },
       { t: 170, canal: 'Instagram', c: 'Un remplissage jeudi soir ?', r: 'Jeudi 26, j’ai 18 h 30. Je te le réserve ?' },
       { t: 186, canal: 'Instagram', c: 'Oui !', r: 'C’est noté pour jeudi 26 à 18 h 30 !', rdv: ['Jeu. 26 · 18 h 30', 'Sarah, remplissage'] },
