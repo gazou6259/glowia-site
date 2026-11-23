@@ -660,6 +660,44 @@
   @keyframes aurore3{to{transform:translate(-14vw,-40vh) scale(1.2)}}
   @media(max-width:600px){.aurore i{filter:blur(40px)}.aurore i:nth-child(1){width:90vw;height:90vw}.aurore i:nth-child(2){width:80vw;height:80vw}.aurore i:nth-child(3){width:80vw;height:80vw}}
   @media(prefers-reduced-motion:reduce){.aurore i{animation:none}}
+
+  /* Guide « Connecter les SMS du salon » (iPhone) */
+  .kit-voile{position:fixed;inset:0;z-index:900;background:rgba(43,23,32,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center}
+  .kit-voile.ouvert{display:flex;animation:kitIn .25s ease}
+  @keyframes kitIn{from{opacity:0}to{opacity:1}}
+  .kit{width:min(560px,100%);max-height:92vh;overflow:auto;background:linear-gradient(180deg,#FFFDFB,#F6EFE8);border-radius:26px 26px 0 0;padding:22px 22px 28px;box-shadow:0 -20px 60px rgba(91,42,60,.25);animation:kitUp .35s cubic-bezier(.2,.8,.2,1)}
+  @media(min-width:700px){.kit-voile{align-items:center}.kit{border-radius:26px}}
+  @keyframes kitUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  .kit-haut{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .kit-haut h3{font-family:'Lora',Georgia,serif;font-size:22px;color:#5B2A3C;margin:0}
+  .kit-fermer{border:0;background:rgba(91,42,60,.08);width:36px;height:36px;border-radius:50%;font-size:18px;color:#5B2A3C;cursor:pointer}
+  .kit-points{display:flex;gap:6px;margin:14px 0 18px}
+  .kit-points i{flex:1;height:5px;border-radius:5px;background:rgba(184,138,114,.25);transition:background .3s}
+  .kit-points i.fait{background:#B88A72}.kit-points i.ici{background:#5B2A3C}
+  .kit-etape{display:none}.kit-etape.ici{display:block;animation:kitPas .3s ease}
+  @keyframes kitPas{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+  .kit-etape h4{font-family:'Lora',Georgia,serif;font-size:19px;color:#5B2A3C;margin:0 0 8px}
+  .kit-etape p{color:#4a3a40;line-height:1.55;margin:8px 0}
+  .kit-etape ol{padding-left:22px;margin:10px 0;color:#4a3a40;line-height:1.6}
+  .kit-etape ol li{margin:6px 0}
+  .kit-etape b.ios{background:#fff;border:1px solid rgba(91,42,60,.15);border-radius:7px;padding:1px 7px;white-space:nowrap;font-weight:600;color:#5B2A3C}
+  .kit-code{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px dashed #B88A72;border-radius:16px;padding:14px 16px;margin:14px 0}
+  .kit-code code{flex:1;font-size:22px;letter-spacing:1px;color:#5B2A3C;font-weight:700;word-break:break-all}
+  .kit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:13px 22px;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none;background:#5B2A3C;color:#fff}
+  .kit-btn.clair{background:#fff;color:#5B2A3C;border:1.5px solid rgba(91,42,60,.25)}
+  .kit-bas{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+  .kit-astuce{background:rgba(232,196,192,.35);border-radius:14px;padding:12px 14px;font-size:14px;color:#5B2A3C;margin-top:12px}
+  .kit-verif{list-style:none;padding:0;margin:14px 0}
+  .kit-verif li{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0;border:1px solid rgba(91,42,60,.08)}
+  .kit-verif .rond{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(184,138,114,.18);color:#B88A72;font-size:14px}
+  .kit-verif li.ok .rond{background:#3D7A4A;color:#fff;animation:kitOk .4s cubic-bezier(.2,1.6,.4,1)}
+  .kit-verif li.attente .rond::after{content:'';width:12px;height:12px;border:2px solid #B88A72;border-top-color:transparent;border-radius:50%;animation:kitTour 1s linear infinite}
+  @keyframes kitTour{to{transform:rotate(360deg)}}
+  @keyframes kitOk{from{transform:scale(.4)}to{transform:scale(1)}}
+  .kit-verif small{display:block;color:#8a7a80;font-size:13px}
+  .kit-bravo{display:none;text-align:center;padding:10px 0}.kit-bravo.ok{display:block;animation:kitPas .4s ease}
+  .kit-bravo b{font-family:'Lora',Georgia,serif;font-size:20px;color:#3D7A4A}
+  @media(prefers-reduced-motion:reduce){.kit,.kit-etape.ici,.kit-voile.ouvert{animation:none}}
 </style>
 </head>
 <body>
@@ -1538,7 +1576,7 @@
       { id:'telegram', t:'Vos alertes sur Telegram', d:'Vous êtes prévenue quand une cliente veut vous parler ou quand l’IA vous transmet une demande. Il faut l’appli Telegram, gratuite.', done: !!tg.connecte, go:'Activer', act:function(){ mrScroll(mrCard('telegram')); } },
       { id:'whatsapp', t:'WhatsApp', opt:true, d:'Vous gardez votre numéro et votre appli WhatsApp Business.', done: !!wa.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('whatsapp')); } }
     ];
-    if (premium) items.push({ id:'sms', t:'SMS du salon', opt:true, d: sms.present ? 'Les SMS reçus sur le numéro du salon sont reliés.' : 'Rappels de la veille, demandes d’avis et réponses aux SMS : nous les installons avec vous sur le téléphone du salon.', done: !!sms.present, go:'Être rappelée', act:function(){ location.href = 'mailto:contact@glow-ia.fr?subject=' + encodeURIComponent('Installer les SMS – ' + (mrData.nom_salon || '')); } });
+    if (premium) items.push({ id:'sms', t:'SMS du salon', opt:true, d: sms.present ? 'Les SMS reçus sur le numéro du salon sont reliés.' : 'Rappels de la veille, demandes d’avis et réponses aux SMS, depuis le numéro du salon. Un guide pas à pas sur l’iPhone du salon.', done: !!sms.present, go:'Connecter', act:function(){ window.ouvrirKitSms(); } });
     items.push({ id:'appli', t:'L’application sur votre téléphone', opt:true, d:'Votre espace s’ouvre d’un geste, comme une application.', done: appInstalled(), go:'Installer', act: installApp });
 
     var done = items.filter(function(i){ return i.done; }).length;
@@ -1993,8 +2031,11 @@
     L.push({ id:'google', nom:'Google Agenda', on: g.connecte, pause: g.pause, compte: g.compte || '',
       desc: !g.connecte ? "L'IA consulte vos disponibilités réelles et y ajoute les rendez-vous qu'elle prend." : (g.mode === 'partage' ? "Votre agenda est relié par l'équipe GlowIA." : "L'IA lit vos disponibilités et ajoute les rendez-vous."),
       toggle: 'Prise de rendez-vous', connect: 'Connecter Google Agenda', canDisconnect: g.mode === 'compte', upgrade: g.mode === 'partage' });
-    if (sms.present) L.push({ id:'sms', nom:'SMS du salon', on: true, pause: sms.pause, compte: sms.compte || '',
+    var smsPremium = (typeof mrData !== 'undefined' && mrData) ? String(mrData.formule || '').toLowerCase() === 'premium' : false;
+    if (sms.present) L.push({ id:'sms', nom:'SMS du salon', on: true, pause: sms.pause, compte: sms.compte || '', guide: true,
       desc: "L'IA répond aux SMS reçus sur le numéro du salon, depuis votre téléphone.", toggle: 'Réponses de l’IA', canDisconnect: false });
+    else if (smsPremium) L.push({ id:'sms', nom:'SMS du salon', on: false, pause: false, compte: '', connect: 'Connecter mes SMS (iPhone)',
+      desc: "L'IA répond aux SMS reçus sur le numéro du salon et envoie les rappels de la veille. Il faut un iPhone réservé au salon. Android : bientôt." });
     L.push({ id:'whatsapp', nom:'WhatsApp', on: wa.connecte, pause: wa.pause, compte: wa.compte || '',
       desc: wa.connecte ? (wa.mode === 'coexistence' ? "L'IA répond à vos clientes. Quand vous répondez vous-même depuis votre appli WhatsApp Business, l'IA se tait sur cette conversation." : "L'IA répond aux messages WhatsApp de vos clientes.") : "Vous gardez votre numéro, votre appli WhatsApp Business et vos conversations. Téléphone en main.",
       toggle: 'Réponses de l’IA', connect: 'Connecter WhatsApp', canDisconnect: true });
@@ -2024,6 +2065,7 @@
         if (!c.noToggle) html += '<label class="cx-switch"><input type="checkbox" data-act="toggle" ' + (c.pause ? '' : 'checked') + '><span class="cx-track"></span>' + c.toggle + '</label>';
         if (c.canDisconnect) html += '<button type="button" class="cx-link" data-act="ask">Déconnecter</button>';
         if (c.upgrade) html += '<button type="button" class="cx-link" data-act="connect">Relier avec mon compte Google</button>';
+        if (c.guide) html += '<button type="button" class="cx-link" data-act="connect">Guide d’installation</button>';
       } else if (!c.soon && c.connect) {
         html += '<button type="button" class="cx-btn" data-act="connect">' + c.connect + '</button>';
       }
@@ -2049,6 +2091,7 @@
   function cxOpenPopup(){ var w = 520, h = 720, l = Math.max(0, (screen.width - w) / 2), t = Math.max(0, (screen.height - h) / 2); return window.open('about:blank', 'glowia_cx', 'width=' + w + ',height=' + h + ',left=' + l + ',top=' + t); }
   function cxWatch(){ clearInterval(cxWatch._t); cxWatch._t = setInterval(function(){ if (!cxPopup || cxPopup.closed) { clearInterval(cxWatch._t); setTimeout(function(){ if (!cxWatch.got) loadConnexions(); cxWatch.got = false; }, 2500); } }, 1000); }
   function cxConnect(id, card){
+    if (id === 'sms') { window.ouvrirKitSms(); return; }
     if (id === 'whatsapp') { waGuide(card); return; }
     if (id === 'telegram') { tgConnect(card); return; }
     cxBusy(card, true);
@@ -2614,6 +2657,130 @@
     window.addEventListener('resize', function(){ if (data) frise(); });
     document.addEventListener('visibilitychange', function(){ if (!document.hidden && data) window.ajLoad(); });
   })();
+</script>
+<div class="kit-voile" id="kitVoile" role="dialog" aria-modal="true" aria-labelledby="kitTitre">
+  <div class="kit">
+    <div class="kit-haut"><h3 id="kitTitre">Connecter les SMS du salon</h3><button type="button" class="kit-fermer" id="kitFermer" aria-label="Fermer">✕</button></div>
+    <div class="kit-points" id="kitPoints"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <div class="kit-etape" data-e="0">
+      <h4>Avant de commencer</h4>
+      <p>L'assistant répondra aux SMS reçus sur le téléphone du salon, depuis son numéro. Vérifiez ces trois points :</p>
+      <ol>
+        <li><b>Un iPhone réservé au salon.</b> L'assistant répond à tous les SMS reçus dessus : pas de téléphone personnel.</li>
+        <li><b>L'iPhone est à jour</b> : <b class="ios">Réglages</b> › <b class="ios">Général</b> › <b class="ios">Mise à jour logicielle</b>.</li>
+        <li><b>L'application Raccourcis</b> est sur l'iPhone (elle est installée d'origine ; sinon, elle est gratuite sur l'App Store).</li>
+      </ol>
+      <p class="kit-astuce">Faites ce guide directement sur l'iPhone du salon : ouvrez votre espace GlowIA dessus.</p>
+    </div>
+
+    <div class="kit-etape" data-e="1">
+      <h4>Votre code salon</h4>
+      <p>Ce code relie l'iPhone à votre salon. Copiez-le, l'iPhone vous le demandera à l'étape suivante.</p>
+      <div class="kit-code"><code id="kitCode">…</code><button type="button" class="kit-btn" id="kitCopier">Copier</button></div>
+      <p class="kit-astuce">Gardez ce code pour vous : il ne sert qu'à votre salon.</p>
+    </div>
+
+    <div class="kit-etape" data-e="2">
+      <h4>Ajouter le raccourci « GlowIA SMS »</h4>
+      <ol>
+        <li>Touchez le bouton ci-dessous, puis <b class="ios">Ajouter le raccourci</b>.</li>
+        <li>Si l'iPhone vous demande votre code salon, faites un appui long dans la case, puis <b class="ios">Coller</b>.</li>
+        <li>S'il ne demande rien : dans Raccourcis, touchez <b class="ios">⋯</b> sur « GlowIA SMS », repérez <b class="ios">CODE-SALON</b>, effacez-le et collez votre code. Touchez <b class="ios">OK</b>.</li>
+      </ol>
+      <p><a class="kit-btn" id="kitLien" href="https://www.icloud.com/shortcuts/5aa3c7c3b4494a79a4b02ff2d2cc9bf0" target="_blank" rel="noopener">Ajouter le raccourci</a></p>
+    </div>
+
+    <div class="kit-etape" data-e="3">
+      <h4>Répondre aux SMS automatiquement</h4>
+      <ol>
+        <li>Dans Raccourcis, touchez l'onglet <b class="ios">Automatisation</b> en bas, puis <b class="ios">+</b> (ou <b class="ios">Nouvelle automatisation</b>).</li>
+        <li>Choisissez <b class="ios">Message</b>.</li>
+        <li>Laissez <b class="ios">Expéditeur</b> et <b class="ios">Le message contient</b> vides, pour recevoir tous les messages.</li>
+        <li>Cochez <b class="ios">Exécuter immédiatement</b> et désactivez <b class="ios">Me notifier lors de l'exécution</b>. Touchez <b class="ios">Suivant</b>.</li>
+        <li>Choisissez <b class="ios">GlowIA SMS</b>, puis <b class="ios">OK</b>.</li>
+      </ol>
+      <p class="kit-astuce">La première fois, l'iPhone demande des autorisations : répondez toujours <b>Toujours autoriser</b>.</p>
+    </div>
+
+    <div class="kit-etape" data-e="4">
+      <h4>Les rappels de la veille, chaque soir</h4>
+      <ol>
+        <li>Toujours dans <b class="ios">Automatisation</b>, touchez <b class="ios">+</b>.</li>
+        <li>Choisissez <b class="ios">Heure de la journée</b>, réglez <b class="ios">19:00</b> et <b class="ios">Quotidiennement</b>.</li>
+        <li>Cochez <b class="ios">Exécuter immédiatement</b>, puis <b class="ios">Suivant</b>.</li>
+        <li>Choisissez <b class="ios">GlowIA SMS</b>, puis <b class="ios">OK</b>.</li>
+      </ol>
+      <p>Chaque soir à 19 h, l'iPhone envoie le rappel aux clientes de demain et la demande d'avis aux clientes du jour, depuis le numéro du salon.</p>
+    </div>
+
+    <div class="kit-etape" data-e="5">
+      <h4>Le test</h4>
+      <p>Depuis <b>un autre téléphone</b>, envoyez un SMS avec le texte <b class="ios">GLOWIA-TEST</b> au numéro du salon. Rien n'est envoyé à vos clientes.</p>
+      <ul class="kit-verif" id="kitVerif">
+        <li data-v="signal" class="attente"><span class="rond"></span><span><b>L'iPhone du salon est relié</b><small>En attente d'un message reçu sur l'iPhone…</small></span></li>
+        <li data-v="test" class="attente"><span class="rond"></span><span><b>Le SMS de test est arrivé</b><small>Envoyez GLOWIA-TEST depuis un autre téléphone.</small></span></li>
+        <li data-v="soir"><span class="rond">19h</span><span><b>Rappels du soir</b><small>Vérifiés automatiquement ce soir à 19 h.</small></span></li>
+      </ul>
+      <div class="kit-bravo" id="kitBravo"><b>C'est relié ✓</b><p>L'assistant répond maintenant aux SMS du salon. Gardez l'iPhone allumé et connecté : s'il ne donne plus de nouvelles, vous recevez une alerte sur Telegram.</p></div>
+      <p class="kit-astuce">Ça ne passe pas au vert ? Vérifiez que l'automatisation « Message » est bien activée et que le code a été collé à la place de CODE-SALON. Besoin d'aide ? Écrivez à <a href="mailto:contact@glow-ia.fr?subject=SMS%20du%20salon">contact@glow-ia.fr</a>.</p>
+    </div>
+
+    <div class="kit-bas"><button type="button" class="kit-btn clair" id="kitPrec">Retour</button><button type="button" class="kit-btn" id="kitSuiv">Suivant</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/aujourdhui-glowia';
+  var voile = document.getElementById('kitVoile'), etapes = voile.querySelectorAll('.kit-etape'), points = voile.querySelectorAll('#kitPoints i');
+  var ici = 0, ouvertA = 0, minuteur = null, code = '';
+  function montrer(n){
+    ici = Math.max(0, Math.min(etapes.length - 1, n));
+    Array.prototype.forEach.call(etapes, function(e, k){ e.classList.toggle('ici', k === ici); });
+    Array.prototype.forEach.call(points, function(p, k){ p.className = k < ici ? 'fait' : (k === ici ? 'ici' : ''); });
+    document.getElementById('kitPrec').style.visibility = ici === 0 ? 'hidden' : 'visible';
+    var suiv = document.getElementById('kitSuiv'); suiv.textContent = ici === etapes.length - 1 ? 'Terminer' : 'Suivant';
+    if (ici === etapes.length - 1) verifier(); 
+    voile.querySelector('.kit').scrollTop = 0;
+  }
+  function lire(cb){
+    var t = localStorage.getItem('glowia_token'); if (!t) return;
+    fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token: t }) })
+      .then(function(r){ return r.json(); }).then(function(d){ if (d && d.sms) cb(d.sms); }).catch(function(){});
+  }
+  function recent(x){ return x && (new Date(x).getTime() >= ouvertA - 60000); }
+  function marquer(v, ok, txt){ var li = voile.querySelector('[data-v="' + v + '"]'); if (!li) return; li.classList.toggle('ok', ok); li.classList.toggle('attente', !ok && v !== 'soir'); if (ok) li.querySelector('.rond').textContent = '✓'; if (txt) li.querySelector('small').textContent = txt; }
+  function verifier(){
+    clearInterval(minuteur);
+    var tour = function(){
+      lire(function(sms){
+        var sig = recent(sms.dernier_signal), test = recent(sms.dernier_test);
+        marquer('signal', sig || test, (sig || test) ? 'Reçu à ' + new Date(sms.dernier_signal || sms.dernier_test).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) : null);
+        marquer('test', test, test ? 'Bien reçu par GlowIA.' : null);
+        var soir = sms.dernier_appel && (Date.now() - new Date(sms.dernier_appel).getTime() < 26 * 3600000);
+        if (soir) marquer('soir', true, 'Dernier envoi du soir : ' + new Date(sms.dernier_appel).toLocaleString('fr-FR', {weekday:'long', hour:'2-digit', minute:'2-digit'}) + '.');
+        if (test) { document.getElementById('kitBravo').classList.add('ok'); clearInterval(minuteur); }
+      });
+    };
+    tour(); minuteur = setInterval(tour, 5000);
+  }
+  window.ouvrirKitSms = function(){
+    ouvertA = Date.now(); document.getElementById('kitBravo').classList.remove('ok');
+    voile.classList.add('ouvert'); document.body.style.overflow = 'hidden'; montrer(0);
+    lire(function(sms){ code = sms.code || ''; document.getElementById('kitCode').textContent = code || 'Formule Premium nécessaire'; });
+  };
+  function fermer(){ voile.classList.remove('ouvert'); document.body.style.overflow = ''; clearInterval(minuteur); }
+  document.getElementById('kitFermer').addEventListener('click', fermer);
+  voile.addEventListener('click', function(e){ if (e.target === voile) fermer(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && voile.classList.contains('ouvert')) fermer(); });
+  document.getElementById('kitPrec').addEventListener('click', function(){ montrer(ici - 1); });
+  document.getElementById('kitSuiv').addEventListener('click', function(){ if (ici === etapes.length - 1) fermer(); else montrer(ici + 1); });
+  document.getElementById('kitCopier').addEventListener('click', function(){
+    var b = this; if (!code) return;
+    var fini = function(){ b.textContent = 'Copié ✓'; setTimeout(function(){ b.textContent = 'Copier'; }, 2000); };
+    if (navigator.clipboard) navigator.clipboard.writeText(code).then(fini, function(){}); else { var t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); fini(); }
+  });
+})();
 </script>
 </body>
 </html>
