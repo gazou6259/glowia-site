@@ -1577,6 +1577,7 @@
       { id:'whatsapp', t:'WhatsApp', opt:true, d:'Vous gardez votre numéro et votre appli WhatsApp Business.', done: !!wa.connecte, go:'Connecter', act:function(){ mrScroll(mrCard('whatsapp')); } }
     ];
     if (premium) items.push({ id:'sms', t:'SMS du salon', opt:true, d: sms.present ? 'Les SMS reçus sur le numéro du salon sont reliés.' : 'Rappels de la veille, demandes d’avis et réponses aux SMS, depuis le numéro du salon. Un guide pas à pas sur l’iPhone du salon.', done: !!sms.present, go:'Connecter', act:function(){ window.ouvrirKitSms(); } });
+    items.push({ id:'notifs', t:'Les notifications sur votre téléphone', opt:true, d:'Nouveaux rendez-vous, conversations à reprendre, iPhone du salon à vérifier : vous êtes prévenue, même écran verrouillé.', done: window.notifsActives && window.notifsActives(), go:'Activer', act:function(){ window.activerNotifs(); } });
     items.push({ id:'appli', t:'L’application sur votre téléphone', opt:true, d:'Votre espace s’ouvre d’un geste, comme une application.', done: appInstalled(), go:'Installer', act: installApp });
 
     var done = items.filter(function(i){ return i.done; }).length;
@@ -2780,6 +2781,49 @@
     var b = this; if (!code) return;
     var fini = function(){ b.textContent = 'Copié ✓'; setTimeout(function(){ b.textContent = 'Copier'; }, 2000); };
     if (navigator.clipboard) navigator.clipboard.writeText(code).then(fini, function(){}); else { var t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); fini(); }
+  });
+})();
+</script>
+
+<script>
+/* ---------- Notifications de l'espace (web push) ---------- */
+(function(){
+  var API = 'https://n8n-cpov.srv2127351.hstgr.cloud/webhook/push-abonner-glowia';
+  var CLE = 'BAn_zqddnaY-RMSXhGL5d-_wdpahOdCrQSms-zBtyXO5PfshxqI6reNHMsuLpb4tGz9384Lv0xnhm6ZKtO9bLhE';
+  var IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var autonome = function(){ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; };
+  var possible = function(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; };
+  var cle = function(){ var b = CLE.replace(/-/g, '+').replace(/_/g, '/'); b += '===='.slice(b.length % 4 || 4); var r = atob(b), u = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; };
+  var toast = function(t){ if (typeof cxToast === 'function') cxToast(t); else alert(t); };
+  var appareil = function(){ var u = navigator.userAgent; return (/iphone/i.test(u) ? 'iPhone' : /ipad/i.test(u) ? 'iPad' : /android/i.test(u) ? 'Android' : 'Ordinateur') + (autonome() ? ' (appli)' : ''); };
+  function envoyer(sub, action){
+    var t = localStorage.getItem('glowia_token');
+    if (!t || !sub) return Promise.resolve(false);
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: t, sub: sub.toJSON(), appareil: appareil(), action: action || 'abonner' }) })
+      .then(function(r){ return r.ok; }).catch(function(){ return false; });
+  }
+  window.notifsActives = function(){ try { return possible() && Notification.permission === 'granted' && localStorage.getItem('glowia_notifs') === '1'; } catch (e) { return false; } };
+  window.activerNotifs = function(){
+    if (IOS && !autonome()) { toast('Sur iPhone, ajoutez d’abord l’espace à votre écran d’accueil, puis ouvrez-le depuis l’icône GlowIA pour activer les notifications.'); var b = document.querySelector('[data-mr="appli"]'); if (b) b.click(); return; }
+    if (!possible()) { toast('Ce navigateur ne permet pas les notifications. Ouvrez votre espace dans Safari (iPhone) ou Chrome (Android).'); return; }
+    if (Notification.permission === 'denied') { toast(IOS ? 'Les notifications sont bloquées : Réglages › Notifications › GlowIA › Autoriser les notifications.' : 'Les notifications sont bloquées : autorisez-les dans les réglages du site, puis réessayez.'); return; }
+    Notification.requestPermission().then(function(p){
+      if (p !== 'granted') { toast('Notifications non activées. Vous pourrez les activer plus tard ici.'); return; }
+      return navigator.serviceWorker.register('/sw.js').then(function(){ return navigator.serviceWorker.ready; }).then(function(reg){
+        return reg.pushManager.getSubscription().then(function(s){ return s || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: cle() }); });
+      }).then(function(sub){ return envoyer(sub, 'abonner'); }).then(function(ok){
+        if (ok) { localStorage.setItem('glowia_notifs', '1'); toast('Notifications activées. Une première notification arrive pour vérifier.'); if (typeof window.mrRender === 'function') window.mrRender(); var b = document.querySelector('[data-mr="notifs"]'); if (b) { var li = b.closest('.mr-item'); if (li) li.classList.add('done'); } }
+        else toast('L’activation n’a pas abouti. Réessayez dans un instant.');
+      });
+    }).catch(function(){ toast('L’activation n’a pas abouti. Réessayez dans un instant.'); });
+  };
+  // Si les notifications sont déjà autorisées, on renvoie l'abonnement au serveur à chaque ouverture (il peut changer)
+  window.addEventListener('load', function(){
+    if (!possible() || Notification.permission !== 'granted') return;
+    navigator.serviceWorker.ready.then(function(reg){ return reg.pushManager.getSubscription(); }).then(function(sub){
+      if (sub) return envoyer(sub, 'rafraichir').then(function(ok){ if (ok) localStorage.setItem('glowia_notifs', '1'); });
+      localStorage.removeItem('glowia_notifs');
+    }).catch(function(){});
   });
 })();
 </script>
