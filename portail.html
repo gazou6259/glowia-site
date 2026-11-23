@@ -284,7 +284,18 @@
   .presta-active{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--encre-doux);white-space:nowrap;}
   .presta-remove{background:none;border:none;color:#a33;cursor:pointer;font-size:18px;line-height:1;padding:4px;border-radius:6px;}
   .presta-remove:hover{background:rgba(163,51,51,.08);}
-  .btn-add{background:none;border:1px solid rgba(91,42,60,.25);color:var(--laque);padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.presta-regles-btn{grid-column:1/-1;justify-self:start;background:none;border:none;color:var(--laque);font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 0;}
+  .presta-regles-btn .pr-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:rgba(91,42,60,.08);font-weight:600;font-size:11px;}
+  .presta-regles{grid-column:1/-1;display:none;border-top:1px dashed rgba(91,42,60,.15);padding-top:10px;margin-top:2px;font-size:13px;color:var(--encre-doux);}
+  .presta-regles.open{display:grid;gap:10px;}
+  .presta-regles .pr-l{display:flex;flex-wrap:wrap;align-items:center;gap:6px;line-height:1.5;}
+  .presta-regles input[type=number]{width:62px;border:1px solid #e3d7c6;border-radius:8px;padding:7px 8px;font-size:13.5px;background:#fff;}
+  .presta-regles input[type=text]{width:auto;flex:1 1 180px;}
+  .presta-regles select{width:auto;flex:1 1 180px;}
+  .equipe-l{display:block;margin:0 0 14px;font-size:13.5px;color:var(--encre-doux);}
+  .equipe-l input{display:block;margin-top:6px;width:100%;max-width:420px;border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;background:#fff;}
+  .equipe-l small{display:block;margin-top:4px;font-size:12px;opacity:.85;}
+    .btn-add{background:none;border:1px solid rgba(91,42,60,.25);color:var(--laque);padding:8px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
   .btn-add:hover{border-color:var(--laque);background:rgba(91,42,60,.04);}
 
   @media (max-width:600px){
@@ -1150,6 +1161,7 @@
         <h2>Vos prestations et tarifs</h2>
         <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
       </div>
+      <label class="equipe-l">Plusieurs personnes prennent des rendez-vous dans votre salon ? Leurs prénoms :<input type="text" id="equipeInput" placeholder="Ex : Léa, Sarah, Inès" maxlength="200"><small>Si une cliente demande l'une d'elles, l'assistant ne réserve pas : il vous prévient pour que vous caliez le rendez-vous vous-même. Laissez vide si vous travaillez seule.</small></label>
       <div class="presta-header"><span>Prestation</span><span>Durée</span><span>Prix</span><span>Statut</span><span></span></div>
       <div id="prestaList"></div>
       <button type="button" class="btn" id="savePrestaBtn" style="width:auto;padding:11px 24px;margin-top:18px;">Enregistrer les prestations</button>
@@ -1427,6 +1439,20 @@
     return r === 0 ? h + 'h' : h + 'h' + r;
   }
   var prestaData = [];
+  function prEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  function prSupp(p){ var m = String(p.options || '').split(/[;\n]/)[0].match(/^\s*([^:]+?)\s*:\s*(.+?)\s*$/); return m ? { mot: m[1], nom: m[2] } : { mot: '', nom: '' }; }
+  function prRegles(p, i){
+    var autres = prestaData.filter(function(x, j){ return j !== i && x.service_name && x.service_name.trim(); }).map(function(x){ return x.service_name.trim(); });
+    var opts = function(sel){ return '<option value="">choisir…</option>' + autres.map(function(n){ return '<option value="' + prEsc(n) + '"' + (n === sel ? ' selected' : '') + '>' + prEsc(n) + '</option>'; }).join(''); };
+    var s = prSupp(p);
+    var nb = (Number(p.regle_delai_jours) > 0 && p.regle_sinon ? 1 : 0) + (s.mot && s.nom ? 1 : 0) + (p.avertissement ? 1 : 0);
+    return '<button type="button" class="presta-regles-btn" data-i="' + i + '">Règles de cette prestation' + (nb ? '<span class="pr-badge">' + nb + '</span>' : '') + '</button>' +
+      '<div class="presta-regles' + (p._open ? ' open' : '') + '">' +
+        '<div class="pr-l">Seulement si la dernière prestation date de moins de <input type="number" min="1" max="120" value="' + (Number(p.regle_delai_jours) > 0 ? Number(p.regle_delai_jours) : '') + '" data-i="' + i + '" data-f="regle_delai_jours"> jours, sinon proposer <select data-i="' + i + '" data-f="regle_sinon">' + opts(p.regle_sinon || '') + '</select></div>' +
+        '<div class="pr-l">Ajouter la prestation <select data-i="' + i + '" data-f="supp_nom">' + opts(s.nom) + '</select> si la cliente écrit <input type="text" value="' + prEsc(s.mot) + '" data-i="' + i + '" data-f="supp_mot" placeholder="ex : cheveux longs"></div>' +
+        '<div class="pr-l">Phrase à ajouter quand elle est proposée <input type="text" value="' + prEsc(p.avertissement) + '" data-i="' + i + '" data-f="avertissement" maxlength="300" placeholder="ex : Pour une première couleur, test d\'allergie 48 h avant."></div>' +
+      '</div>';
+  }
   function renderPrestations(){
     var list = document.getElementById('prestaList');
     list.innerHTML = '';
@@ -1441,14 +1467,26 @@
         '<select data-i="' + i + '" data-f="duree_min">' + dureeOptions + '</select>' +
         '<div class="presta-price"><input type="number" min="0" step="0.5" value="' + (p.price_eur != null ? p.price_eur : '') + '" data-i="' + i + '" data-f="price_eur"><span>€</span></div>' +
         '<label class="presta-active"><input type="checkbox" ' + (p.active !== false ? 'checked' : '') + ' data-i="' + i + '" data-f="active"> Active</label>' +
-        '<button type="button" class="presta-remove" data-i="' + i + '" title="Supprimer">×</button>';
+        '<button type="button" class="presta-remove" data-i="' + i + '" title="Supprimer">×</button>' +
+        prRegles(p, i);
       list.appendChild(row);
     });
     Array.prototype.forEach.call(list.querySelectorAll('input, select'), function(inp){
       var evt = inp.tagName === 'SELECT' ? 'change' : 'input';
       inp.addEventListener(evt, function(){
         var i = parseInt(inp.getAttribute('data-i'), 10), f = inp.getAttribute('data-f');
+        if (f === 'supp_mot' || f === 'supp_nom') { var s = prSupp(prestaData[i]); s[f === 'supp_mot' ? 'mot' : 'nom'] = inp.value; prestaData[i].options = (s.mot.trim() && s.nom) ? s.mot.trim() + ' : ' + s.nom : (s.mot.trim() || s.nom ? s.mot.trim() + ' : ' + s.nom : ''); return; }
         prestaData[i][f] = f === 'active' ? inp.checked : inp.value;
+      });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll('input[data-f="service_name"]'), function(inp){
+      inp.addEventListener('change', function(){ renderPrestations(); });
+    });
+    Array.prototype.forEach.call(list.querySelectorAll('.presta-regles-btn'), function(btn){
+      btn.addEventListener('click', function(){
+        var i = parseInt(btn.getAttribute('data-i'), 10);
+        prestaData[i]._open = !prestaData[i]._open;
+        btn.nextElementSibling.classList.toggle('open', !!prestaData[i]._open);
       });
     });
     Array.prototype.forEach.call(list.querySelectorAll('.presta-remove'), function(btn){
@@ -1466,11 +1504,11 @@
   document.getElementById('savePrestaBtn').addEventListener('click', function(){
     var msg = document.getElementById('prestaMsg');
     var clean = prestaData.filter(function(p){ return p.service_name && p.service_name.trim(); })
-      .map(function(p){ return { service_name: p.service_name.trim(), duree_min: Number(p.duree_min) || 30, price_eur: Number(p.price_eur) || 0, active: p.active !== false }; });
+      .map(function(p){ var s = prSupp(p); return { service_name: p.service_name.trim(), duree_min: Number(p.duree_min) || 30, price_eur: Number(p.price_eur) || 0, active: p.active !== false, regle_delai_jours: (Number(p.regle_delai_jours) > 0 && p.regle_sinon) ? Number(p.regle_delai_jours) : null, regle_sinon: (Number(p.regle_delai_jours) > 0 && p.regle_sinon) ? p.regle_sinon : '', options: (s.mot.trim() && s.nom) ? s.mot.trim() + ' : ' + s.nom : '', avertissement: String(p.avertissement || '').trim() }; });
     msg.textContent = 'Enregistrement…'; msg.classList.add('show');
     fetch(API, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ action:'update_prestations', token: getToken(), prestations: clean })
+      body: JSON.stringify({ action:'update_prestations', token: getToken(), prestations: clean, equipe: (document.getElementById('equipeInput').value || '').trim() })
     }).then(function(r){ return r.json(); }).then(function(res){
       msg.textContent = res.success ? 'Enregistré ✓' : (res.error || 'Erreur');
       if (res.success) mrRender();
@@ -1689,7 +1727,8 @@
     document.getElementById('infoAvis').textContent = data.lien_avis_google || '—';
     document.getElementById('infoStatut').textContent = data.statut || '—';
     if (data.monthly) { renderChart(data.monthly); }
-    prestaData = (data.prestations || []).map(function(p){ return { service_name: p.service_name, duree_min: p.duration_min || 30, price_eur: p.price_eur, active: p.active }; });
+    prestaData = (data.prestations || []).map(function(p){ return { service_name: p.service_name, duree_min: p.duration_min || 30, price_eur: p.price_eur, active: p.active, regle_delai_jours: p.regle_delai_jours || '', regle_sinon: p.regle_sinon || '', options: p.options || '', avertissement: p.avertissement || '' }; });
+    try { document.getElementById('equipeInput').value = data.equipe || ''; } catch (e) {}
     renderPrestations();
     mrData = data; mrRender(); mrBienvenue();
     checkInstallBanner();
