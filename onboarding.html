@@ -60,6 +60,7 @@
 .aurore i:nth-child(3){width:50vw;height:50vw;left:25vw;bottom:-20vw;background:radial-gradient(circle,rgba(214,178,150,.55) 0%,rgba(214,178,150,0) 70%);animation:au3 38s ease-in-out infinite alternate}
 @keyframes au1{to{transform:translate(18vw,22vh) scale(1.15)}}@keyframes au2{to{transform:translate(-22vw,20vh) scale(.9)}}@keyframes au3{to{transform:translate(-14vw,-30vh) scale(1.2)}}
 @media(prefers-reduced-motion:reduce){.aurore i{animation:none}}
+.cgv{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45;margin:4px 0 16px;cursor:pointer}.cgv input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#5B2A3C}.cgv a{color:#5B2A3C}
 </style>
 </head>
 <body>
@@ -115,6 +116,7 @@
           <button type="button" id="passToggle" aria-pressed="false">Afficher</button>
         </div>
       </div>
+      <label class="cgv"><input type="checkbox" id="cgv" name="cgv" value="2026-11-25" required> <span>J’accepte les <a href="/cgv" target="_blank" rel="noopener">conditions générales de vente</a>.</span></label>
       <button class="btn" type="submit" id="submit">Créer mon espace</button>
       <p class="err" id="err" role="alert"></p>
       <p class="small">Vous recevez aussitôt un e-mail récapitulatif avec le lien de votre espace.</p>
@@ -124,7 +126,7 @@
       <ol>
         <li>Vos horaires et vos prestations</li>
         <li>Instagram, WhatsApp et Google Agenda : un bouton chacun</li>
-        <li>L'assistant répond dès qu'un canal est connecté</li>
+        <li>L'assistant répond dès qu'Instagram ou WhatsApp est connecté. Les 7 premiers jours, vous validez chaque rendez-vous d'un geste.</li>
       </ol>
     </div>
   </div>
@@ -168,6 +170,7 @@
     if ((d.telephone || '').replace(/\D/g,'').length < 9) { err.textContent = 'Vérifiez le numéro de téléphone.'; $('tel').focus(); return; }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((d.email || '').trim())) { err.textContent = 'Vérifiez l\'adresse e-mail.'; $('email').focus(); return; }
     if ((d.password || '').length < 8) { err.textContent = 'Le mot de passe doit faire au moins 8 caractères.'; $('pass').focus(); return; }
+    if (!$('cgv').checked) { err.textContent = 'Merci d’accepter les conditions générales de vente.'; $('cgv').focus(); return; }
     btn.disabled = true; btn.textContent = 'Création de votre espace…';
     d.action = 'creer_compte'; d.session_id = sessionId;
     post(d).then(function(res){

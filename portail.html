@@ -2491,8 +2491,8 @@
     var target = btn.getAttribute('data-target');
     var planMsg = document.getElementById('planMsg');
     var confirmMsg = target === 'Premium'
-      ? 'Passer en Premium à 69,99€/mois ? Le montant sera ajusté au prorata sur votre prochaine facture.'
-      : 'Repasser en Classic à 39,99€/mois ? Le montant sera ajusté au prorata sur votre prochaine facture.';
+      ? 'Passer en Premium à 59 € TTC par mois ? La différence sera calculée au prorata sur votre prochaine facture.'
+      : 'Passer en Classic à 39 € TTC par mois ? Vous n’aurez plus les SMS, les rappels ni les demandes d’avis. Si vous êtes salon fondateur, vous perdez aussi le prix fondateur.';
     if (!window.confirm(confirmMsg)) return;
 
     btn.disabled = true;
