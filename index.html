@@ -930,12 +930,14 @@ html.lenis,html.lenis body{height:auto}
   })();
   /* Demande de démo */
   var form = document.getElementById('demoForm'), btn = document.getElementById('demoBtn'), msg = document.getElementById('demoMsg');
+  var arrivee = Date.now();
   function dire(t, ok){ msg.textContent = t; msg.className = 'msg ' + (ok ? 'ok' : 'ko'); }
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var d = Object.fromEntries(new FormData(form).entries());
     if (d.site_web) return;
     delete d.site_web;
+    d.t = Math.round((Date.now() - arrivee) / 1000);
     if (!d.nom || !d.nom_salon || !d.email) { dire('Indiquez votre nom, le nom du salon et votre e-mail.', false); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { dire('Vérifiez votre adresse e-mail.', false); return; }
     btn.disabled = true; btn.textContent = 'Envoi…'; msg.textContent = '';
