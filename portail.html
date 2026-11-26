@@ -93,6 +93,8 @@
   .adresse-suggestion-item:hover,.adresse-suggestion-item.active{background:rgba(91,42,60,.06);}
   .field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;}
   .field input{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:14.5px;font-family:'Inter',sans-serif;outline:none;transition:border-color .16s ease,box-shadow .16s ease;}
+  .field select{width:100%;border:1px solid #e3d7c6;border-radius:10px;padding:12px 14px;font-size:14.5px;font-family:'Inter',sans-serif;background:#fff;outline:none;}
+  .field select:focus{border-color:var(--laiton);box-shadow:0 0 0 3px rgba(199,154,86,.25);}
   .field input:focus{border-color:var(--laiton);box-shadow:0 0 0 3px rgba(199,154,86,.25);}
   .field-pass-wrap{position:relative;}
   .field-pass-wrap input{padding-right:44px;}
@@ -292,6 +294,10 @@
   .presta-regles input[type=number]{width:62px;border:1px solid #e3d7c6;border-radius:8px;padding:7px 8px;font-size:13.5px;background:#fff;}
   .presta-regles input[type=text]{width:auto;flex:1 1 180px;}
   .presta-regles select{width:auto;flex:1 1 180px;}
+  .presta-head-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .btn-add-doux{background:transparent;border:1px solid currentColor;opacity:.85}
+  .presta-metier-msg{margin:0 0 14px;font-size:13.5px;line-height:1.45;color:var(--encre-doux);background:#fbf6ef;border-radius:8px;padding:10px 12px}
+  .field-help{display:block;margin-top:5px;font-size:12px;color:var(--encre-doux)}
   .equipe-l{display:block;margin:0 0 14px;font-size:13.5px;color:var(--encre-doux);}
   .equipe-l input{display:block;margin-top:6px;width:100%;max-width:420px;border:1px solid #e3d7c6;border-radius:8px;padding:9px 11px;font-size:14px;background:#fff;}
   .equipe-l small{display:block;margin-top:4px;font-size:12px;opacity:.85;}
@@ -1132,6 +1138,19 @@
       </div>
 
       <div class="field">
+        <span class="field-label">Votre métier</span>
+        <select id="profilMetier">
+          <option value="">Choisir…</option>
+          <option value="Onglerie">Onglerie</option>
+          <option value="Coiffure">Coiffure</option>
+          <option value="Cils et regard">Cils et regard</option>
+          <option value="Institut / esthétique">Institut / esthétique</option>
+          <option value="Autre">Autre</option>
+        </select>
+        <small class="field-help">Votre assistant comprend le vocabulaire de votre métier. Vos prix et vos règles restent les vôtres.</small>
+      </div>
+
+      <div class="field">
         <span class="field-label">Adresse</span>
         <div class="adresse-autocomplete-wrap">
           <input type="text" id="profilAdresse" placeholder="Commencez à taper l'adresse…" autocomplete="off">
@@ -1159,9 +1178,10 @@
     <div class="panel anim" data-tab="salon" style="animation-delay:.47s;">
       <div class="panel-head">
         <h2>Vos prestations et tarifs</h2>
-        <button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button>
+        <span class="presta-head-btns"><button type="button" class="btn-add btn-add-doux" id="metierPrestaBtn">Prestations courantes de mon métier</button><button type="button" class="btn-add" id="addPrestaBtn">+ Ajouter une prestation</button></span>
       </div>
       <label class="equipe-l">Plusieurs personnes prennent des rendez-vous dans votre salon ? Leurs prénoms :<input type="text" id="equipeInput" placeholder="Ex : Léa, Sarah, Inès" maxlength="200"><small>Si une cliente demande l'une d'elles, l'assistant ne réserve pas : il vous prévient pour que vous caliez le rendez-vous vous-même. Laissez vide si vous travaillez seule.</small></label>
+      <p class="presta-metier-msg" id="metierPrestaMsg" hidden></p>
       <div class="presta-header"><span>Prestation</span><span>Durée</span><span>Prix</span><span>Statut</span><span></span></div>
       <div id="prestaList"></div>
       <button type="button" class="btn" id="savePrestaBtn" style="width:auto;padding:11px 24px;margin-top:18px;">Enregistrer les prestations</button>
@@ -1336,7 +1356,7 @@
     msg.textContent = 'Enregistrement…'; msg.classList.add('show');
     fetch(API, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ action:'update_profil', token: getToken(), adresse: document.getElementById('profilAdresse').value.trim(), telephone_salon: document.getElementById('profilTelephone').value.trim(), photo_base64: profilPhotoData })
+      body: JSON.stringify({ action:'update_profil', token: getToken(), type_activite: document.getElementById('profilMetier').value, adresse: document.getElementById('profilAdresse').value.trim(), telephone_salon: document.getElementById('profilTelephone').value.trim(), photo_base64: profilPhotoData })
     }).then(function(r){ return r.json(); }).then(function(res){
       msg.textContent = res.success ? 'Enregistré ✓' : (res.error || 'Erreur');
     }).catch(function(){ msg.textContent = 'Un souci réseau est survenu.'; });
@@ -1438,6 +1458,50 @@
     var h = Math.floor(min/60), r = min % 60;
     return r === 0 ? h + 'h' : h + 'h' + r;
   }
+  function metierPortail(t){
+    var x = String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    if (/ongl|nail|manucure|prothes/.test(x)) return 'Onglerie';
+    if (/coiff|barb|cheveu/.test(x)) return 'Coiffure';
+    if (/cil|regard|lash|sourcil/.test(x)) return 'Cils et regard';
+    if (/esthet|institut|beaute|spa|epil|soin/.test(x)) return 'Institut / esthétique';
+    return x ? 'Autre' : '';
+  }
+  // Prestations courantes par métier (G034) : noms et durées habituels, sans prix. La gérante vérifie tout avant d'enregistrer.
+  var CATALOGUE_METIER = {
+    'Onglerie': [
+      { service_name: 'Semi-permanent mains', duree_min: 45 },
+      { service_name: 'Dépose + semi-permanent mains', duree_min: 60 },
+      { service_name: 'Pose capsules gel', duree_min: 90 },
+      { service_name: 'Remplissage gel', duree_min: 75 },
+      { service_name: 'Semi-permanent pieds', duree_min: 45 },
+      { service_name: 'Dépose seule', duree_min: 30 },
+      { service_name: 'French / baby boomer (option)', duree_min: 15 }
+    ],
+    'Coiffure': [
+      { service_name: 'Coupe femme + brushing', duree_min: 60 },
+      { service_name: 'Coupe homme', duree_min: 30 },
+      { service_name: 'Brushing', duree_min: 45 },
+      { service_name: 'Couleur racines', duree_min: 90, options: 'cheveux longs : Supplément cheveux longs', avertissement: 'Pour une première couleur chez nous, un test d\'allergie est à faire au salon 48 h avant.' },
+      { service_name: 'Balayage', duree_min: 150 },
+      { service_name: 'Supplément cheveux longs', duree_min: 30 }
+    ],
+    'Cils et regard': [
+      { service_name: 'Pose cil à cil', duree_min: 120 },
+      { service_name: 'Pose mixte', duree_min: 150 },
+      { service_name: 'Remplissage cil à cil', duree_min: 75, regle_delai_jours: 21, regle_sinon: 'Pose cil à cil' },
+      { service_name: 'Rehaussement de cils', duree_min: 60 },
+      { service_name: 'Dépose d\'extensions', duree_min: 30 }
+    ],
+    'Institut / esthétique': [
+      { service_name: 'Épilation sourcils', duree_min: 15 },
+      { service_name: 'Épilation aisselles', duree_min: 15 },
+      { service_name: 'Épilation maillot classique', duree_min: 15 },
+      { service_name: 'Épilation maillot intégral', duree_min: 30 },
+      { service_name: 'Épilation demi-jambes', duree_min: 30 },
+      { service_name: 'Épilation jambes complètes', duree_min: 45 },
+      { service_name: 'Soin visage', duree_min: 60 }
+    ]
+  };
   var prestaData = [];
   function prEsc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
   function prSupp(p){ var m = String(p.options || '').split(/[;\n]/)[0].match(/^\s*([^:]+?)\s*:\s*(.+?)\s*$/); return m ? { mot: m[1], nom: m[2] } : { mot: '', nom: '' }; }
@@ -1501,8 +1565,24 @@
     prestaData.push({ service_name: '', duree_min: 30, price_eur: '', active: true });
     renderPrestations();
   });
+  document.getElementById('metierPrestaBtn').addEventListener('click', function(){
+    var msg = document.getElementById('metierPrestaMsg');
+    var metier = document.getElementById('profilMetier').value;
+    var liste = CATALOGUE_METIER[metier];
+    msg.hidden = false;
+    if (!liste) { msg.textContent = 'Choisissez d\'abord votre métier dans votre profil, plus haut sur cette page.'; return; }
+    var deja = prestaData.map(function(p){ return String(p.service_name || '').trim().toLowerCase(); });
+    var ajout = liste.filter(function(x){ return deja.indexOf(x.service_name.toLowerCase()) === -1; });
+    ajout.forEach(function(x){ prestaData.push({ service_name: x.service_name, duree_min: x.duree_min, price_eur: '', active: true, regle_delai_jours: x.regle_delai_jours || '', regle_sinon: x.regle_sinon || '', options: x.options || '', avertissement: x.avertissement || '' }); });
+    renderPrestations();
+    msg.textContent = ajout.length
+      ? ajout.length + ' prestations ajoutées. Indiquez vos prix, corrigez les durées, supprimez ce que vous ne faites pas et relisez les règles proposées (bouton « Règles de cette prestation ») : ce sont des usages courants, pas forcément les vôtres. Rien n\'est enregistré tant que vous n\'avez pas cliqué sur « Enregistrer les prestations ».'
+      : 'Toutes les prestations courantes de votre métier sont déjà dans votre liste.';
+  });
   document.getElementById('savePrestaBtn').addEventListener('click', function(){
     var msg = document.getElementById('prestaMsg');
+    var sansPrix = prestaData.filter(function(p){ return p.service_name && p.service_name.trim() && p.active !== false && (p.price_eur === '' || p.price_eur == null || isNaN(Number(p.price_eur))); }).map(function(p){ return p.service_name.trim(); });
+    if (sansPrix.length) { msg.textContent = 'Indiquez le prix de : ' + sansPrix.join(', ') + ' (ou décochez « Active »). Votre assistant ne donne jamais un prix qu\'il ne connaît pas.'; msg.classList.add('show'); return; }
     var clean = prestaData.filter(function(p){ return p.service_name && p.service_name.trim(); })
       .map(function(p){ var s = prSupp(p); return { service_name: p.service_name.trim(), duree_min: Number(p.duree_min) || 30, price_eur: Number(p.price_eur) || 0, active: p.active !== false, regle_delai_jours: (Number(p.regle_delai_jours) > 0 && p.regle_sinon) ? Number(p.regle_delai_jours) : null, regle_sinon: (Number(p.regle_delai_jours) > 0 && p.regle_sinon) ? p.regle_sinon : '', options: (s.mot.trim() && s.nom) ? s.mot.trim() + ' : ' + s.nom : '', avertissement: String(p.avertissement || '').trim() }; });
     msg.textContent = 'Enregistrement…'; msg.classList.add('show');
@@ -1712,6 +1792,7 @@
     }
     document.getElementById('profilNomAffiche').textContent = data.nom_salon || '—';
     document.getElementById('profilAdresse').value = data.adresse || '';
+    document.getElementById('profilMetier').value = metierPortail(data.type_activite);
     document.getElementById('profilTelephone').value = data.telephone_salon || '';
     profilPhotoData = data.photo_base64 || '';
     if (profilPhotoData) {
